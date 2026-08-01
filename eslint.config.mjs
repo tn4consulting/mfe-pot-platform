@@ -32,10 +32,6 @@ export default [
             { sourceTag: 'scope:shell', onlyDependOnLibsWithTags: ['scope:shared', 'scope:shell'] },
             { sourceTag: 'scope:dashboard', onlyDependOnLibsWithTags: ['scope:shared', 'scope:dashboard'] },
             {
-              sourceTag: 'scope:employment-insurance',
-              onlyDependOnLibsWithTags: ['scope:shared', 'scope:employment-insurance'],
-            },
-            {
               sourceTag: 'scope:employment-life-events',
               onlyDependOnLibsWithTags: ['scope:shared', 'scope:employment-life-events'],
             },

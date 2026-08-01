@@ -64,20 +64,19 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // job-bank + job-bank-bff removed from this array: they've moved to
-  // mfe-pot-job-bank (Phase 1 of the polyrepo split, see
-  // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md) and
-  // no longer exist as projects in this workspace. Phase 2 rewires every
-  // remaining entry here to point at each app's sibling checkout once all
-  // 5 are extracted, rather than patching this file once per extraction --
-  // until then, this suite has no job-bank coverage.
+  // job-bank + job-bank-bff and employment-insurance + employment-insurance-bff
+  // removed from this array: they've moved to mfe-pot-job-bank and
+  // mfe-pot-employment-insurance respectively (Phase 1 of the polyrepo
+  // split, see docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
+  // and no longer exist as projects in this workspace. Phase 2 rewires
+  // every remaining entry here to point at each app's sibling checkout
+  // once all 5 are extracted, rather than patching this file once per
+  // extraction -- until then, this suite has no coverage for either app.
   webServer: [
-    backend('employment-insurance-bff', 3002),
     backend('client-profile-service', 3003),
     backend('benefit-aggregation-bff', 3004),
     frontend('shell', 4200),
     frontend('dashboard', 4201),
     frontend('employment-life-events', 4202),
-    frontend('employment-insurance', 4204),
   ],
 });

@@ -27,15 +27,6 @@
       "employment-life-events-feature-guided-journey": [
         "./libs/employment-life-events/feature-guided-journey/src/index.ts"
       ],
-      "employment-insurance-feature-applications": [
-        "./libs/employment-insurance/feature-applications/src/index.ts"
-      ],
-      "employment-insurance-feature-claims": [
-        "./libs/employment-insurance/feature-claims/src/index.ts"
-      ],
-      "employment-insurance-feature-reporting": [
-        "./libs/employment-insurance/feature-reporting/src/index.ts"
-      ],
       "@tn4consulting/shared-remote-registry": [
         "./libs/shared/remote-registry/src/index.ts"
       ],
@@ -48,9 +39,6 @@
         "./libs/shared/federation-runtime/src/index.ts"
       ],
       "@tn4consulting/shared-auth": ["./libs/shared/auth/src/index.ts"],
-      "employment-insurance-data-access": [
-        "./libs/employment-insurance/data-access/src/index.ts"
-      ],
       "dashboard-data-access": ["./libs/dashboard/data-access/src/index.ts"],
       "@tn4consulting/shared-runtime-config": ["./libs/shared/runtime-config/src/index.ts"]
     }

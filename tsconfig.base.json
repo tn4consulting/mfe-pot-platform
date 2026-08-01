@@ -27,10 +27,6 @@
       "employment-life-events-feature-guided-journey": [
         "./libs/employment-life-events/feature-guided-journey/src/index.ts"
       ],
-      "job-bank-feature-search": [
-        "./libs/job-bank/feature-search/src/index.ts"
-      ],
-      "job-bank-feature-apply": ["./libs/job-bank/feature-apply/src/index.ts"],
       "employment-insurance-feature-applications": [
         "./libs/employment-insurance/feature-applications/src/index.ts"
       ],
@@ -52,7 +48,6 @@
         "./libs/shared/federation-runtime/src/index.ts"
       ],
       "@tn4consulting/shared-auth": ["./libs/shared/auth/src/index.ts"],
-      "job-bank-data-access": ["./libs/job-bank/data-access/src/index.ts"],
       "employment-insurance-data-access": [
         "./libs/employment-insurance/data-access/src/index.ts"
       ],

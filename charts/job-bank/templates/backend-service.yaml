@@ -1,1 +1,0 @@
-{{ include "mfe-backend-lib.service" . }}

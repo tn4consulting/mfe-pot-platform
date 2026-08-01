@@ -7,10 +7,8 @@
   "implicitDependencies": [
     "shell",
     "dashboard",
-    "job-bank",
     "employment-insurance",
     "employment-life-events",
-    "job-bank-bff",
     "employment-insurance-bff",
     "client-profile-service",
     "benefit-aggregation-bff"

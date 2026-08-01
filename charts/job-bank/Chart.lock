@@ -1,9 +1,0 @@
-dependencies:
-- name: mfe-frontend-lib
-  repository: file://../mfe-frontend-lib
-  version: 0.1.0
-- name: mfe-backend-lib
-  repository: file://../mfe-backend-lib
-  version: 0.1.0
-digest: sha256:70a1dade1258e4e0796aff9219238c672a214c09eccd27b0b2bd845e3442d9f3
-generated: "2026-08-01T19:56:52.666639+01:00"

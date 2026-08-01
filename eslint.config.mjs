@@ -31,7 +31,6 @@ export default [
             { sourceTag: 'scope:shared', onlyDependOnLibsWithTags: ['scope:shared'] },
             { sourceTag: 'scope:shell', onlyDependOnLibsWithTags: ['scope:shared', 'scope:shell'] },
             { sourceTag: 'scope:dashboard', onlyDependOnLibsWithTags: ['scope:shared', 'scope:dashboard'] },
-            { sourceTag: 'scope:job-bank', onlyDependOnLibsWithTags: ['scope:shared', 'scope:job-bank'] },
             {
               sourceTag: 'scope:employment-insurance',
               onlyDependOnLibsWithTags: ['scope:shared', 'scope:employment-insurance'],

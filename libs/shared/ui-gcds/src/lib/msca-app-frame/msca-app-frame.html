@@ -1,0 +1,22 @@
+<gcds-header [skipToHref]="'#main-content'">
+  <gcds-signature slot="signature" type="wordmark"></gcds-signature>
+  @if (session(); as activeSession) {
+    <button slot="account" type="button" (click)="signOut()">
+      {{ 'accountMenu.signOut' | transloco: { name: activeSession.name } }}
+    </button>
+  }
+  <button slot="toggle" type="button" (click)="switchLocale()">
+    {{ otherLocale === 'fr' ? 'Français' : 'English' }}
+  </button>
+  <gcds-top-nav slot="menu" label="Site menu">
+    <ng-content select="[appFrameNav]"></ng-content>
+  </gcds-top-nav>
+</gcds-header>
+
+<main id="main-content">
+  <gcds-container size="xl">
+    <ng-content></ng-content>
+  </gcds-container>
+</main>
+
+<gcds-footer display="compact" [contextualHeading]="brandName"></gcds-footer>

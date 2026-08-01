@@ -1,0 +1,13 @@
+{
+  "name": "@tn4consulting/shared-remote-registry",
+  "version": "0.1.0",
+  "description": "RemoteRegistryProvider abstraction (Strapi-backed, static, and in-memory-stub implementations) for federation manifest discovery.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ]
+}

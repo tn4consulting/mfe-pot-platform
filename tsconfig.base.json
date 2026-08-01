@@ -1,0 +1,64 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "paths": {
+      "dashboard-feature-payment-history": [
+        "./libs/dashboard/feature-payment-history/src/index.ts"
+      ],
+      "employment-life-events-feature-guided-journey": [
+        "./libs/employment-life-events/feature-guided-journey/src/index.ts"
+      ],
+      "job-bank-feature-search": [
+        "./libs/job-bank/feature-search/src/index.ts"
+      ],
+      "job-bank-feature-apply": ["./libs/job-bank/feature-apply/src/index.ts"],
+      "employment-insurance-feature-applications": [
+        "./libs/employment-insurance/feature-applications/src/index.ts"
+      ],
+      "employment-insurance-feature-claims": [
+        "./libs/employment-insurance/feature-claims/src/index.ts"
+      ],
+      "employment-insurance-feature-reporting": [
+        "./libs/employment-insurance/feature-reporting/src/index.ts"
+      ],
+      "@tn4consulting/shared-remote-registry": [
+        "./libs/shared/remote-registry/src/index.ts"
+      ],
+      "@tn4consulting/shared-content-client": [
+        "./libs/shared/content-client/src/index.ts"
+      ],
+      "@tn4consulting/shared-ui-gcds": ["./libs/shared/ui-gcds/src/index.ts"],
+      "@tn4consulting/shared-i18n": ["./libs/shared/i18n/src/index.ts"],
+      "@tn4consulting/shared-federation-runtime": [
+        "./libs/shared/federation-runtime/src/index.ts"
+      ],
+      "@tn4consulting/shared-auth": ["./libs/shared/auth/src/index.ts"],
+      "job-bank-data-access": ["./libs/job-bank/data-access/src/index.ts"],
+      "employment-insurance-data-access": [
+        "./libs/employment-insurance/data-access/src/index.ts"
+      ],
+      "dashboard-data-access": ["./libs/dashboard/data-access/src/index.ts"],
+      "@tn4consulting/shared-runtime-config": ["./libs/shared/runtime-config/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

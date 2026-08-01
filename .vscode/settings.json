@@ -1,0 +1,4 @@
+{
+  "chat.todoListTool.enabled": true,
+  "chat.agent.todoList.position": "chatInput"
+}

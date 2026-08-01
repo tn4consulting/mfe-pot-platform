@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/i18n-asset-base-url.token.ts","./src/lib/locale-sync.ts","./src/lib/provide-mfe-transloco.ts","./src/lib/transloco-http-loader.ts"],"version":"6.0.3"}

@@ -1,0 +1,17 @@
+{
+  "name": "@tn4consulting/shared-federation-runtime",
+  "version": "0.1.0",
+  "description": "RemoteRouteHost, REMOTE_MODULE_LOADER, and PAYMENT_HISTORY_WIDGET_LOADER -- the shared DI-token patterns for safely loading federated modules.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "@angular/core": ">=22.0.0",
+    "@angular/router": ">=22.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ]
+}

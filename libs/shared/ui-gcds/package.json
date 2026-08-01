@@ -1,0 +1,22 @@
+{
+  "name": "@tn4consulting/shared-ui-gcds",
+  "version": "0.1.0",
+  "description": "MscaAppFrame -- the shared GC header/footer app frame. Owned by the shell only; remotes never render their own header/footer.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@tn4consulting/shared-auth": "workspace:*",
+    "@tn4consulting/shared-i18n": "workspace:*"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=22.0.0",
+    "@angular/router": ">=22.0.0",
+    "@gcds-core/components-angular": ">=1.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ]
+}

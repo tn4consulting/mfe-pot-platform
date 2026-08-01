@@ -1,0 +1,10 @@
+<section class="guided-journey">
+  <h1>{{ 'journey.heading' | transloco }}</h1>
+  <p>{{ 'journey.intro' | transloco }}</p>
+
+  <h2>{{ 'journey.paymentsHeading' | transloco }}</h2>
+  @if (widgetLoadError) {
+    <p role="alert">{{ 'journey.widgetUnavailable' | transloco }}</p>
+  }
+  <ng-container #paymentHistoryWidgetHost></ng-container>
+</section>

@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/auth-session.model.ts","./src/lib/claims.ts","./src/lib/mock-login.ts","./src/lib/require-session.guard.ts","./src/lib/session-sync.ts"],"version":"6.0.3"}

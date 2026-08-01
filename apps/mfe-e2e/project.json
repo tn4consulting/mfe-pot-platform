@@ -1,0 +1,30 @@
+{
+  "name": "mfe-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/mfe-e2e/src",
+  "tags": ["type:e2e"],
+  "implicitDependencies": [
+    "shell",
+    "dashboard",
+    "job-bank",
+    "employment-insurance",
+    "employment-life-events",
+    "job-bank-bff",
+    "employment-insurance-bff",
+    "client-profile-service",
+    "benefit-aggregation-bff"
+  ],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/mfe-e2e"],
+      "options": {
+        "config": "apps/mfe-e2e/playwright.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

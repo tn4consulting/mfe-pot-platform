@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/content-client.types.ts","./src/lib/static-content-client.ts","./src/lib/strapi-content-client.ts"],"version":"6.0.3"}

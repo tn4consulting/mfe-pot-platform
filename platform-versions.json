@@ -1,0 +1,11 @@
+{
+  "$comment": "Single source of truth for the versions every mfe-pot app repo must stay aligned on. See CLAUDE.md's 'Strong contracts' section: Native Federation's shared-singleton contract (see @tn4consulting/shared-federation-config) requires every app to run the same Angular/RxJS/GCDS version, or the singleton sharing silently breaks at runtime with no compile-time warning across repos. A future version-alignment check reads each deployed remote's live remoteEntry.json (which lists every shared package's exact resolved version) and each BFF's /health, and asserts they all agree with this file.",
+  "node": "22.22.0",
+  "pnpm": "10.33.2",
+  "typescript": "6.0.3",
+  "angular": "22.1.0",
+  "nativeFederation": "22.0.6",
+  "rxjs": "7.8.2",
+  "gcdsComponents": "1.4.0",
+  "gcdsComponentsAngular": "1.4.0"
+}

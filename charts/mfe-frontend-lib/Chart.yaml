@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mfe-frontend-lib
+description: >-
+  Reusable Deployment/Service/ConfigMap templates for an mfe-pot frontend
+  (a static SPA served by nginx with a runtime-env entrypoint). Never
+  installed directly -- each app's own application chart depends on this
+  and calls its named templates. See CLAUDE.md's Hosting section.
+type: library
+version: 0.1.0

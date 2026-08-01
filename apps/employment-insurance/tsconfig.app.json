@@ -1,0 +1,47 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../libs/employment-insurance/feature-applications/src/index.ts",
+    "../../libs/employment-insurance/feature-claims/src/index.ts",
+    "../../libs/employment-insurance/feature-reporting/src/index.ts",
+    "../../libs/shared/i18n/src/index.ts",
+    "../../libs/shared/auth/src/index.ts",
+    "../../libs/employment-insurance/data-access/src/index.ts",
+    "../../libs/shared/runtime-config/src/index.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/test-setup.ts"
+  ],
+  "references": [
+    {
+      "path": "../../libs/shared/runtime-config"
+    },
+    {
+      "path": "../../libs/employment-insurance/feature-reporting"
+    },
+    {
+      "path": "../../libs/employment-insurance/feature-claims"
+    },
+    {
+      "path": "../../libs/employment-insurance/feature-applications"
+    },
+    {
+      "path": "../../libs/employment-insurance/data-access"
+    },
+    {
+      "path": "../../libs/shared/auth"
+    },
+    {
+      "path": "../../libs/shared/i18n"
+    }
+  ]
+}

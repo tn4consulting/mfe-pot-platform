@@ -1,0 +1,81 @@
+name: Publish shared packages
+
+# Publishes every libs/shared/* package to GitHub Packages under the
+# @tn4consulting scope -- see CLAUDE.md's "Strong contracts" section for why
+# this exists: each split-out app repo depends on pinned versions of these
+# instead of a hand-copied source import, and the TypeScript types published
+# alongside are the actual enforced contract.
+#
+# Safe to run on every push that touches libs/shared/** even when most
+# individual libs haven't had a version bump -- publish-shared-lib.mjs
+# treats "version already published" as a no-op, not a failure, so bumping
+# one lib's version doesn't require this workflow to know which one changed.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'libs/shared/**'
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@tn4consulting'
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish shared-auth
+        run: node tools/scripts/publish-shared-lib.mjs auth --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-content-client
+        run: node tools/scripts/publish-shared-lib.mjs content-client --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-federation-config
+        run: node tools/scripts/publish-shared-lib.mjs federation-config --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-federation-runtime
+        run: node tools/scripts/publish-shared-lib.mjs federation-runtime --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-i18n
+        run: node tools/scripts/publish-shared-lib.mjs i18n --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-remote-registry
+        run: node tools/scripts/publish-shared-lib.mjs remote-registry --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish shared-runtime-config
+        run: node tools/scripts/publish-shared-lib.mjs runtime-config --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ui-gcds depends on shared-auth and shared-i18n (see its package.json)
+      # -- publish it last so a fresh version of either is already available
+      # if this run also bumped them.
+      - name: Publish shared-ui-gcds
+        run: node tools/scripts/publish-shared-lib.mjs ui-gcds --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

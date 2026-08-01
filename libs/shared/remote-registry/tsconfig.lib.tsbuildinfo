@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/remote-registry.types.ts","./src/lib/static-remote-registry-provider.ts","./src/lib/strapi-remote-registry-provider.ts"],"version":"6.0.3"}

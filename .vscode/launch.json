@@ -58,9 +58,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug benefit-aggregation-bff with Nx",
+      "name": "Debug dashboard-bff with Nx",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "nx", "serve", "benefit-aggregation-bff"],
+      "runtimeArgs": ["exec", "nx", "serve", "dashboard-bff"],
       "env": {
         "NODE_OPTIONS": "--inspect=9232"
       },
@@ -69,7 +69,7 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/apps/benefit-aggregation-bff/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/apps/dashboard-bff/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }

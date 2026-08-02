@@ -5,7 +5,7 @@ import { signIn } from './support/sign-in';
  * The end-to-end functional walkthrough from the design plan: apply for a
  * job, apply for EI and submit a report, then confirm MSCA-D's
  * cross-benefit overview reflects that activity -- proving
- * benefit-aggregation-bff actually composes across the domain BFFs rather
+ * dashboard-bff actually composes across the domain BFFs rather
  * than showing hardcoded sample data. Each step hits a real local BFF (see
  * CLAUDE.md's "Backends: BFF pattern" section).
  */

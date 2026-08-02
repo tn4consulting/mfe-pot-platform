@@ -107,11 +107,11 @@ describe('fetchRuntimeConfig', () => {
     mockEnvJs('window.__mfePotEnv = {"strapiBaseUrl":"https://strapi.example.com"};');
     const config = await fetchRuntimeConfig('https://dashboard.example.com/', {
       strapiBaseUrl: 'http://localhost:1337',
-      benefitAggregationBffBaseUrl: 'http://localhost:3004',
+      dashboardBffBaseUrl: 'http://localhost:3004',
     });
     expect(config).toEqual({
       strapiBaseUrl: 'https://strapi.example.com',
-      benefitAggregationBffBaseUrl: 'http://localhost:3004',
+      dashboardBffBaseUrl: 'http://localhost:3004',
     });
   });
 });

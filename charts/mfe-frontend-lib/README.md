@@ -39,7 +39,7 @@ frontend:
   servicePort: 80
   runtimeConfig:                # app-specific shape -- see apps/<app>/src/runtime-config.ts
     strapiBaseUrl: "http://strapi.mfe-pot.svc.cluster.local:1337"
-    benefitAggregationBffBaseUrl: "https://dashboard.mfe-pot.example.com/api"
+    dashboardBffBaseUrl: "https://dashboard.mfe-pot.example.com/api"
 ```
 
 `runtimeConfig` is serialized whole to JSON and injected as a single

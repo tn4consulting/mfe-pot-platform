@@ -11,7 +11,7 @@ const workspaceRoot = join(__dirname, '../..');
  * Composed integration suite: proves the 5 apps + 4 BFFs work together as a
  * federated whole (routed navigation, cross-remote widget embedding,
  * language switching, the BFF-backed golden path, and the
- * benefit-aggregation-bff partial-failure contract). Each app's own Jest
+ * dashboard-bff partial-failure contract). Each app's own Jest
  * suite already proves it works standalone -- see CLAUDE.md's "Independent
  * testability" section for why both layers matter and neither substitutes
  * for the other.
@@ -66,7 +66,7 @@ export default defineConfig({
   ],
   // All 5 frontends (shell, dashboard, job-bank, employment-insurance,
   // employment-life-events) and 3 of the 4 BFFs (job-bank-bff,
-  // employment-insurance-bff, benefit-aggregation-bff) have moved to
+  // employment-insurance-bff, dashboard-bff) have moved to
   // their own repos -- Phase 1 of the polyrepo split (see
   // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
   // is now complete. Only client-profile-service (no single frontend

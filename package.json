@@ -5,7 +5,8 @@
   "scripts": {
     "build": "nx run-many -t build --all",
     "lint": "nx run-many -t lint --all && nx run client-profile-service:eslint:lint",
-    "test": "nx run-many -t test --all"
+    "test": "nx run-many -t test --all",
+    "deploy:local": "bash tools/deploy-local.sh"
   },
   "private": true,
   "devDependencies": {

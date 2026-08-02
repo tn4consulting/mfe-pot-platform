@@ -6,11 +6,37 @@ import type { Core } from '@strapi/strapi';
 // CLAUDE.md for why. This is what makes `docker compose up` produce a known,
 // working local environment every time, with no manual admin-panel steps.
 
+// URLs default to the local `nx serve` ports but are each overridable by an
+// env var, so a Helm-deployed Strapi (see charts/strapi) can seed the real
+// Ingress-routed hostnames instead -- otherwise a reachable-but-wrong
+// directory is worse than an unreachable one, since resolveFederationManifest()
+// in each app's main.ts only falls back to its own configured `remotes` map
+// when Strapi itself is unavailable, not when its data is stale/wrong.
 const REMOTES = [
-  { name: 'dashboard', url: 'http://localhost:4201/remoteEntry.json', routePrefix: '/dashboard', version: '0.0.1' },
-  { name: 'employment-life-events', url: 'http://localhost:4202/remoteEntry.json', routePrefix: '/employment-life-events', version: '0.0.1' },
-  { name: 'job-bank', url: 'http://localhost:4203/remoteEntry.json', routePrefix: '/job-bank', version: '0.0.1' },
-  { name: 'employment-insurance', url: 'http://localhost:4204/remoteEntry.json', routePrefix: '/employment-insurance', version: '0.0.1' },
+  {
+    name: 'dashboard',
+    url: process.env.REMOTE_DASHBOARD_URL ?? 'http://localhost:4201/remoteEntry.json',
+    routePrefix: '/dashboard',
+    version: '0.0.1',
+  },
+  {
+    name: 'employment-life-events',
+    url: process.env.REMOTE_EMPLOYMENT_LIFE_EVENTS_URL ?? 'http://localhost:4202/remoteEntry.json',
+    routePrefix: '/employment-life-events',
+    version: '0.0.1',
+  },
+  {
+    name: 'job-bank',
+    url: process.env.REMOTE_JOB_BANK_URL ?? 'http://localhost:4203/remoteEntry.json',
+    routePrefix: '/job-bank',
+    version: '0.0.1',
+  },
+  {
+    name: 'employment-insurance',
+    url: process.env.REMOTE_EMPLOYMENT_INSURANCE_URL ?? 'http://localhost:4204/remoteEntry.json',
+    routePrefix: '/employment-insurance',
+    version: '0.0.1',
+  },
 ];
 
 const PAGE_CONTENT = [
@@ -34,6 +60,28 @@ const PAGE_CONTENT = [
     fr: {
       title: 'Vous avez perdu votre emploi — voici les prochaines étapes',
       body: "Conseils sur le CV, la recherche d'emploi et l'assurance-emploi.",
+    },
+  },
+  {
+    key: 'job-bank.intro',
+    en: {
+      title: 'Job Bank',
+      body: 'Search job postings and submit applications, all in one place.',
+    },
+    fr: {
+      title: 'Guichet-Emplois',
+      body: "Recherchez des offres d'emploi et soumettez vos candidatures, le tout au même endroit.",
+    },
+  },
+  {
+    key: 'employment-insurance.intro',
+    en: {
+      title: 'Employment Insurance',
+      body: 'Apply for Employment Insurance benefits, check your claim status, and submit your reports.',
+    },
+    fr: {
+      title: 'Assurance-emploi',
+      body: "Faites une demande de prestations d'assurance-emploi, consultez l'état de votre demande et soumettez vos déclarations.",
     },
   },
 ];

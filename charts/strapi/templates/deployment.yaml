@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.strapi.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.strapi.name }}
+    app.kubernetes.io/component: cms
+spec:
+  replicas: {{ .Values.strapi.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.strapi.name }}
+      app.kubernetes.io/component: cms
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.strapi.name }}
+        app.kubernetes.io/component: cms
+    spec:
+      containers:
+        - name: {{ .Values.strapi.name }}
+          image: "{{ .Values.strapi.image.repository }}:{{ .Values.strapi.image.tag }}"
+          imagePullPolicy: {{ .Values.strapi.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.strapi.containerPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.strapi.name }}-env
+            - secretRef:
+                name: {{ .Values.strapi.name }}-secrets
+          # `strapi develop` compiles the admin panel on first boot, much
+          # slower than a plain Express BFF -- a generous readiness
+          # failureThreshold instead of mfe-backend-lib's short one, so a
+          # slow-but-healthy first start isn't mistaken for a crash loop.
+          readinessProbe:
+            httpGet:
+              path: /_health
+              port: {{ .Values.strapi.containerPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /_health
+              port: {{ .Values.strapi.containerPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6

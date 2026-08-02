@@ -1,0 +1,14 @@
+apiVersion: v2
+name: strapi
+description: >-
+  Deploys the platform repo's Strapi CMS/federation-directory as its own
+  Helm release. Deliberately not based on mfe-backend-lib/mfe-frontend-lib
+  -- different shape (crypto-secret env vars via a Secret rather than a
+  ConfigMap, a GET /_health endpoint returning 204 with no body rather
+  than JSON, ephemeral SQLite with no PersistentVolume since bootstrap
+  seeding in src/index.ts is idempotent and safe to re-run from empty on
+  every pod start) -- not worth generalizing either library chart for one
+  consumer. See CLAUDE.md's "Local CMS / federation directory: Strapi"
+  section.
+type: application
+version: 0.1.0

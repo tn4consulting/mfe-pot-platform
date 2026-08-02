@@ -1,0 +1,13 @@
+# Local kind validation overrides -- images are built locally and loaded
+# directly into the cluster's node (`kind load docker-image`), so
+# pullPolicy: Never skips any registry round-trip entirely. Matches the
+# pattern every app repo's own values-kind.yaml uses.
+strapi:
+  image:
+    repository: mfe-pot-strapi
+    tag: kind
+    pullPolicy: Never
+
+ingress:
+  host: cms.mfe-pot.local
+  className: nginx

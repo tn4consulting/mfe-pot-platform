@@ -46,12 +46,24 @@ describe('fetchRuntimeConfig', () => {
   }
 
   it('fetches env.js from the given origin and merges over dev defaults', async () => {
+    mockEnvJs('window.__mfePotEnv = {"jobBankBffBaseUrl":"https://job-bank-bff.example.com"};');
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: 'https://job-bank-bff.example.com' });
+    expect(globalThis.fetch).toHaveBeenCalledWith('https://job-bank.example.com/env.js');
+  });
+
+  it('resolves a root-relative injected value against this app\'s own origin, not the caller\'s', async () => {
+    // The Ingress path-rule pattern ("/api" -- see CLAUDE.md's Hosting
+    // section) means this remote's own origin, not whichever page's
+    // fetch() call is actually resolving it -- see resolveRelativeUrls's
+    // doc comment for why a plain relative value breaks under federation.
     mockEnvJs('window.__mfePotEnv = {"jobBankBffBaseUrl":"/api"};');
     const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
       jobBankBffBaseUrl: 'http://localhost:3001',
     });
-    expect(config).toEqual({ jobBankBffBaseUrl: '/api' });
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://job-bank.example.com/env.js');
+    expect(config).toEqual({ jobBankBffBaseUrl: 'https://job-bank.example.com/api' });
   });
 
   it('falls back to dev defaults for the placeholder {} env.js', async () => {

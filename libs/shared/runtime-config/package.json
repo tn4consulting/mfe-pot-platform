@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-runtime-config",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Reads runtime config injected by a container's entrypoint script, with dev-time fallback -- replaces build-time environment.ts/environment.prod.ts.",
   "repository": {
     "type": "git",

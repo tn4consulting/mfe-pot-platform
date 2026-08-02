@@ -44,26 +44,30 @@ export function getRuntimeConfig<T extends object>(devDefaults: T): T {
 }
 
 /**
- * A Helm chart's `values.yaml` sets e.g. `jobBankBffBaseUrl: "/api"`
- * (root-relative, meaning "this app's own Ingress path rule") -- correct
- * when this app is the top-level navigated page, since a relative
- * `fetch('/api/...')` resolves against the current page's origin, which
- * is the same thing in that case. Not correct for a federated remote:
- * that fetch call actually runs on the host page (e.g. the shell), so a
- * relative URL silently resolves against the *host's* origin instead --
- * confirmed the hard way via Playwright (job-bank's own BFF call
- * returned the shell's `index.html`, a JSON-parse error, not a network
- * error, since the shell's nginx happily served *something* at that
- * path). Resolving every string value against `ownOriginUrl` here fixes
- * both cases uniformly: a same-origin top-level page gets the identical
- * URL either way, and a federated remote gets an absolute URL pointing
- * at its own origin's Ingress rule instead of the host's.
+ * A Helm chart's `values.yaml` sets e.g. `jobBankBffBaseUrl: ""` (empty --
+ * "this app's own origin, no path prefix"; every `<Domain>ApiClient`
+ * appends its own `/api/...` suffix, so the base URL itself is always
+ * just an origin, dev default or chart value alike) or, in principle, a
+ * root-relative path -- either way meaning "this app's own Ingress path
+ * rule". Correct when this app is the top-level navigated page, since a
+ * relative `fetch('/api/...')` resolves against the current page's
+ * origin, which is the same thing in that case. Not correct for a
+ * federated remote: that fetch call actually runs on the host page (e.g.
+ * the shell), so a relative/empty value silently resolved against the
+ * *host's* origin instead -- confirmed the hard way via Playwright
+ * (job-bank's own BFF call returned the shell's `index.html`, a
+ * JSON-parse error, not a network error, since the shell's nginx happily
+ * served *something* at that path). Resolving every string value against
+ * `ownOriginUrl` here fixes both cases uniformly: a same-origin
+ * top-level page gets the identical URL either way, and a federated
+ * remote gets an absolute URL pointing at its own origin instead of the
+ * host's.
  */
 function resolveRelativeUrls<T extends object>(config: T, ownOriginUrl: string): T {
   const resolved = { ...config } as unknown as Record<string, unknown>;
   for (const [key, value] of Object.entries(resolved)) {
-    if (typeof value === 'string' && value.startsWith('/')) {
-      resolved[key] = new URL(value, ownOriginUrl).href;
+    if (typeof value === 'string' && (value === '' || value.startsWith('/'))) {
+      resolved[key] = new URL(value, ownOriginUrl).href.replace(/\/$/, '');
     }
   }
   return resolved as unknown as T;

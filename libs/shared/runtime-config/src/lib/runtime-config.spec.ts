@@ -66,6 +66,19 @@ describe('fetchRuntimeConfig', () => {
     expect(config).toEqual({ jobBankBffBaseUrl: 'https://job-bank.example.com/api' });
   });
 
+  it('resolves an empty injected value to this app\'s own bare origin, no trailing slash', async () => {
+    // Every <Domain>ApiClient appends its own "/api/..." suffix (e.g.
+    // `${baseUrl}/api/jobs`), so the chart's value is just "" -- meaning
+    // "this app's own origin" -- not "/api" itself (that would
+    // double-prefix to "/api/api/jobs", a real bug this test guards
+    // against reintroducing).
+    mockEnvJs('window.__mfePotEnv = {"jobBankBffBaseUrl":""};');
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: 'https://job-bank.example.com' });
+  });
+
   it('falls back to dev defaults for the placeholder {} env.js', async () => {
     mockEnvJs('window.__mfePotEnv = {};');
     const config = await fetchRuntimeConfig('https://job-bank.example.com/', {

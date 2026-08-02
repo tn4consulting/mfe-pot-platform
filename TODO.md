@@ -213,6 +213,21 @@ actually done vs. still outstanding, confirmed against the filesystem:
         usage exists anywhere yet, so there's no CLDR-formatting assumption
         to fight — a genuine plus, since `cr`/`iu` lack full CLDR data.
 
+## Naming consistency
+
+- [ ] Rename `benefit-aggregation-bff` to `dashboard-bff` for consistency with
+      the other BFFs' `<app-name>-bff` naming (`job-bank-bff`,
+      `employment-insurance-bff`). Lives in the `mfe-pot-dashboard` repo today
+      (`apps/benefit-aggregation-bff`) — touches that repo's `apps/` folder
+      name, its `project.json`/`package.json` name fields, port/env-var
+      references, `charts/` (Helm chart + any `values*.yaml`), and every
+      cross-repo reference: `mfe-app/CLAUDE.md`, `mfe-app/TODO.md`,
+      `mfe-app/docs/plans/mfe-pot-initial-design.md` and
+      `mfe-app/docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md`,
+      `mfe-app/apps/mfe-e2e/playwright.config.ts` and
+      `mfe-app/apps/mfe-e2e/src/golden-path.spec.ts`, and
+      `mfe-app/.vscode/launch.json`.
+
 ## Documentation
 
 - [ ] Create a README with developer instructions (setup, tooling versions,

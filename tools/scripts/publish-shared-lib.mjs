@@ -111,8 +111,25 @@ try {
 
 function publish() {
   console.log(`Publishing ${nxProjectName}...`);
+  // ng-packagr's own prepublishOnly guard blocks `npm publish` on a
+  // full-Ivy-compilation-mode build (it wants "partial" -- the safe
+  // default for a package published for arbitrary downstream Angular
+  // versions to link at their own build time). That's the wrong tradeoff
+  // here: partial-compiled output reaching a browser un-linked throws
+  // "JIT compiler unavailable" at runtime (confirmed the hard way against
+  // shell, the actual browser error, not just a build failure) --
+  // apparently @angular-architects/native-federation:build's esbuild
+  // pipeline doesn't run the Angular linker step partial mode depends on.
+  // Every app repo pins the exact same Angular version via
+  // platform-versions.json anyway, so partial mode's whole reason to
+  // exist (cross-version compatibility) doesn't apply -- full mode is the
+  // right choice for this workspace, and --ignore-scripts is how to
+  // publish it despite ng-packagr's generic guard assuming otherwise.
+  const publishArgs = isAngularPackage
+    ? ['publish', '--ignore-scripts']
+    : ['publish'];
   try {
-    execFileSync('npm', ['publish'], { cwd: publishDir, stdio: 'pipe' });
+    execFileSync('npm', publishArgs, { cwd: publishDir, stdio: 'pipe' });
     console.log(`Published ${nxProjectName}.`);
   } catch (err) {
     const output = `${err.stdout ?? ''}${err.stderr ?? ''}`;

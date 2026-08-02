@@ -1,4 +1,4 @@
-import { getRuntimeConfig } from './runtime-config';
+import { fetchRuntimeConfig, getRuntimeConfig } from './runtime-config';
 
 describe('getRuntimeConfig', () => {
   afterEach(() => {
@@ -31,5 +31,62 @@ describe('getRuntimeConfig', () => {
       remotes: { dashboard: 'http://localhost:4201' } as Record<string, string>,
     });
     expect(config.remotes).toEqual({ dashboard: 'https://dashboard.example.com' });
+  });
+});
+
+describe('fetchRuntimeConfig', () => {
+  const originalFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  function mockEnvJs(body: string) {
+    globalThis.fetch = jest.fn().mockResolvedValue({ text: () => Promise.resolve(body) });
+  }
+
+  it('fetches env.js from the given origin and merges over dev defaults', async () => {
+    mockEnvJs('window.__mfePotEnv = {"jobBankBffBaseUrl":"/api"};');
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: '/api' });
+    expect(globalThis.fetch).toHaveBeenCalledWith('https://job-bank.example.com/env.js');
+  });
+
+  it('falls back to dev defaults for the placeholder {} env.js', async () => {
+    mockEnvJs('window.__mfePotEnv = {};');
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: 'http://localhost:3001' });
+  });
+
+  it('falls back to dev defaults when the fetch fails', async () => {
+    globalThis.fetch = jest.fn().mockRejectedValue(new Error('network down'));
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: 'http://localhost:3001' });
+  });
+
+  it('falls back to dev defaults when env.js has unexpected content', async () => {
+    mockEnvJs('<!doctype html><title>404</title>');
+    const config = await fetchRuntimeConfig('https://job-bank.example.com/', {
+      jobBankBffBaseUrl: 'http://localhost:3001',
+    });
+    expect(config).toEqual({ jobBankBffBaseUrl: 'http://localhost:3001' });
+  });
+
+  it('merges rather than replaces wholesale', async () => {
+    mockEnvJs('window.__mfePotEnv = {"strapiBaseUrl":"https://strapi.example.com"};');
+    const config = await fetchRuntimeConfig('https://dashboard.example.com/', {
+      strapiBaseUrl: 'http://localhost:1337',
+      benefitAggregationBffBaseUrl: 'http://localhost:3004',
+    });
+    expect(config).toEqual({
+      strapiBaseUrl: 'https://strapi.example.com',
+      benefitAggregationBffBaseUrl: 'http://localhost:3004',
+    });
   });
 });

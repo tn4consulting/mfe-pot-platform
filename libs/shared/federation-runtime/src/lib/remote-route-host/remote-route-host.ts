@@ -74,7 +74,20 @@ export class RemoteRouteHost implements OnInit {
   ): Promise<(Provider | EnvironmentProviders)[]> {
     try {
       const module = await this.loadRemoteModule(remoteName, './RemoteProviders');
-      return (module['REMOTE_PROVIDERS'] as (Provider | EnvironmentProviders)[]) ?? [];
+      // A remote's REMOTE_PROVIDERS may itself be a Promise -- see
+      // shared-runtime-config's fetchRuntimeConfig: any provider built
+      // from this app's own BFF/service URLs needs to resolve them via an
+      // async fetch of its own env.js (window.__mfePotEnv only ever
+      // carries the *host's* values here, not this remote's), so
+      // REMOTE_PROVIDERS can't always be a plain synchronously-built
+      // array anymore. `await` on a non-Promise value just resolves
+      // immediately, so this stays compatible with remotes that don't
+      // need the async path.
+      const providers = await (module['REMOTE_PROVIDERS'] as
+        | (Provider | EnvironmentProviders)[]
+        | Promise<(Provider | EnvironmentProviders)[]>
+        | undefined);
+      return providers ?? [];
     } catch {
       // Not every remote exposes its own providers -- that's fine.
       return [];

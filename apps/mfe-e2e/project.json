@@ -6,10 +6,8 @@
   "tags": ["type:e2e"],
   "implicitDependencies": [
     "shell",
-    "dashboard",
     "employment-life-events",
-    "client-profile-service",
-    "benefit-aggregation-bff"
+    "client-profile-service"
   ],
   "targets": {
     "e2e": {

@@ -21,9 +21,6 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "paths": {
-      "dashboard-feature-payment-history": [
-        "./libs/dashboard/feature-payment-history/src/index.ts"
-      ],
       "employment-life-events-feature-guided-journey": [
         "./libs/employment-life-events/feature-guided-journey/src/index.ts"
       ],
@@ -39,7 +36,6 @@
         "./libs/shared/federation-runtime/src/index.ts"
       ],
       "@tn4consulting/shared-auth": ["./libs/shared/auth/src/index.ts"],
-      "dashboard-data-access": ["./libs/dashboard/data-access/src/index.ts"],
       "@tn4consulting/shared-runtime-config": ["./libs/shared/runtime-config/src/index.ts"]
     }
   },

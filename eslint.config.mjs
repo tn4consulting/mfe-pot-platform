@@ -30,7 +30,6 @@ export default [
             { sourceTag: 'type:e2e', onlyDependOnLibsWithTags: ['*'] },
             { sourceTag: 'scope:shared', onlyDependOnLibsWithTags: ['scope:shared'] },
             { sourceTag: 'scope:shell', onlyDependOnLibsWithTags: ['scope:shared', 'scope:shell'] },
-            { sourceTag: 'scope:dashboard', onlyDependOnLibsWithTags: ['scope:shared', 'scope:dashboard'] },
             {
               sourceTag: 'scope:employment-life-events',
               onlyDependOnLibsWithTags: ['scope:shared', 'scope:employment-life-events'],

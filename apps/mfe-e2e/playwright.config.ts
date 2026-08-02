@@ -65,9 +65,9 @@ export default defineConfig({
     },
   ],
   // job-bank + job-bank-bff, employment-insurance + employment-insurance-bff,
-  // and dashboard + benefit-aggregation-bff removed from this array:
-  // they've moved to their own repos (Phase 1 of the polyrepo split, see
-  // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
+  // dashboard + benefit-aggregation-bff, and shell removed from this
+  // array: they've moved to their own repos (Phase 1 of the polyrepo
+  // split, see docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
   // and no longer exist as projects in this workspace. Phase 2 rewires
   // every remaining entry here to point at each app's sibling checkout
   // once all 5 are extracted, rather than patching this file once per
@@ -75,7 +75,6 @@ export default defineConfig({
   // extracted app.
   webServer: [
     backend('client-profile-service', 3003),
-    frontend('shell', 4200),
     frontend('employment-life-events', 4202),
   ],
 });

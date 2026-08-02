@@ -29,7 +29,6 @@ export default [
             // went uncaught until the split forced the issue.
             { sourceTag: 'type:e2e', onlyDependOnLibsWithTags: ['*'] },
             { sourceTag: 'scope:shared', onlyDependOnLibsWithTags: ['scope:shared'] },
-            { sourceTag: 'scope:shell', onlyDependOnLibsWithTags: ['scope:shared', 'scope:shell'] },
             {
               sourceTag: 'scope:employment-life-events',
               onlyDependOnLibsWithTags: ['scope:shared', 'scope:employment-life-events'],

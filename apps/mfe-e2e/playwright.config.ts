@@ -64,17 +64,16 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // job-bank + job-bank-bff, employment-insurance + employment-insurance-bff,
-  // dashboard + benefit-aggregation-bff, and shell removed from this
-  // array: they've moved to their own repos (Phase 1 of the polyrepo
-  // split, see docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
-  // and no longer exist as projects in this workspace. Phase 2 rewires
-  // every remaining entry here to point at each app's sibling checkout
-  // once all 5 are extracted, rather than patching this file once per
-  // extraction -- until then, this suite has no coverage for any
-  // extracted app.
-  webServer: [
-    backend('client-profile-service', 3003),
-    frontend('employment-life-events', 4202),
-  ],
+  // All 5 frontends (shell, dashboard, job-bank, employment-insurance,
+  // employment-life-events) and 3 of the 4 BFFs (job-bank-bff,
+  // employment-insurance-bff, benefit-aggregation-bff) have moved to
+  // their own repos -- Phase 1 of the polyrepo split (see
+  // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
+  // is now complete. Only client-profile-service (no single frontend
+  // owner, stays in the platform repo per the plan) is left here. Phase 2
+  // rewires this array to point every entry at its sibling checkout
+  // (`cd ../mfe-pot-<app> && pnpm exec nx run <app>:serve`) instead of
+  // deleting them one at a time as each app left -- until that happens,
+  // this suite has no composed coverage at all.
+  webServer: [backend('client-profile-service', 3003)],
 });

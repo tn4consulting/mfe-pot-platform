@@ -21,9 +21,6 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "paths": {
-      "employment-life-events-feature-guided-journey": [
-        "./libs/employment-life-events/feature-guided-journey/src/index.ts"
-      ],
       "@tn4consulting/shared-remote-registry": [
         "./libs/shared/remote-registry/src/index.ts"
       ],

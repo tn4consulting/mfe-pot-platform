@@ -1,20 +1,13 @@
 {
   "name": "@tn4consulting/shared-i18n",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "provideMfeTransloco() and cross-remote locale broadcast sync for mfe-pot apps.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "dependencies": {
-    "@jsverse/transloco": "8.4.0"
-  },
   "peerDependencies": {
     "@angular/common": ">=22.0.0",
-    "@angular/core": ">=22.0.0"
+    "@angular/core": ">=22.0.0",
+    "@jsverse/transloco": ">=8.4.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

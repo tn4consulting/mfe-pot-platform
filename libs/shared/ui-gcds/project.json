@@ -6,6 +6,14 @@
   "projectType": "library",
   "tags": ["type:shared", "scope:shared"],
   "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/libs/shared/ui-gcds"],
+      "options": {
+        "project": "libs/shared/ui-gcds/ng-package.json",
+        "tsConfig": "libs/shared/ui-gcds/tsconfig.lib.json"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

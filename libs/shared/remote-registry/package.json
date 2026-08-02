@@ -1,7 +1,11 @@
 {
   "name": "@tn4consulting/shared-remote-registry",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RemoteRegistryProvider abstraction (Strapi-backed, static, and in-memory-stub implementations) for federation manifest discovery.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "publishConfig": {

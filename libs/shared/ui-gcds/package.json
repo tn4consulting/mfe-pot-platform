@@ -1,7 +1,11 @@
 {
   "name": "@tn4consulting/shared-ui-gcds",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "MscaAppFrame -- the shared GC header/footer app frame. Owned by the shell only; remotes never render their own header/footer.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
   "peerDependencies": {
     "@angular/core": ">=22.0.0",
     "@angular/router": ">=22.0.0",

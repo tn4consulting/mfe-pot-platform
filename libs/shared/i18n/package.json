@@ -1,7 +1,11 @@
 {
   "name": "@tn4consulting/shared-i18n",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "provideMfeTransloco() and cross-remote locale broadcast sync for mfe-pot apps.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
   "peerDependencies": {
     "@angular/common": ">=22.0.0",
     "@angular/core": ">=22.0.0",

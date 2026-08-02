@@ -1,7 +1,11 @@
 {
   "name": "@tn4consulting/shared-content-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ContentClient abstraction (Strapi-backed and static implementations) for bilingual CMS-driven page content.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "publishConfig": {

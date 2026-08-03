@@ -23,6 +23,19 @@ jobs:
     permissions:
       contents: read
       packages: write
+    # A repo-scoped GITHUB_TOKEN can publish/read packages this repo owns in
+    # the common case, but empirically each of this org's private
+    # @tn4consulting/* packages carries its own independent, inconsistently-
+    # configured per-package "Manage Actions access" allowlist/role --
+    # confirmed by hitting both ERR_PNPM_FETCH_401 (read) on the install step
+    # and a 403 permission_denied: write_package on individual publish steps,
+    # for different packages, even once each package's allowlist looked
+    # correctly configured. NPM_READ_TOKEN (repo secret) is a PAT with both
+    # read:packages and write:packages, confirmed working against every
+    # package -- used job-wide instead of chasing each package's own
+    # Actions-access setting individually.
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -36,66 +49,35 @@ jobs:
         with:
           version: '10.33.2'
 
-      # A repo-scoped GITHUB_TOKEN can publish (see the write-permission grant
-      # above) but, empirically, does not reliably get read access to this
-      # org's private @tn4consulting/* packages via each package's own
-      # "Manage Actions access" allowlist -- confirmed by repeatedly hitting
-      # ERR_PNPM_FETCH_401 on this exact install step (peerDependencies like
-      # shared-ui-gcds's @tn4consulting/shared-auth/shared-i18n pull those
-      # packages from the registry even though they're also workspace-local,
-      # since their peerDependency ranges point at real semver, not
-      # `workspace:*`) despite the allowlist showing the correct grant and
-      # waiting well past any reasonable propagation delay. NPM_READ_TOKEN is
-      # a PAT with read:packages (and write:packages, unused here) that's
-      # confirmed working against both packages -- a standard, more reliable
-      # substitute for the flaky per-package Actions-access UI setting.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
 
       - name: Publish shared-auth
         run: node tools/scripts/publish-shared-lib.mjs auth --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-content-client
         run: node tools/scripts/publish-shared-lib.mjs content-client --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-federation-config
         run: node tools/scripts/publish-shared-lib.mjs federation-config --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-federation-runtime
         run: node tools/scripts/publish-shared-lib.mjs federation-runtime --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-i18n
         run: node tools/scripts/publish-shared-lib.mjs i18n --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-remote-registry
         run: node tools/scripts/publish-shared-lib.mjs remote-registry --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish shared-runtime-config
         run: node tools/scripts/publish-shared-lib.mjs runtime-config --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ui-gcds depends on shared-auth and shared-i18n (see its package.json)
       # -- publish it last so a fresh version of either is already available
       # if this run also bumped them.
       - name: Publish shared-ui-gcds
         run: node tools/scripts/publish-shared-lib.mjs ui-gcds --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds)
       # -- order relative to the plain-TS libs above doesn't matter, but it's
@@ -103,5 +85,3 @@ jobs:
       # ng-packagr.
       - name: Publish shared-ui-scds
         run: node tools/scripts/publish-shared-lib.mjs ui-scds --publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

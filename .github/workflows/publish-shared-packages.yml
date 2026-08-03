@@ -73,15 +73,17 @@ jobs:
       - name: Publish shared-runtime-config
         run: node tools/scripts/publish-shared-lib.mjs runtime-config --publish
 
+      # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds
+      # below), so it doesn't need to run after them -- deliberately ordered
+      # before ui-gcds so a ui-gcds build failure (a real, separate, as-yet-
+      # unresolved TS5062 path-mapping error building ui-gcds against
+      # @tn4consulting/shared-auth/core -- see TODO.md) doesn't also block
+      # ui-scds from publishing, since a failed step stops the whole job.
+      - name: Publish shared-ui-scds
+        run: node tools/scripts/publish-shared-lib.mjs ui-scds --publish
+
       # ui-gcds depends on shared-auth and shared-i18n (see its package.json)
       # -- publish it last so a fresh version of either is already available
       # if this run also bumped them.
       - name: Publish shared-ui-gcds
         run: node tools/scripts/publish-shared-lib.mjs ui-gcds --publish
-
-      # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds)
-      # -- order relative to the plain-TS libs above doesn't matter, but it's
-      # kept near ui-gcds since both are Angular-component libs built via
-      # ng-packagr.
-      - name: Publish shared-ui-scds
-        run: node tools/scripts/publish-shared-lib.mjs ui-scds --publish

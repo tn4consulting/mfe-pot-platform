@@ -8,6 +8,8 @@
   "rxjs": "7.8.2",
   "gcdsComponents": "1.4.0",
   "gcdsComponentsAngular": "1.4.0",
+  "$sharedFederationRuntimeComment": "Now a Native Federation shared singleton too (see @tn4consulting/shared-federation-config) -- its whole purpose is DI-token identity crossing a federation boundary (PAYMENT_HISTORY_WIDGET_LOADER, REACT_MOUNTER, etc.), which requires every consuming app to resolve the exact same package instance. shell, dashboard, and employment-life-events must all depend on this version.",
+  "sharedFederationRuntime": "0.3.0",
   "$reactComment": "react/reactDom apply only to repos that bundle a React remote via @tn4consulting/shared-federation-config/react -- currently mfe-pot-shell (the mount adapter) and mfe-pot-job-bank (the remote itself). Not applicable to the 3 pure-Angular remotes.",
   "react": "19.2.8",
   "reactDom": "19.2.8"

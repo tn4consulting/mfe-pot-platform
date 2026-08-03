@@ -36,6 +36,17 @@ export const sharedFederationDependencies = share({
   rxjs: sharedSingleton,
   '@gcds-core/components': sharedSingleton,
   '@gcds-core/components-angular': sharedSingleton,
+  // Same reasoning as GCDS above, not just "large and stable": this
+  // package's whole purpose is DI-token identity (PAYMENT_HISTORY_WIDGET_LOADER,
+  // REACT_MOUNTER, etc.) crossing a federation boundary. InjectionToken
+  // equality is per-bundle-instance, so without sharing it as a singleton,
+  // the shell and a widget-consuming remote each get their own separate
+  // token instance and `inject(..., { optional: true })` silently resolves
+  // to null on the consuming side -- no error, just the "unavailable"
+  // fallback rendering forever. Confirmed broken this way post-polyrepo-
+  // split (this package used to be a tsconfig-path lib, auto-shared by
+  // Native Federation's sharedMappings; as a plain npm dependency it isn't).
+  '@tn4consulting/shared-federation-runtime': sharedSingleton,
 });
 
 export const sharedFederationSkip = ['rxjs/ajax', 'rxjs/fetch', 'rxjs/testing', 'rxjs/webSocket'];

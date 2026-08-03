@@ -42,8 +42,8 @@ importers:
         specifier: 8.4.0
         version: 8.4.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@6.0.3)
       '@tn4consulting/shared-ui-scds-core':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       cors:
         specifier: ^2.8.6
         version: 2.8.6
@@ -273,8 +273,8 @@ importers:
         specifier: '>=1.4.0'
         version: 1.4.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(@gcds-core/components@1.4.0)
       '@tn4consulting/shared-ui-scds-core':
-        specifier: '>=0.1.0'
-        version: 0.1.0
+        specifier: '>=0.2.0'
+        version: 0.2.0
       rxjs:
         specifier: '>=7.8.0'
         version: 7.8.2
@@ -4220,8 +4220,8 @@ packages:
       '@angular/common': 22.1.0
       '@angular/core': 22.1.0
 
-  '@tn4consulting/shared-ui-scds-core@0.1.0':
-    resolution: {integrity: sha512-k9bM0RsWFIYCKhZhRMvngdbadI/qzubNktqx5rO++4CzoXet489dMvouIbWHLPl8LhTa7xPZXa/ZCQeHi9wzng==, tarball: https://npm.pkg.github.com/download/@tn4consulting/shared-ui-scds-core/0.1.0/76bbc4bc9b0c244ea414790716e83292af8ddccf}
+  '@tn4consulting/shared-ui-scds-core@0.2.0':
+    resolution: {integrity: sha512-yFFT7IGH6/Kbs5it2ib4cKWpSDjCOF3wD9AdIguh8OtAzIL15Swz/Y/eXY4+I3qpsiRQIBlh1HqJWY61CsFpew==, tarball: https://npm.pkg.github.com/download/@tn4consulting/shared-ui-scds-core/0.2.0/710eecb4e8dffcffb48b97fe17d52a0f82132243}
 
   '@tsconfig/node10@1.0.12':
     resolution: {integrity: sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==}
@@ -12946,7 +12946,7 @@ snapshots:
       - rxjs
       - typescript
 
-  '@tn4consulting/shared-ui-scds-core@0.1.0': {}
+  '@tn4consulting/shared-ui-scds-core@0.2.0': {}
 
   '@tsconfig/node10@1.0.12': {}
 

@@ -240,6 +240,18 @@ importers:
         specifier: '>=0.1.0'
         version: 0.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@6.0.3)
 
+  libs/shared/ui-scds:
+    dependencies:
+      '@angular/common':
+        specifier: 22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: 22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)
+      '@gcds-core/components-angular':
+        specifier: '>=1.4.0'
+        version: 1.4.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(@gcds-core/components@1.4.0)
+
 packages:
 
   '@ampproject/remapping@2.3.0':

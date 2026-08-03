@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-ui-scds-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "ScdsCard and ScdsMultiColumnList -- Canada Design System (SCDS) components extending GCDS, as framework-agnostic Stencil custom elements. Angular consumers use @tn4consulting/shared-ui-scds (an auto-generated wrapper); other frameworks (e.g. React) consume this package's custom elements directly.",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@stencil/angular-output-target": "^1.4.1",
     "@stencil/core": "^4.43.5"
   },
   "publishConfig": {

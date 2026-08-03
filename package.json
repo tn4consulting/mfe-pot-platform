@@ -67,6 +67,7 @@
     "@gcds-core/components": "1.4.0",
     "@gcds-core/components-angular": "1.4.0",
     "@jsverse/transloco": "8.4.0",
+    "@tn4consulting/shared-ui-scds-core": "^0.1.0",
     "cors": "^2.8.6",
     "express": "^5.1.0",
     "rxjs": "~7.8.0"

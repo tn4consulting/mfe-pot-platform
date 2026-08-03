@@ -73,6 +73,13 @@ jobs:
       - name: Publish shared-runtime-config
         run: node tools/scripts/publish-shared-lib.mjs runtime-config --publish
 
+      # Framework-agnostic Stencil custom elements (ScdsCard,
+      # ScdsMultiColumnList) -- no @tn4consulting dependencies of its own,
+      # published before ui-scds since ui-scds's Angular wrapper is (or
+      # will be) generated from this package's build output.
+      - name: Publish shared-ui-scds-core
+        run: node tools/scripts/publish-shared-lib.mjs ui-scds-core --publish
+
       # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds
       # below), so it doesn't need to run after them -- deliberately ordered
       # before ui-gcds so a ui-gcds build failure (a real, separate, as-yet-

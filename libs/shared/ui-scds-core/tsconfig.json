@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es2019"],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2019",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnreachableCode": false,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "strict": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "loader", "www"]
+}

@@ -4,6 +4,11 @@
 dist
 tmp
 out-tsc
+www
+# Stencil build cache and its regenerated loader/ output (both fully
+# derived from src/ by `stencil build` -- see libs/shared/ui-scds-core)
+libs/shared/*/.stencil
+libs/shared/*/loader
 
 # dependencies
 node_modules

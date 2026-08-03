@@ -27,9 +27,9 @@
 //   output slice into libs/shared/<name>/dist for the brief window `npm
 //   publish` needs it to exist, then removes it again.
 //
-// - Angular-component libs (ui-gcds -- MscaAppFrame -- and ui-scds --
-//   ScdsCard/ScdsMultiColumnList, the shared libs with real Angular
-//   components) build via `@nx/angular:package` (ng-packagr, detected by
+// - Angular-component libs (ui-gcds -- MscaAppFrame -- and, once Phase 4 of
+//   the SCDS Stencil rewrite lands, ui-scds's auto-generated Angular
+//   wrapper) build via `@nx/angular:package` (ng-packagr, detected by
 //   the presence of an `ng-package.json`) instead. Plain tsc strips
 //   decorators entirely and
 //   never emits Ivy's `ɵcmp` component definitions, which a downstream
@@ -44,6 +44,22 @@
 //   this lib's tsconfig.json, required because ng-packagr refuses to let
 //   you publish a full-compilation-mode build) -- `npm publish` runs
 //   directly from there, nothing to copy or stage.
+//
+// - Stencil libs (ui-scds-core -- ScdsCard/ScdsMultiColumnList as
+//   framework-agnostic custom elements, detected by the presence of a
+//   `stencil.config.ts`) build via `stencil build` (through its own Nx
+//   `build` target, same as the other shapes) and publish directly from
+//   the lib's own directory, same as the plain-TS shape's `publishDir` --
+//   Stencil's checked-in `package.json` already points its `main`/
+//   `module`/`types` fields at `dist/` relative to itself (mirrors how
+//   `@gcds-core/components` itself ships), so there's no separate staging
+//   step. Unlike the plain-TS shape above, leaving `dist/` inside the
+//   lib's own directory after the build doesn't risk the same
+//   stray-dist-confuses-other-projects'-jest-resolution bug: this package
+//   deliberately has no `tsconfig.base.json` path mapping for in-workspace
+//   consumers to prefer over the real published package (Stencil's raw
+//   `.tsx` source isn't runtime-consumable without Stencil's own compiler
+//   anyway, so no such mapping would make sense).
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -70,6 +86,7 @@ const nxProjectName = `shared-${libName}`;
 // from its `src` (see its package.json's `files` field), nothing to stage.
 const hasTsBuild = existsSync(join(libDir, 'tsconfig.lib.json'));
 const isAngularPackage = existsSync(join(libDir, 'ng-package.json'));
+const isStencilPackage = existsSync(join(libDir, 'stencil.config.ts'));
 
 const sharedOutDir = join(workspaceRoot, 'dist', 'out-tsc', 'libs', 'shared', libName, 'src');
 const tscDistDir = join(libDir, 'dist');
@@ -93,6 +110,12 @@ try {
       // .html/.css copied alongside the compiled output by hand.
       copyTemplateAssets(join(libDir, 'src'), tscDistDir);
     }
+  } else if (isStencilPackage) {
+    console.log(`Building ${nxProjectName}...`);
+    execFileSync('pnpm', ['exec', 'nx', 'run', `${nxProjectName}:build`], {
+      cwd: workspaceRoot,
+      stdio: 'inherit',
+    });
   }
 
   if (shouldPublish) {

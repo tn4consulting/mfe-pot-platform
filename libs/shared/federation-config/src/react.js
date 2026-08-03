@@ -62,11 +62,14 @@ export const sharedReactFederationDependencies = share({
   'react-dom/client': sharedSingleton,
 });
 
-// Framework-agnostic layer only (@gcds-core/components) -- no Angular
-// wrapper (@gcds-core/components-angular) available to a React remote.
-// job-bank doesn't use this yet; declared now so the door is open without
-// forcing GCDS-singleton config onto every future React remote's config
-// before it actually renders any GCDS component.
+// Framework-agnostic layer only (@gcds-core/components, and now
+// @tn4consulting/shared-ui-scds-core) -- no Angular wrapper
+// (@gcds-core/components-angular / shared-ui-scds) available to a React
+// remote. Kept as one export (not renamed/split) despite covering two
+// packages now, to avoid a breaking change for existing importers
+// (job-bank, shell) -- both are the same "framework-agnostic custom
+// elements a React remote can use directly" category.
 export const sharedGcdsFederationDependency = share({
   '@gcds-core/components': sharedSingleton,
+  '@tn4consulting/shared-ui-scds-core': sharedSingleton,
 });

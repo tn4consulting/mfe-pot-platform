@@ -36,6 +36,10 @@ export const sharedFederationDependencies = share({
   rxjs: sharedSingleton,
   '@gcds-core/components': sharedSingleton,
   '@gcds-core/components-angular': sharedSingleton,
+  // Same reasoning as GCDS: a framework-agnostic Stencil custom-elements
+  // package, shared for the identical NG0912-avoidance reason once an
+  // Angular wrapper (shared-ui-scds) is generated from it.
+  '@tn4consulting/shared-ui-scds-core': sharedSingleton,
   // Same reasoning as GCDS above, not just "large and stable": this
   // package's whole purpose is DI-token identity (PAYMENT_HISTORY_WIDGET_LOADER,
   // REACT_MOUNTER, etc.) crossing a federation boundary. InjectionToken

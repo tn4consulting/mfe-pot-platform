@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-federation-config",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared Native Federation config (shared/skip/features) for every mfe-pot app.",
   "repository": {
     "type": "git",
@@ -9,10 +9,20 @@
   "type": "module",
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./src/index.js",
+    "./react": "./src/react.js"
   },
   "peerDependencies": {
-    "@angular-architects/native-federation": ">=22.0.0"
+    "@angular-architects/native-federation": ">=22.0.0",
+    "@softarc/native-federation": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@angular-architects/native-federation": {
+      "optional": true
+    },
+    "@softarc/native-federation": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

@@ -1,5 +1,11 @@
 # mfe-pot-platform
 
+> **Disclaimer:** This is an independent proof-of-technology project, not
+> affiliated with, endorsed by, or associated with Service Canada,
+> Employment and Social Development Canada (ESDC), or the Government of
+> Canada in any way. "MSCA" and any GC branding/design-system references are
+> used only to ground the proof of technology in a realistic scenario.
+
 Getting-started guide for running the whole mfe-pot family locally. This is the
 **"how do I actually run this thing"** doc — for architecture, rationale, and
 gotchas, see [`CLAUDE.md`](./CLAUDE.md) (this repo) and

@@ -79,3 +79,12 @@ jobs:
         run: node tools/scripts/publish-shared-lib.mjs ui-gcds --publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds)
+      # -- order relative to the plain-TS libs above doesn't matter, but it's
+      # kept near ui-gcds since both are Angular-component libs built via
+      # ng-packagr.
+      - name: Publish shared-ui-scds
+        run: node tools/scripts/publish-shared-lib.mjs ui-scds --publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,37 @@
+<ng-template #cardBody>
+  @if (tone) {
+    <span class="scds-card__badge scds-card__badge--{{ tone }}" role="status">
+      <gcds-icon [name]="toneIcon!" size="text-small" marginRight="100" />{{ toneLabel }}
+    </span>
+  }
+  <ng-content select="[scdsCardIcon]" />
+  <ng-content></ng-content>
+  <div class="scds-card__actions"><ng-content select="[scdsCardActions]" /></div>
+</ng-template>
+
+@if (href) {
+  <gcds-card
+    [cardTitle]="cardTitle"
+    [cardTitleTag]="cardTitleTag"
+    [description]="description ?? ''"
+    [href]="href"
+    [rel]="rel"
+    [target]="target"
+    [imgSrc]="imgSrc ?? ''"
+    [imgAlt]="imgAlt ?? ''"
+    (gcdsClick)="cardClick.emit($event.detail)"
+  >
+    <ng-container [ngTemplateOutlet]="cardBody" />
+  </gcds-card>
+} @else {
+  <div class="scds-card scds-card--static">
+    @if (imgSrc) {
+      <img [src]="imgSrc" [alt]="imgAlt ?? ''" class="scds-card__image" />
+    }
+    <gcds-heading [tag]="cardTitleTag" marginTop="0">{{ cardTitle }}</gcds-heading>
+    @if (description) {
+      <gcds-text marginBottom="0">{{ description }}</gcds-text>
+    }
+    <ng-container [ngTemplateOutlet]="cardBody" />
+  </div>
+}

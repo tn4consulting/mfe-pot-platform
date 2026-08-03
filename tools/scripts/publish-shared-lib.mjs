@@ -27,10 +27,11 @@
 //   output slice into libs/shared/<name>/dist for the brief window `npm
 //   publish` needs it to exist, then removes it again.
 //
-// - Angular-component libs (currently only ui-gcds, the one shared lib
-//   with a real Angular component -- MscaAppFrame) build via
-//   `@nx/angular:package` (ng-packagr, detected by the presence of an
-//   `ng-package.json`) instead. Plain tsc strips decorators entirely and
+// - Angular-component libs (ui-gcds -- MscaAppFrame -- and ui-scds --
+//   ScdsCard/ScdsMultiColumnList, the shared libs with real Angular
+//   components) build via `@nx/angular:package` (ng-packagr, detected by
+//   the presence of an `ng-package.json`) instead. Plain tsc strips
+//   decorators entirely and
 //   never emits Ivy's `ɵcmp` component definitions, which a downstream
 //   app's real AOT/Ivy build needs to resolve a published component's
 //   template -- confirmed the hard way too: `shell` (the first and only

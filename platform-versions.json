@@ -7,5 +7,8 @@
   "nativeFederation": "22.0.6",
   "rxjs": "7.8.2",
   "gcdsComponents": "1.4.0",
-  "gcdsComponentsAngular": "1.4.0"
+  "gcdsComponentsAngular": "1.4.0",
+  "$reactComment": "react/reactDom apply only to repos that bundle a React remote via @tn4consulting/shared-federation-config/react -- currently mfe-pot-shell (the mount adapter) and mfe-pot-job-bank (the remote itself). Not applicable to the 3 pure-Angular remotes.",
+  "react": "19.2.8",
+  "reactDom": "19.2.8"
 }

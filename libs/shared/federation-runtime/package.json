@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-federation-runtime",
-  "version": "0.1.3",
-  "description": "RemoteRouteHost, REMOTE_MODULE_LOADER, and PAYMENT_HISTORY_WIDGET_LOADER -- the shared DI-token patterns for safely loading federated modules.",
+  "version": "0.2.0",
+  "description": "RemoteRouteHost, REMOTE_MODULE_LOADER, PAYMENT_HISTORY_WIDGET_LOADER, and REACT_MOUNTER -- the shared DI-token patterns for safely loading federated modules, Angular or React.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"

@@ -137,7 +137,7 @@ function publish() {
     // No version bump since the last publish -- expected on most pushes
     // (most changes to libs/shared/** don't warrant a new package version
     // every time), not a real failure. Anything else should still fail CI.
-    if (output.includes('cannot publish over') || output.includes('You cannot publish over')) {
+    if (output.toLowerCase().includes('cannot publish over')) {
       console.log(`${nxProjectName}: version already published, nothing to do.`);
     } else {
       console.error(output);

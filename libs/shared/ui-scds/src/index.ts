@@ -1,3 +1,3 @@
-export * from './lib/scds-card/scds-card';
-export * from './lib/scds-multi-column-list/scds-multi-column-list';
+export * from './lib/stencil-generated/components';
+export type { ScdsCardTone, ScdsListColumn } from '@tn4consulting/shared-ui-scds-core';
 export { GcdsComponentsModule } from '@gcds-core/components-angular';

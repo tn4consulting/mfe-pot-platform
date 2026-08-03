@@ -9,7 +9,9 @@
   "peerDependencies": {
     "@angular/core": ">=22.0.0",
     "@angular/common": ">=22.0.0",
-    "@gcds-core/components-angular": ">=1.4.0"
+    "@gcds-core/components-angular": ">=1.4.0",
+    "@tn4consulting/shared-ui-scds-core": ">=0.1.0",
+    "rxjs": ">=7.8.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

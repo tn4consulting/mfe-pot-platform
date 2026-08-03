@@ -44,6 +44,8 @@ describe('client-profile-service', () => {
     const res = await request(app).get('/api/profile/mock-citizen-001/payments');
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(2);
+    expect(res.body[0]).toMatchObject({ program: 'EI', status: 'pending' });
+    expect(res.body[1]).toMatchObject({ program: 'EI', status: 'complete' });
   });
 
   it('returns an empty payment list for an unknown citizen', async () => {

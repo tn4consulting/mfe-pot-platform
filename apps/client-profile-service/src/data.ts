@@ -15,6 +15,8 @@ export interface Payment {
   id: string;
   date: string;
   benefit: string;
+  program: string;
+  status: 'pending' | 'complete';
   amount: number;
 }
 
@@ -51,8 +53,22 @@ const payments = new Map<string, Payment[]>([
   [
     'mock-citizen-001',
     [
-      { id: 'pay-001', date: '2026-07-15', benefit: 'Employment Insurance', amount: 638.0 },
-      { id: 'pay-002', date: '2026-07-01', benefit: 'Employment Insurance', amount: 638.0 },
+      {
+        id: 'pay-001',
+        date: '2026-07-15',
+        benefit: 'Employment Insurance',
+        program: 'EI',
+        status: 'pending',
+        amount: 638.0,
+      },
+      {
+        id: 'pay-002',
+        date: '2026-07-01',
+        benefit: 'Employment Insurance',
+        program: 'EI',
+        status: 'complete',
+        amount: 638.0,
+      },
     ],
   ],
 ]);

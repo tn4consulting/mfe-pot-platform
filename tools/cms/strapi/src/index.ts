@@ -3,8 +3,9 @@ import type { Core } from '@strapi/strapi';
 // Reproducible local seed data for the MFE PoT. Runs on every startup and is
 // idempotent (checks before creating), so it's safe as the standing seed
 // mechanism rather than a fragile one-off `strapi export` archive -- see
-// CLAUDE.md for why. This is what makes `docker compose up` produce a known,
-// working local environment every time, with no manual admin-panel steps.
+// CLAUDE.md for why. This is what makes a fresh pod (`pnpm deploy:local`)
+// produce a known, working local environment every time, with no manual
+// admin-panel steps.
 
 // URLs default to the local `nx serve` ports but are each overridable by an
 // env var, so a Helm-deployed Strapi (see charts/strapi) can seed the real

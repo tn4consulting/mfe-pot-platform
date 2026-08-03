@@ -15,5 +15,11 @@
     "strict": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "loader", "www"]
+  // *.spec.ts excluded deliberately: they import from dist/ (the build's
+  // own output), which doesn't exist yet on a clean checkout -- `stencil
+  // build` type-checks everything under src/ by default, and without this
+  // exclusion that's a circular dependency that only ever manifests in CI
+  // (locally, dist/ already exists from a prior build). Tests are run
+  // separately via `nx test` (jest), not as part of `stencil build`.
+  "exclude": ["node_modules", "dist", "loader", "www", "src/**/*.spec.ts"]
 }

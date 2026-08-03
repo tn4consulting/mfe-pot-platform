@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-ui-scds",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "ScdsCard and ScdsMultiColumnList -- Canada Design System (SCDS) components that extend GCDS with a card and a multi-column list, for cases GCDS itself has no component for. See mfe-pot-platform CLAUDE.md's 'GC Design System (GCDS)' section.",
   "repository": {
     "type": "git",

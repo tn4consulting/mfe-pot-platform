@@ -36,8 +36,23 @@ jobs:
         with:
           version: '10.33.2'
 
+      # A repo-scoped GITHUB_TOKEN can publish (see the write-permission grant
+      # above) but, empirically, does not reliably get read access to this
+      # org's private @tn4consulting/* packages via each package's own
+      # "Manage Actions access" allowlist -- confirmed by repeatedly hitting
+      # ERR_PNPM_FETCH_401 on this exact install step (peerDependencies like
+      # shared-ui-gcds's @tn4consulting/shared-auth/shared-i18n pull those
+      # packages from the registry even though they're also workspace-local,
+      # since their peerDependency ranges point at real semver, not
+      # `workspace:*`) despite the allowlist showing the correct grant and
+      # waiting well past any reasonable propagation delay. NPM_READ_TOKEN is
+      # a PAT with read:packages (and write:packages, unused here) that's
+      # confirmed working against both packages -- a standard, more reliable
+      # substitute for the flaky per-package Actions-access UI setting.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
 
       - name: Publish shared-auth
         run: node tools/scripts/publish-shared-lib.mjs auth --publish

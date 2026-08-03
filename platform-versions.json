@@ -8,8 +8,9 @@
   "rxjs": "7.8.2",
   "gcdsComponents": "1.4.0",
   "gcdsComponentsAngular": "1.4.0",
-  "$sharedFederationRuntimeComment": "Now a Native Federation shared singleton too (see @tn4consulting/shared-federation-config) -- its whole purpose is DI-token identity crossing a federation boundary (PAYMENT_HISTORY_WIDGET_LOADER, REACT_MOUNTER, etc.), which requires every consuming app to resolve the exact same package instance. shell, dashboard, and employment-life-events must all depend on this version.",
+  "$sharedFederationRuntimeComment": "Now a Native Federation shared singleton too (added to @tn4consulting/shared-federation-config's sharedFederationDependencies) -- its whole purpose is DI-token identity crossing a federation boundary (PAYMENT_HISTORY_WIDGET_LOADER, REACT_MOUNTER, etc.), which requires every consuming app to resolve the exact same package instance. shell and dashboard (the shell-mediated widget-loader loop for job-bank's/employment-insurance's dashboard widgets) must both depend on this version and on the matching shared-federation-config version below -- 0.x caret ranges don't auto-pick-up a minor bump, each app's package.json pin has to move explicitly. employment-life-events isn't required to move in lockstep (it doesn't consume either new widget token), but should before its own PAYMENT_HISTORY_WIDGET_LOADER usage can rely on the same singleton guarantee.",
   "sharedFederationRuntime": "0.3.0",
+  "sharedFederationConfig": "0.3.0",
   "$reactComment": "react/reactDom apply only to repos that bundle a React remote via @tn4consulting/shared-federation-config/react -- currently mfe-pot-shell (the mount adapter) and mfe-pot-job-bank (the remote itself). Not applicable to the 3 pure-Angular remotes.",
   "react": "19.2.8",
   "reactDom": "19.2.8"

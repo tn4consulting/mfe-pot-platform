@@ -4,7 +4,6 @@
   "projectType": "application",
   "sourceRoot": "apps/mfe-e2e/src",
   "tags": ["type:e2e"],
-  "implicitDependencies": ["client-profile-service"],
   "targets": {
     "e2e": {
       "executor": "@nx/playwright:playwright",

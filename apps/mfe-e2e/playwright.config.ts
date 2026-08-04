@@ -1,14 +1,7 @@
-import { join } from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
-// Playwright runs `webServer.command` from this config file's own directory
-// by default -- `nx run <project>:serve` needs to run from the workspace
-// root instead (it resolves workspace-relative paths like
-// tsconfig.base.json), so every entry below sets `cwd` explicitly.
-const workspaceRoot = join(__dirname, '../..');
-
 /**
- * Composed integration suite: proves the 5 apps + 4 BFFs work together as a
+ * Composed integration suite: proves the 5 apps + 3 BFFs work together as a
  * federated whole (routed navigation, cross-remote widget embedding,
  * language switching, the BFF-backed golden path, and the
  * dashboard-bff partial-failure contract). Each app's own Jest
@@ -16,39 +9,12 @@ const workspaceRoot = join(__dirname, '../..');
  * testability" section for why both layers matter and neither substitutes
  * for the other.
  *
- * `webServer` starts the whole local stack (all 9 processes) so the suite
- * is self-contained in CI; `reuseExistingServer` lets it attach to an
- * already-running stack for fast local iteration instead of restarting
- * everything.
+ * `webServer` is empty until Phase 2 (see the comment below) rewires it to
+ * start every sibling repo's own processes -- until then, run this suite
+ * against an already-running stack (`reuseExistingServer` picks up anything
+ * already listening on the expected ports) rather than via a `frontend()`/
+ * `backend()` helper here, since nothing in this repo starts anymore.
  */
-// Starting 9 `nx run` processes concurrently (one per webServer entry)
-// contends for the single shared Nx daemon's SQLite task-history DB hard
-// enough to crash it -- NX_DAEMON=false makes each spawned process run
-// standalone instead of coordinating through that daemon.
-const noDaemonEnv = { ...process.env, NX_DAEMON: 'false' };
-
-function frontend(project: string, port: number) {
-  return {
-    command: `pnpm exec nx run ${project}:serve`,
-    cwd: workspaceRoot,
-    env: noDaemonEnv,
-    url: `http://localhost:${port}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  };
-}
-
-function backend(project: string, port: number) {
-  return {
-    command: `pnpm exec nx run ${project}:serve`,
-    cwd: workspaceRoot,
-    env: noDaemonEnv,
-    url: `http://localhost:${port}/health`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  };
-}
-
 export default defineConfig({
   testDir: './src',
   fullyParallel: false,
@@ -65,15 +31,16 @@ export default defineConfig({
     },
   ],
   // All 5 frontends (shell, dashboard, job-bank, employment-insurance,
-  // employment-life-events) and 3 of the 4 BFFs (job-bank-bff,
-  // employment-insurance-bff, dashboard-bff) have moved to
-  // their own repos -- Phase 1 of the polyrepo split (see
-  // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md)
-  // is now complete. Only client-profile-service (no single frontend
-  // owner, stays in the platform repo per the plan) is left here. Phase 2
-  // rewires this array to point every entry at its sibling checkout
-  // (`cd ../mfe-pot-<app> && pnpm exec nx run <app>:serve`) instead of
-  // deleting them one at a time as each app left -- until that happens,
-  // this suite has no composed coverage at all.
-  webServer: [backend('client-profile-service', 3003)],
+  // employment-life-events) and all 3 BFFs (job-bank-bff,
+  // employment-insurance-bff, dashboard-bff) have moved to their own repos
+  // -- Phase 1 of the polyrepo split (see
+  // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md) is
+  // now complete, and client-profile-service (the one thing that stayed
+  // here) has since been removed entirely (its data folded into
+  // dashboard-bff's own local stub data -- see mfe-pot-dashboard's
+  // CLAUDE.md). Nothing starts from this repo anymore. Phase 2 needs to
+  // point every entry at its sibling checkout
+  // (`cd ../mfe-pot-<app> && pnpm exec nx run <app>:serve`) from scratch --
+  // until that happens, this suite has no composed coverage at all.
+  webServer: [],
 });

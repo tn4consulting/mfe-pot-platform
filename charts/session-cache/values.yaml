@@ -1,0 +1,9 @@
+redis:
+  name: session-cache
+  replicaCount: 1
+  image:
+    repository: redis
+    tag: 7-alpine
+    pullPolicy: IfNotPresent
+  containerPort: 6379
+  servicePort: 6379

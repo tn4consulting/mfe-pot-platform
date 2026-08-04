@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Builds the Strapi image, spins up (or reuses) a local kind cluster with
-# ingress-nginx, and helm-upgrades charts/strapi onto it -- the platform
-# repo's equivalent of each app repo's own tools/deploy-local.sh. Unlike
-# those, kind-config.yaml already lives in this repo (no sibling checkout
-# needed) and the Strapi image build needs no GitHub Packages auth (no
+# ingress-nginx, and helm-upgrades charts/strapi and charts/session-cache
+# onto it -- the platform repo's equivalent of each app repo's own
+# tools/deploy-local.sh. Unlike those, kind-config.yaml already lives in
+# this repo (no sibling checkout needed) and neither chart's image build
+# needs GitHub Packages auth (session-cache has no image to build at all --
+# redis:7-alpine is pulled straight from Docker Hub -- and Strapi has no
 # @tn4consulting/* dependency).
 set -euo pipefail
 
@@ -27,6 +29,12 @@ if ! kubectl --context "kind-$CLUSTER_NAME" get ns ingress-nginx >/dev/null 2>&1
     --selector=app.kubernetes.io/component=controller \
     --timeout=120s
 fi
+
+echo "==> Deploying session-cache..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install session-cache charts/session-cache \
+  -f charts/session-cache/values.yaml \
+  -f charts/session-cache/values-kind.yaml \
+  --wait --timeout 120s
 
 echo "==> Building strapi image..."
 docker build -t mfe-pot-strapi:kind tools/cms/strapi

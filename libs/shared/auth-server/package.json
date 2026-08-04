@@ -1,0 +1,23 @@
+{
+  "name": "@tn4consulting/shared-auth-server",
+  "version": "0.1.0",
+  "description": "Express middleware verifying a mock-idp-issued bearer JWT (via JWKS) and attaching decoded identity claims (including the SIN custom claim) to the request, shared across the mfe-pot BFFs.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "jose": "^6.0.0"
+  },
+  "peerDependencies": {
+    "express": ">=5.0.0"
+  }
+}

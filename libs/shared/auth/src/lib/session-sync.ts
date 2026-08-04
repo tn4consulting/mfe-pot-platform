@@ -63,3 +63,15 @@ export function onSessionChange(callback: (session: AuthSession | null) => void)
 export function hasClaim(session: AuthSession | null, claim: string): boolean {
   return session !== null && session.claims.includes(claim);
 }
+
+/**
+ * The one thing every `Http<Domain>ApiClient` needs to attach an
+ * `Authorization: Bearer` header to its own BFF calls -- deliberately just
+ * the opaque token string, never the decoded session, so a data-access
+ * client can't accidentally reach for `sin` or any other claim it has no
+ * business reading (only a BFF ever decodes the token -- see CLAUDE.md's
+ * defense-in-depth principle).
+ */
+export function getAccessToken(): string | null {
+  return getStoredSession()?.accessToken ?? null;
+}

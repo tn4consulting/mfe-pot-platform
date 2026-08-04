@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-auth",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mock session model, storage+broadcast sync, claims, and route guard shared across mfe-pot apps.",
   "repository": {
     "type": "git",

@@ -55,6 +55,9 @@ jobs:
       - name: Publish shared-auth
         run: node tools/scripts/publish-shared-lib.mjs auth --publish
 
+      - name: Publish shared-auth-server
+        run: node tools/scripts/publish-shared-lib.mjs auth-server --publish
+
       - name: Publish shared-content-client
         run: node tools/scripts/publish-shared-lib.mjs content-client --publish
 

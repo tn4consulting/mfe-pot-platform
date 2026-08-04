@@ -50,6 +50,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.2.1
+      jose:
+        specifier: ^6.0.0
+        version: 6.2.7
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -204,6 +207,15 @@ importers:
       '@angular/router':
         specifier: 22.1.0
         version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(@angular/platform-browser@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)))(rxjs@7.8.2)
+
+  libs/shared/auth-server:
+    dependencies:
+      express:
+        specifier: '>=5.0.0'
+        version: 5.2.1
+      jose:
+        specifier: ^6.0.0
+        version: 6.2.7
 
   libs/shared/content-client: {}
 

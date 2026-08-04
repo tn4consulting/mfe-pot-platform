@@ -1,5 +1,5 @@
 import { AuthSession } from './auth-session.model';
-import { clearSession, getStoredSession, hasClaim, onSessionChange, storeSession } from './session-sync';
+import { clearSession, getAccessToken, getStoredSession, hasClaim, onSessionChange, storeSession } from './session-sync';
 
 function makeSession(overrides: Partial<AuthSession> = {}): AuthSession {
   const now = Date.now();
@@ -9,6 +9,7 @@ function makeSession(overrides: Partial<AuthSession> = {}): AuthSession {
     claims: ['dashboard:access'],
     issuedAt: now,
     expiresAt: now + 60_000,
+    accessToken: 'test-access-token',
     ...overrides,
   };
 }
@@ -60,6 +61,17 @@ describe('session-sync', () => {
     storeSession(makeSession());
 
     expect(received).toEqual([]);
+  });
+
+  describe('getAccessToken', () => {
+    it('is null when nothing is stored', () => {
+      expect(getAccessToken()).toBeNull();
+    });
+
+    it('returns the stored session\'s accessToken', () => {
+      storeSession(makeSession({ accessToken: 'real-looking.jwt.value' }));
+      expect(getAccessToken()).toBe('real-looking.jwt.value');
+    });
   });
 
   describe('hasClaim', () => {

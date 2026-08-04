@@ -7,8 +7,8 @@
 > used only to ground the proof of technology in a realistic scenario.
 
 Getting-started guide for running **this repo's own pieces** standalone
-(`client-profile-service`, Strapi, the composed `mfe-e2e` suite, publishing
-`libs/shared/*`). **For running the whole mfe-pot family together, see
+(Strapi, the composed `mfe-e2e` suite, publishing `libs/shared/*`). **For
+running the whole mfe-pot family together, see
 [`../README.md`](../README.md)** — that's the "how do I actually run this
 thing end to end" doc, and it's kind/Helm-based, not `nx serve`. For
 architecture, rationale, and gotchas, see [`CLAUDE.md`](./CLAUDE.md) (this
@@ -28,24 +28,14 @@ each is independently buildable/testable/servable on its own.
   This repo's own `pnpm install` doesn't need a GitHub token — its bare
   specifiers resolve straight to workspace source, unlike the app repos.
 - **Docker Desktop**, **[kind](https://kind.sigs.k8s.io/)**, **helm**, and
-  **kubectl** — only needed to run Strapi (see below). Not needed for
-  `client-profile-service`'s own `nx serve` loop or for the unit/lint/build
-  targets.
+  **kubectl** — only needed to run Strapi (see below). Not needed for the
+  unit/lint/build targets.
 
 ## Setup
 
 ```bash
 pnpm install
 nx run-many -t lint,test,build --all
-```
-
-## Running `client-profile-service` standalone
-
-No Dockerfile/chart exists for it yet (see `../TODO.md`) — it only ever runs
-via:
-
-```bash
-pnpm exec nx serve client-profile-service   # port 3003
 ```
 
 ## Strapi (local CMS + federation directory)
@@ -81,9 +71,10 @@ reuses the cluster this creates.
 - **Composed integration suite** (`apps/mfe-e2e`): Playwright, covers routed
   federation, cross-remote widget embedding, the language broadcast, the
   BFF-backed golden path, and `@axe-core/playwright` WCAG 2.2 AA scans.
-  **Currently incomplete**: `playwright.config.ts`'s `webServer` array only
-  starts `client-profile-service` — the rewire to also start the 5 sibling
-  apps from their checkout paths hasn't landed yet (see `../TODO.md`'s
+  **Currently incomplete**: `playwright.config.ts`'s `webServer` array is
+  empty — nothing in this repo starts anything anymore now that
+  `client-profile-service` is gone. The rewire to start the 5 sibling apps
+  from their checkout paths hasn't landed yet (see `../TODO.md`'s
   "Hosting / CI" section, "Phase 2"). Until then, run it against an
   already-running stack (`reuseExistingServer` picks up anything already
   listening on the expected ports).

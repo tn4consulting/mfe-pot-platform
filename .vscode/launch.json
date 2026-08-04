@@ -40,24 +40,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug client-profile-service with Nx",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "nx", "serve", "client-profile-service"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9231"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/client-profile-service/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Debug dashboard-bff with Nx",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["exec", "nx", "serve", "dashboard-bff"],

@@ -1,0 +1,18 @@
+apiVersion: v2
+name: session-cache
+description: >-
+  Deploys a single shared Redis instance backing @tn4consulting/shared-
+  session-cache -- what the 3 BFFs (dashboard-bff, job-bank-bff,
+  employment-insurance-bff) use instead of each holding its own
+  independent in-memory application/claim state. See mfe-pot/TODO.md's
+  "Shared BFF session cache" item and CLAUDE.md's "Backends: BFF pattern"
+  section. Deliberately not based on mfe-backend-lib/mfe-frontend-lib --
+  a bare upstream image with no app code of its own to build, no ConfigMap/
+  Secret (no auth, nothing to configure -- see the deployment.yaml comment
+  for why that's an acceptable PoT-only tradeoff), and no PersistentVolume
+  (this is a resettable demo cache, not durable storage) -- closer in shape
+  to charts/strapi than to the per-app chart pattern, but even simpler
+  since there's no seed/bootstrap step. Installed once, independently of
+  any per-app chart install, the same way charts/strapi is.
+type: application
+version: 0.1.0

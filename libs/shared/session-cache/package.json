@@ -1,0 +1,23 @@
+{
+  "name": "@tn4consulting/shared-session-cache",
+  "version": "0.1.0",
+  "description": "Redis-backed (with an in-memory fallback for local dev/tests) per-sub JSON cache shared across the mfe-pot BFFs, replacing each BFF's independent in-memory application/claim state.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "ioredis": "^5.11.1"
+  },
+  "devDependencies": {
+    "ioredis-mock": "^8.13.1"
+  }
+}

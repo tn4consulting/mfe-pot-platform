@@ -73,6 +73,9 @@ jobs:
       - name: Publish shared-runtime-config
         run: node tools/scripts/publish-shared-lib.mjs runtime-config --publish
 
+      - name: Publish shared-session-cache
+        run: node tools/scripts/publish-shared-lib.mjs session-cache --publish
+
       # Framework-agnostic Stencil custom elements (ScdsCard,
       # ScdsMultiColumnList) -- no @tn4consulting dependencies of its own,
       # published before ui-scds since ui-scds's Angular wrapper is (or

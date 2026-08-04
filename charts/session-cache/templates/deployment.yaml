@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.redis.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.redis.name }}
+    app.kubernetes.io/component: session-cache
+spec:
+  replicas: {{ .Values.redis.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.redis.name }}
+      app.kubernetes.io/component: session-cache
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.redis.name }}
+        app.kubernetes.io/component: session-cache
+    spec:
+      containers:
+        - name: {{ .Values.redis.name }}
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.redis.containerPort }}
+          # No persistence (no PersistentVolume) and no auth/password --
+          # this is a resettable PoT demo cache with nothing real behind
+          # it (see CLAUDE.md's "Security: defense in depth" -- the same
+          # posture as charts/strapi's committed dummy secrets), not
+          # durable or sensitive storage. Would need both before any real
+          # (non-PoT) deployment.
+          readinessProbe:
+            exec:
+              command: ['redis-cli', 'ping']
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ['redis-cli', 'ping']
+            initialDelaySeconds: 5
+            periodSeconds: 10

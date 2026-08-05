@@ -9,7 +9,7 @@
   "gcdsComponents": "1.4.0",
   "gcdsComponentsAngular": "1.4.0",
   "$sharedFederationRuntimeComment": "A Native Federation shared singleton (added to @tn4consulting/shared-federation-config's sharedFederationDependencies/sharedFederationRuntimeDependency) -- its whole purpose is DI-token/Context identity crossing a federation boundary (the widget-loader Contexts, RemoteModuleLoaderContext), which requires every consuming app to resolve the exact same package instance. TRANSITIONAL during the React-only migration: 1.0.0 is a full API replacement (React Context, no Angular DI -- see the migration plan) that only a converted (React) app can consume; dashboard and employment-insurance, still Angular at time of writing, stay pinned to the last 0.x version (0.3.0) until their own conversion phase, and must NOT bump to 1.0.0 early -- doing so would fail to build (no @angular/core-based API left to import). Once every app has converted (see final-cleanup phase), this field should read only the 1.0.0+ line and the 0.3.0 note below can be deleted.",
-  "sharedFederationRuntime": "1.0.0",
+  "sharedFederationRuntime": "1.0.1",
   "$sharedFederationRuntimeAngularNote": "0.3.0 is the last Angular-DI-shaped major, still required by dashboard and employment-insurance until each converts to React.",
   "sharedFederationConfig": "0.5.0",
   "$reactComment": "react/reactDom apply only to repos that bundle a React remote via @tn4consulting/shared-federation-config/react -- currently mfe-pot-shell (the mount adapter) and mfe-pot-job-bank (the remote itself). Not applicable to the 3 pure-Angular remotes.",

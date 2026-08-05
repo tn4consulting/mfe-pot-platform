@@ -1,3 +1,16 @@
+// This package's tsconfig.json deliberately uses the classic JSX
+// transform (jsxFactory: React.createElement), not the automatic one --
+// confirmed the hard way against a real federated build that the
+// automatic transform's synthesized `import ... from 'react/jsx-runtime'`
+// fails to resolve once this package is bundled as a federation-shared
+// chunk ("Unable to resolve specifier 'react/jsx-runtime'"), the same
+// documented native-federation limitation shared-federation-config/react.js's
+// own `includeSecondaries: false` works around for 'react' itself --
+// classic transform only needs the (already-shared) 'react' package,
+// sidestepping jsx-runtime entirely. `import * as React` looks unused
+// under some editors' linting but is required for JSX in this file to
+// compile under that transform, same as job-bank's App.tsx.
+import * as React from 'react';
 import { Component, ComponentType, ReactNode, Suspense, lazy, useMemo } from 'react';
 import { useRemoteModuleLoader } from '../remote-module-loader.context';
 

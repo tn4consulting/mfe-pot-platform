@@ -1,3 +1,6 @@
+// See remote-route-host.tsx's own top comment on why this package's
+// tsconfig uses the classic JSX transform.
+import * as React from 'react';
 import { Component, ReactNode } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { RemoteModuleLoaderContext, RemoteModuleLoader } from '../remote-module-loader.context';

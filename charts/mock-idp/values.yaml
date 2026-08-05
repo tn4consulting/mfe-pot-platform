@@ -1,0 +1,26 @@
+backend:
+  name: mock-idp
+  replicaCount: 1
+  image:
+    repository: mfe-pot-mock-idp
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 3005
+  servicePort: 3005
+  # MOCK_IDP_ISSUER uses this release's own in-cluster Service DNS name --
+  # it's the `iss` claim baked into every issued JWT, and each of the 3
+  # BFFs' own MOCK_IDP_ISSUER (their own charts) must match this exact
+  # value for verification to succeed. Real cluster-internal traffic, same
+  # pattern as dashboard-bff's JOB_BANK_BFF_URL/EMPLOYMENT_INSURANCE_BFF_URL.
+  # ALLOWED_REDIRECT_URI_ORIGINS is the opposite direction: the shell's
+  # public Ingress hostname, since that's what the citizen's own browser
+  # sends as redirect_uri during the real top-level /authorize navigation.
+  env:
+    HOST: "0.0.0.0"
+    PORT: "3005"
+    MOCK_IDP_ISSUER: "http://mock-idp.default.svc.cluster.local:3005"
+    ALLOWED_REDIRECT_URI_ORIGINS: "http://shell.mfe-pot.local"
+
+ingress:
+  host: mock-idp.mfe-pot.local
+  className: nginx

@@ -1,18 +1,31 @@
 #!/usr/bin/env bash
-# Builds the Strapi image, spins up (or reuses) a local kind cluster with
-# ingress-nginx, and helm-upgrades charts/strapi and charts/session-cache
-# onto it -- the platform repo's equivalent of each app repo's own
-# tools/deploy-local.sh. Unlike those, kind-config.yaml already lives in
-# this repo (no sibling checkout needed) and neither chart's image build
-# needs GitHub Packages auth (session-cache has no image to build at all --
-# redis:7-alpine is pulled straight from Docker Hub -- and Strapi has no
-# @tn4consulting/* dependency).
+# Builds the Strapi and mock-idp images, spins up (or reuses) a local kind
+# cluster with ingress-nginx, and helm-upgrades charts/strapi,
+# charts/session-cache, and charts/mock-idp onto it -- the platform repo's
+# equivalent of each app repo's own tools/deploy-local.sh. Unlike those,
+# kind-config.yaml already lives in this repo (no sibling checkout needed).
+# session-cache has no image to build at all (redis:7-alpine is pulled
+# straight from Docker Hub) and Strapi has no @tn4consulting/* dependency,
+# so neither needs GitHub Packages auth -- mock-idp's build does (the
+# whole workspace's pnpm-lock.yaml pulls other @tn4consulting/* packages
+# even though mock-idp itself doesn't import any), same as every app
+# repo's own BFF image build.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 CLUSTER_NAME="${CLUSTER_NAME:-kind}"
 HOSTNAME=cms.mfe-pot.local
+MOCK_IDP_HOSTNAME=mock-idp.mfe-pot.local
+
+NPM_TOKEN="${NODE_AUTH_TOKEN:-${GITHUB_TOKEN:-$(gh auth token 2>/dev/null || true)}}"
+if [ -z "$NPM_TOKEN" ]; then
+  echo "error: no GitHub token found. Set NODE_AUTH_TOKEN/GITHUB_TOKEN or run 'gh auth login' -- needed to pull @tn4consulting/* packages during the mock-idp image build." >&2
+  exit 1
+fi
+token_file="$(mktemp)"
+trap 'rm -f "$token_file"' EXIT
+printf '%s' "$NPM_TOKEN" > "$token_file"
 
 if ! kind get clusters 2>/dev/null | grep -qx "$CLUSTER_NAME"; then
   echo "==> Creating kind cluster '$CLUSTER_NAME'..."
@@ -61,3 +74,44 @@ if [ "$status" != "204" ]; then
 fi
 
 echo "==> strapi is up: curl -H \"Host: $HOSTNAME\" http://localhost/_health"
+
+echo "==> Building mock-idp image..."
+DOCKER_BUILDKIT=1 docker build \
+  --secret id=npm_token,src="$token_file" \
+  -t mfe-pot-mock-idp:kind \
+  -f apps/mock-idp/Dockerfile .
+
+echo "==> Loading image into kind..."
+kind load docker-image mfe-pot-mock-idp:kind --name "$CLUSTER_NAME"
+
+echo "==> Updating Helm chart dependencies..."
+helm dependency update charts/mock-idp
+
+echo "==> Deploying mock-idp..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install mock-idp charts/mock-idp \
+  -f charts/mock-idp/values.yaml \
+  -f charts/mock-idp/values-kind.yaml \
+  --wait --timeout 120s
+
+# Static image tag + pullPolicy: Never means Kubernetes has no signal to
+# restart the pod just because a rebuilt image was loaded under the same
+# tag -- see the identical fix (and its full story) in every app repo's
+# own tools/deploy-local.sh.
+echo "==> Restarting deployment to pick up the freshly built image..."
+kubectl --context "kind-$CLUSTER_NAME" rollout restart deployment/mock-idp
+kubectl --context "kind-$CLUSTER_NAME" rollout status deployment/mock-idp --timeout=60s
+
+echo "==> Waiting for mock-idp ingress..."
+status=000
+for i in $(seq 1 30); do
+  status=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $MOCK_IDP_HOSTNAME" http://localhost/health || echo 000)
+  [ "$status" = "200" ] && break
+  sleep 2
+done
+if [ "$status" != "200" ]; then
+  echo "warning: mock-idp isn't answering /health with 200 yet (last status: $status). Check with:" >&2
+  echo "  kubectl --context kind-$CLUSTER_NAME get pods,ingress" >&2
+  exit 1
+fi
+
+echo "==> mock-idp is up: curl -H \"Host: $MOCK_IDP_HOSTNAME\" http://localhost/health"

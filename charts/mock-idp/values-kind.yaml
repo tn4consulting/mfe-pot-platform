@@ -1,0 +1,13 @@
+# Local kind validation overrides -- images are built locally and loaded
+# directly into the cluster's node (`kind load docker-image`), so
+# pullPolicy: Never skips any registry round-trip entirely. Same pattern
+# as every app repo's own values-kind.yaml.
+backend:
+  image:
+    repository: mfe-pot-mock-idp
+    tag: kind
+    pullPolicy: Never
+
+ingress:
+  host: mock-idp.mfe-pot.local
+  className: nginx

@@ -108,6 +108,31 @@ describe('mock-idp', () => {
       expect(payload['sub']).toBe(tokenRes.body.sub);
     });
 
+    it('defaults to the seeded persona when the SIN field is left blank', async () => {
+      const { code, codeVerifier } = await authorize('');
+      const tokenRes = await request(app).post('/token').send({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: codeVerifier,
+      });
+      expect(tokenRes.status).toBe(200);
+      expect(tokenRes.body.sub).toBe('mock-citizen-001');
+      expect(tokenRes.body.name).toBe('Jordan Tremblay');
+    });
+
+    it('defaults the display name for a new tenant when left blank', async () => {
+      const { code, codeVerifier } = await authorize('555-444-333');
+      const tokenRes = await request(app).post('/token').send({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: codeVerifier,
+      });
+      expect(tokenRes.status).toBe(200);
+      expect(tokenRes.body.name).toBe('Jordan Tremblay');
+    });
+
     it('reproduces the existing seeded persona for the seed SIN', async () => {
       const { code, codeVerifier } = await authorize('046-454-286');
       const tokenRes = await request(app).post('/token').send({

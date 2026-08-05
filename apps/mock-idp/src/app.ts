@@ -5,7 +5,7 @@ import { SignJWT } from 'jose';
 import { config } from './config';
 import { getSigningKeys } from './keys';
 import { getJwks } from './jwks';
-import { findOrCreateTenant, isValidSinFormat } from './tenants';
+import { SEED_SIN, findOrCreateTenant, isValidSinFormat } from './tenants';
 import { issueCode, consumeCode } from './codes';
 import { renderAuthorizePage } from './authorize-page';
 
@@ -69,7 +69,13 @@ export function createApp(): Express {
       res.status(400).json({ error: 'redirect_uri is missing or not allowed' });
       return;
     }
-    if (!isValidSinFormat(sin ?? '')) {
+
+    // An empty SIN (blank submit, e.g. a quick demo click-through) uses the
+    // seeded demo persona rather than being rejected -- a *non-empty* but
+    // malformed SIN is still a real validation error. Display name already
+    // falls back the same way inside findOrCreateTenant.
+    const effectiveSin = sin?.trim() || SEED_SIN;
+    if (!isValidSinFormat(effectiveSin)) {
       res.type('html').send(
         renderAuthorizePage({
           redirectUri,
@@ -83,7 +89,7 @@ export function createApp(): Express {
       return;
     }
 
-    const tenant = findOrCreateTenant(sin, name);
+    const tenant = findOrCreateTenant(effectiveSin, name);
     const code = issueCode({
       ...tenant,
       redirectUri,

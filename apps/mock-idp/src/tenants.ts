@@ -24,7 +24,7 @@ export interface TenantRecord {
  * working unchanged after the one-click mock login is replaced by this
  * real login flow.
  */
-const SEED_SIN = '046-454-286';
+export const SEED_SIN = '046-454-286';
 const SEED_TENANT: TenantRecord = {
   sub: 'mock-citizen-001',
   sin: SEED_SIN,

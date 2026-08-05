@@ -42,8 +42,8 @@ export function renderAuthorizePage(params: AuthorizePageParams): string {
     <input type="hidden" name="client_id" value="${escapeHtml(clientId)}" />
     <input type="hidden" name="code_challenge" value="${escapeHtml(codeChallenge)}" />
     <input type="hidden" name="code_challenge_method" value="${escapeHtml(codeChallengeMethod)}" />
-    <label for="sin">Social Insurance Number</label>
-    <input type="text" id="sin" name="sin" placeholder="123-456-789" required />
+    <label for="sin">Social Insurance Number (optional -- leave blank for the demo default)</label>
+    <input type="text" id="sin" name="sin" placeholder="123-456-789" />
     <label for="name">Display name (optional)</label>
     <input type="text" id="name" name="name" placeholder="Jordan Tremblay" />
     <button type="submit">Sign in</button>

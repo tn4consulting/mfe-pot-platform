@@ -22,6 +22,11 @@ describe('mock-idp', () => {
     expect(res.status).toBe(200);
   });
 
+  it('answers favicon.ico with a quiet 204 instead of a 404', async () => {
+    const res = await request(app).get('/favicon.ico');
+    expect(res.status).toBe(204);
+  });
+
   it('rejects /authorize with a disallowed redirect_uri', async () => {
     const res = await request(app).get('/authorize').query({ redirect_uri: 'http://evil.example/callback' });
     expect(res.status).toBe(400);

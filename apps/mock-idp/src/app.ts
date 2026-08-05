@@ -36,6 +36,13 @@ export function createApp(): Express {
     res.json({ status: 'ok' });
   });
 
+  // Every browser auto-requests this on a real top-level navigation (which
+  // /authorize always is) -- harmless 404 noise otherwise, since mock-idp
+  // has no static assets at all.
+  app.get('/favicon.ico', (_req, res) => {
+    res.status(204).end();
+  });
+
   app.get('/authorize', (req, res) => {
     const redirectUri = String(req.query['redirect_uri'] ?? '');
     if (!isAllowedRedirectUri(redirectUri)) {

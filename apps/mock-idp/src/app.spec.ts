@@ -147,6 +147,49 @@ describe('mock-idp', () => {
       });
       expect(res.status).toBe(400);
     });
+
+    it('supports the plain PKCE method (client has no SubtleCrypto, e.g. non-secure-context browsers)', async () => {
+      const codeVerifier = 'a-plain-verifier-with-no-hashing-43-chars';
+      const authRes = await request(app).post('/authorize').type('form').send({
+        redirect_uri: REDIRECT_URI,
+        state: 'xyz',
+        client_id: CLIENT_ID,
+        code_challenge: codeVerifier,
+        code_challenge_method: 'plain',
+        sin: '333-222-111',
+      });
+      expect(authRes.status).toBe(302);
+      const code = new URL(authRes.headers['location']).searchParams.get('code');
+
+      const tokenRes = await request(app).post('/token').send({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: codeVerifier,
+      });
+      expect(tokenRes.status).toBe(200);
+      expect(tokenRes.body.access_token).toBeTruthy();
+    });
+
+    it('rejects a plain-method exchange with the wrong verifier', async () => {
+      const authRes = await request(app).post('/authorize').type('form').send({
+        redirect_uri: REDIRECT_URI,
+        state: 'xyz',
+        client_id: CLIENT_ID,
+        code_challenge: 'the-real-verifier',
+        code_challenge_method: 'plain',
+        sin: '444-333-222',
+      });
+      const code = new URL(authRes.headers['location']).searchParams.get('code');
+
+      const tokenRes = await request(app).post('/token').send({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: 'not-the-real-verifier',
+      });
+      expect(tokenRes.status).toBe(400);
+    });
   });
 
   it('serves a JWKS document', async () => {

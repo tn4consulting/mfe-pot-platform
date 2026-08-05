@@ -55,8 +55,15 @@ export function createApp(): Express {
   });
 
   app.post('/authorize', (req, res) => {
-    const { redirect_uri: redirectUri, state, client_id: clientId, code_challenge: codeChallenge, sin, name } =
-      req.body as Record<string, string>;
+    const {
+      redirect_uri: redirectUri,
+      state,
+      client_id: clientId,
+      code_challenge: codeChallenge,
+      code_challenge_method: codeChallengeMethod,
+      sin,
+      name,
+    } = req.body as Record<string, string>;
 
     if (!isAllowedRedirectUri(redirectUri)) {
       res.status(400).json({ error: 'redirect_uri is missing or not allowed' });
@@ -69,7 +76,7 @@ export function createApp(): Express {
           state,
           clientId,
           codeChallenge,
-          codeChallengeMethod: 'S256',
+          codeChallengeMethod: codeChallengeMethod || 'S256',
           error: 'Enter a SIN in the format 123-456-789 (dashes optional).',
         }),
       );
@@ -77,7 +84,13 @@ export function createApp(): Express {
     }
 
     const tenant = findOrCreateTenant(sin, name);
-    const code = issueCode({ ...tenant, redirectUri, codeChallenge, clientId });
+    const code = issueCode({
+      ...tenant,
+      redirectUri,
+      codeChallenge,
+      codeChallengeMethod: codeChallengeMethod || 'S256',
+      clientId,
+    });
 
     const redirect = new URL(redirectUri);
     redirect.searchParams.set('code', code);
@@ -97,8 +110,18 @@ export function createApp(): Express {
       res.status(400).json({ error: 'invalid_grant', error_description: 'redirect_uri mismatch' });
       return;
     }
-    const expectedChallenge = createHash('sha256').update(codeVerifier ?? '').digest('base64url');
-    if (expectedChallenge !== pending.codeChallenge) {
+    // Supports both PKCE methods: 'S256' (preferred) and 'plain' (RFC 7636's
+    // own documented fallback for a client that can't compute a SHA-256
+    // digest -- e.g. a browser with no SubtleCrypto, which only exists in a
+    // secure context (HTTPS, or the literal hostname `localhost`); a
+    // plain-HTTP deployment on a hostname like shell.mfe-pot.local has none
+    // at all). See the shell's auth-flight.ts for the matching client-side
+    // fallback.
+    const pkceValid =
+      pending.codeChallengeMethod === 'plain'
+        ? codeVerifier === pending.codeChallenge
+        : createHash('sha256').update(codeVerifier ?? '').digest('base64url') === pending.codeChallenge;
+    if (!pkceValid) {
       res.status(400).json({ error: 'invalid_grant', error_description: 'PKCE verification failed' });
       return;
     }

@@ -5,6 +5,8 @@ import type { TenantRecord } from './tenants';
 export interface PendingAuthorization extends TenantRecord {
   redirectUri: string;
   codeChallenge: string;
+  /** 'S256' (preferred) or 'plain' -- see app.ts's /token handler for why a client might fall back to 'plain'. */
+  codeChallengeMethod: string;
   clientId: string;
   expiresAt: number;
 }

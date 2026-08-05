@@ -64,3 +64,11 @@ Thumbs.db
 # Stale local cache from the retired Firebase Hosting setup (firebase.json
 # and .firebaserc are already gone -- see CLAUDE.md's Hosting section).
 .firebase
+
+# Helm dependency archives -- packaged from this same repo's mfe-backend-lib
+# via a local file:// path (see charts/mock-idp/Chart.yaml); commit would
+# drift stale relative to the source, so regenerate on demand with `helm
+# dependency update` instead. Same convention as every app repo's own
+# charts/*/.gitignore entry for their own library-chart dependencies.
+charts/*/charts/
+charts/*/Chart.lock

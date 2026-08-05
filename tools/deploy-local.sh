@@ -24,9 +24,8 @@ fi
 if ! kubectl --context "kind-$CLUSTER_NAME" get ns ingress-nginx >/dev/null 2>&1; then
   echo "==> Installing ingress-nginx..."
   kubectl --context "kind-$CLUSTER_NAME" apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-  kubectl --context "kind-$CLUSTER_NAME" wait --namespace ingress-nginx \
-    --for=condition=ready pod \
-    --selector=app.kubernetes.io/component=controller \
+  kubectl --context "kind-$CLUSTER_NAME" rollout status deployment/ingress-nginx-controller \
+    --namespace ingress-nginx \
     --timeout=120s
 fi
 

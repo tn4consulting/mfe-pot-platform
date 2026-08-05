@@ -6,14 +6,6 @@
   "projectType": "library",
   "tags": ["type:shared", "scope:shared"],
   "targets": {
-    "build": {
-      "executor": "@nx/angular:package",
-      "outputs": ["{workspaceRoot}/dist/libs/shared/federation-runtime"],
-      "options": {
-        "project": "libs/shared/federation-runtime/ng-package.json",
-        "tsConfig": "libs/shared/federation-runtime/tsconfig.lib.json"
-      }
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

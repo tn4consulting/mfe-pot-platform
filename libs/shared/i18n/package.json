@@ -1,15 +1,17 @@
 {
   "name": "@tn4consulting/shared-i18n",
-  "version": "0.1.2",
-  "description": "provideMfeTransloco() and cross-remote locale broadcast sync for mfe-pot apps.",
+  "version": "1.0.0",
+  "description": "useLocale()/useTranslations() -- React hooks for cross-remote locale sync and {{param}}-interpolated UI-chrome translation, replacing the old provideMfeTransloco()/Transloco-based API. Major-version bump from 0.x: this is a full API replacement, not a compatible extension -- see the family's React-only migration. The last 0.x version remains published for any app repo still consuming the Angular/Transloco-based API.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
   },
   "peerDependencies": {
-    "@angular/common": ">=22.0.0",
-    "@angular/core": ">=22.0.0",
-    "@jsverse/transloco": ">=8.4.0"
+    "@tn4consulting/shared-locale-sync": ">=0.1.0",
+    "react": ">=19.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

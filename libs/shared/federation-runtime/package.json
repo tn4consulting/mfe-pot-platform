@@ -1,14 +1,16 @@
 {
   "name": "@tn4consulting/shared-federation-runtime",
-  "version": "0.3.0",
-  "description": "RemoteRouteHost, REMOTE_MODULE_LOADER, PAYMENT_HISTORY_WIDGET_LOADER, JOB_APPLICATIONS_WIDGET_LOADER, EI_REPORTING_STATUS_WIDGET_LOADER, and REACT_MOUNTER -- the shared DI-token patterns for safely loading federated modules, Angular or React.",
+  "version": "1.0.0",
+  "description": "RemoteRouteHost, RemoteModuleLoaderContext, PaymentHistoryWidgetLoaderContext, JobApplicationsWidgetLoaderContext, and EiReportingStatusWidgetLoaderContext -- the shared React Context patterns for safely loading federated modules. Major-version bump from 0.x: the Angular DI-token API (REMOTE_MODULE_LOADER, REACT_MOUNTER, kind-discriminated widget loaders) is gone, replaced by React Context -- see the family's React-only migration. The last 0.x version remains published for any app repo still consuming the Angular-shaped API.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
   },
   "peerDependencies": {
-    "@angular/core": ">=22.0.0",
-    "@angular/router": ">=22.0.0"
+    "react": ">=19.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

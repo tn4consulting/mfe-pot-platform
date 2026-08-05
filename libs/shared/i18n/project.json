@@ -6,14 +6,6 @@
   "projectType": "library",
   "tags": ["type:shared", "scope:shared"],
   "targets": {
-    "build": {
-      "executor": "@nx/angular:package",
-      "outputs": ["{workspaceRoot}/dist/libs/shared/i18n"],
-      "options": {
-        "project": "libs/shared/i18n/ng-package.json",
-        "tsConfig": "libs/shared/i18n/tsconfig.lib.json"
-      }
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

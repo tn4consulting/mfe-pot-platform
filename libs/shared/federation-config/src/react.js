@@ -62,6 +62,34 @@ export const sharedReactFederationDependencies = share({
   'react-dom/client': sharedSingleton,
 });
 
+/**
+ * A SEPARATE export from `sharedReactFederationDependencies` above, for the
+ * identical eager-`share()`-throw reason this file's own top doc explains
+ * for why it's a separate module from `./index.js`: job-bank doesn't (and
+ * shouldn't need to) have `@tn4consulting/shared-federation-runtime` in its
+ * own package.json -- it's a widget *source* (exposes `./JobApplicationsWidget`
+ * for dashboard to load), never a cross-remote widget *consumer*, so it
+ * never imports this package at all. Folding it into
+ * `sharedReactFederationDependencies` (which job-bank already spreads
+ * wholesale) would make job-bank's federation config throw at import time
+ * for a dependency it doesn't have and doesn't need.
+ *
+ * Only a host that actually provides/consumes `RemoteModuleLoaderContext`
+ * or a widget-loader Context needs this -- today that's the shell once it
+ * converts to React. Same reasoning as `./index.js`'s inclusion of this
+ * package for the Angular-DI-token version: its whole purpose (Context
+ * identity crossing a federation boundary) requires every participant to
+ * resolve the exact same module instance, exactly like an Angular
+ * `InjectionToken`'s per-bundle identity -- without sharing it as a
+ * singleton, the shell and a widget-consuming remote each get their own
+ * separate Context instance, and a remote's `useContext` call against its
+ * own copy silently resolves to that Context's default (`undefined`) no
+ * matter what the shell's copy was given.
+ */
+export const sharedFederationRuntimeDependency = share({
+  '@tn4consulting/shared-federation-runtime': sharedSingleton,
+});
+
 // Framework-agnostic layer only (@gcds-core/components, and now
 // @tn4consulting/shared-ui-scds-core) -- no Angular wrapper
 // (@gcds-core/components-angular / shared-ui-scds) available to a React

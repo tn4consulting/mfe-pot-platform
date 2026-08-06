@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-federation-config",
-  "version": "0.5.0",
-  "description": "Shared Native Federation config (shared/skip/features) for every mfe-pot app.",
+  "version": "0.6.0",
+  "description": "Shared Native Federation config (react.js's shared-singleton block) for every mfe-pot app. The Angular-shaped index.js (and its @angular-architects/native-federation peer dependency) was deleted in 0.6.0 -- react.js's pattern is now this package's only export, once every consumer converted to React.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"

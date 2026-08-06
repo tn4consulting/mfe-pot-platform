@@ -7,22 +7,12 @@
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
   },
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./src/react.js",
   "exports": {
-    ".": "./src/index.js",
     "./react": "./src/react.js"
   },
   "peerDependencies": {
-    "@angular-architects/native-federation": ">=22.0.0",
     "@softarc/native-federation": ">=4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@angular-architects/native-federation": {
-      "optional": true
-    },
-    "@softarc/native-federation": {
-      "optional": true
-    }
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

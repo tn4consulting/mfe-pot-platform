@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-auth",
-  "version": "0.3.0",
-  "description": "Mock session model, storage+broadcast sync, claims, and route guard shared across mfe-pot apps.",
+  "version": "0.4.0",
+  "description": "Mock session model, storage+broadcast sync, and claims shared across mfe-pot apps.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
@@ -17,10 +17,6 @@
       "types": "./dist/core.d.ts",
       "default": "./dist/core.js"
     }
-  },
-  "peerDependencies": {
-    "@angular/core": ">=22.0.0",
-    "@angular/router": ">=22.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

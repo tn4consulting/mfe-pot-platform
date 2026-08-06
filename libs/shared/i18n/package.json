@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-i18n",
   "version": "1.0.0",
-  "description": "useLocale()/useTranslations() -- React hooks for cross-remote locale sync and {{param}}-interpolated UI-chrome translation, replacing the old provideMfeTransloco()/Transloco-based API. Major-version bump from 0.x: this is a full API replacement, not a compatible extension -- see the family's React-only migration. The last 0.x version remains published for any app repo still consuming the Angular/Transloco-based API.",
+  "description": "useLocale()/useTranslations() -- React hooks for cross-remote locale sync and {{param}}-interpolated UI-chrome translation, replacing the old provideMfeTransloco()/Transloco-based API. Every app repo converted to this major as of the family's completed React-only migration (2026-08); the last 0.x (Angular/Transloco-shaped) major stays published only as a historical artifact.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist"],

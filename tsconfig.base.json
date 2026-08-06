@@ -27,7 +27,6 @@
       "@tn4consulting/shared-content-client": [
         "./libs/shared/content-client/src/index.ts"
       ],
-      "@tn4consulting/shared-ui-gcds": ["./libs/shared/ui-gcds/src/index.ts"],
       "@tn4consulting/shared-i18n": ["./libs/shared/i18n/src/index.ts"],
       "@tn4consulting/shared-federation-runtime": [
         "./libs/shared/federation-runtime/src/index.ts"

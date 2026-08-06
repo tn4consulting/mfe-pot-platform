@@ -3,9 +3,9 @@
   "extends": ["config:recommended"],
   "packageRules": [
     {
-      "groupName": "Angular toolchain",
-      "description": "@angular/*, @angular-devkit/*, @schematics/angular, and listr2 must move together — mirrors the pnpm.overrides block each mfe-pot app repo carries to keep every copy of these packages at one exact version. A partial bump here reproduces the duplicate-version problem the overrides block exists to prevent.",
-      "matchPackageNames": ["@angular/*", "@angular-devkit/*", "@schematics/angular", "listr2"],
+      "groupName": "Federation-shared singletons",
+      "description": "react, react-dom, and @gcds-core/components must move together across every mfe-pot app repo — they're federation-shared singletons (see mfe-pot-platform/CLAUDE.md's federation-sharing policy). A partial bump here reproduces the exact silent-runtime-mismatch problem the shared-singleton contract exists to prevent, since Native Federation's version check has no compile-time enforcement across separate repos.",
+      "matchPackageNames": ["react", "react-dom", "@gcds-core/components"],
       "rangeStrategy": "pin"
     }
   ]

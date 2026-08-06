@@ -1,6 +1,9 @@
 import { Config } from '@stencil/core';
-import { angularOutputTarget } from '@stencil/angular-output-target';
 
+// No Angular output target -- the Angular wrapper this used to generate
+// (shared-ui-scds) had zero consumers left once every app converted to
+// React and was deleted; every app now consumes these custom elements
+// directly (see shared-ui-scds-core's own README).
 export const config: Config = {
   namespace: 'scds',
   outputTargets: [
@@ -11,13 +14,6 @@ export const config: Config = {
     {
       type: 'dist-custom-elements',
     },
-    angularOutputTarget({
-      componentCorePackage: '@tn4consulting/shared-ui-scds-core',
-      outputType: 'standalone',
-      customElementsDir: 'dist/components',
-      directivesProxyFile: '../ui-scds/src/lib/stencil-generated/components.ts',
-      directivesArrayFile: '../ui-scds/src/lib/stencil-generated/index.ts',
-    }),
   ],
   testing: {
     browserHeadless: 'new',

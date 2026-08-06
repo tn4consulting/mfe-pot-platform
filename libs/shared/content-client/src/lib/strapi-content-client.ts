@@ -18,16 +18,29 @@ export class StrapiContentClient implements ContentClient {
     key: string,
     locale: 'en' | 'fr',
   ): Promise<PageContent | null> {
+    const results = await this.getPageContents([key], locale);
+    return results[key] ?? null;
+  }
+
+  async getPageContents(
+    keys: string[],
+    locale: 'en' | 'fr',
+  ): Promise<Record<string, PageContent>> {
     const url = new URL(`${this.baseUrl}/api/page-contents`);
     url.searchParams.set('locale', locale);
-    url.searchParams.set('filters[key][$eq]', key);
+    for (const key of keys) {
+      url.searchParams.append('filters[key][$in]', key);
+    }
 
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Strapi returned ${response.status} for /api/page-contents`);
     }
     const body = (await response.json()) as StrapiListResponse<StrapiPageContentAttributes>;
-    const [entry] = body.data;
-    return entry ? { key: entry.key, title: entry.title, body: entry.body } : null;
+    const result: Record<string, PageContent> = {};
+    for (const entry of body.data) {
+      result[entry.key] = { key: entry.key, title: entry.title, body: entry.body };
+    }
+    return result;
   }
 }

@@ -85,6 +85,279 @@ const PAGE_CONTENT = [
       body: "Faites une demande de prestations d'assurance-emploi, consultez l'état de votre demande et soumettez vos déclarations.",
     },
   },
+  // -- dashboard: payment history --
+  {
+    key: 'dashboard.payment-history.heading',
+    en: { title: 'Payment history', body: '' },
+    fr: { title: 'Historique des paiements', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.table.program',
+    en: { title: 'Program', body: '' },
+    fr: { title: 'Programme', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.table.status',
+    en: { title: 'Status', body: '' },
+    fr: { title: 'État', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.table.date',
+    en: { title: 'Date', body: '' },
+    fr: { title: 'Date', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.table.amount',
+    en: { title: 'Amount', body: '' },
+    fr: { title: 'Montant', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.status.complete',
+    en: { title: 'Complete', body: '' },
+    fr: { title: 'Terminé', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.status.pending',
+    en: { title: 'Pending', body: '' },
+    fr: { title: 'En attente', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.error',
+    en: { title: 'Payment history is temporarily unavailable.', body: '' },
+    fr: { title: "L'historique des paiements est temporairement indisponible.", body: '' },
+  },
+  // -- job-bank: search --
+  {
+    key: 'job-bank.search.heading',
+    en: { title: 'Job Bank — Job search', body: '' },
+    fr: { title: "Guichet-Emplois — Recherche d'emploi", body: '' },
+  },
+  {
+    key: 'job-bank.search.error',
+    en: { title: 'Job postings are temporarily unavailable.', body: '' },
+    fr: { title: "Les offres d'emploi sont temporairement indisponibles.", body: '' },
+  },
+  {
+    key: 'job-bank.search.table.title',
+    en: { title: 'Job title', body: '' },
+    fr: { title: 'Titre du poste', body: '' },
+  },
+  {
+    key: 'job-bank.search.table.employer',
+    en: { title: 'Employer', body: '' },
+    fr: { title: 'Employeur', body: '' },
+  },
+  {
+    key: 'job-bank.search.table.location',
+    en: { title: 'Location', body: '' },
+    fr: { title: 'Lieu', body: '' },
+  },
+  {
+    key: 'job-bank.search.table.posted',
+    en: { title: 'Posted', body: '' },
+    fr: { title: 'Date de publication', body: '' },
+  },
+  {
+    key: 'job-bank.search.list.emptyLabel',
+    en: { title: 'No job postings found.', body: '' },
+    fr: { title: "Aucune offre d'emploi trouvée.", body: '' },
+  },
+  {
+    key: 'job-bank.search.list.label',
+    en: { title: 'Job postings', body: '' },
+    fr: { title: "Offres d'emploi", body: '' },
+  },
+  // -- job-bank: apply --
+  {
+    key: 'job-bank.apply.heading',
+    en: { title: 'Apply for a job', body: '' },
+    fr: { title: 'Postuler à un emploi', body: '' },
+  },
+  {
+    key: 'job-bank.apply.error',
+    en: { title: 'Job applications are temporarily unavailable.', body: '' },
+    fr: { title: 'Les candidatures sont temporairement indisponibles.', body: '' },
+  },
+  {
+    key: 'job-bank.apply.label',
+    en: { title: 'Choose a posting', body: '' },
+    fr: { title: 'Choisissez une offre', body: '' },
+  },
+  {
+    key: 'job-bank.apply.button',
+    en: { title: 'Apply now', body: '' },
+    fr: { title: 'Postuler maintenant', body: '' },
+  },
+  {
+    key: 'job-bank.apply.confirmation',
+    en: { title: 'Application {id} submitted — status: {status}.', body: '' },
+    fr: { title: 'Candidature {id} soumise — état : {status}.', body: '' },
+  },
+  // -- job-bank: applications list (migrated off local i18n hook) --
+  {
+    key: 'job-bank.applications-list.heading',
+    en: { title: 'My Job Applications', body: '' },
+    fr: { title: 'Mes candidatures', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.empty',
+    en: { title: 'No job applications on file.', body: '' },
+    fr: { title: 'Aucune candidature au dossier.', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.unavailable',
+    en: { title: 'Job applications are temporarily unavailable.', body: '' },
+    fr: { title: 'Les candidatures sont temporairement indisponibles.', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.unknownPosition',
+    en: { title: 'Unknown position', body: '' },
+    fr: { title: 'Poste inconnu', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.unknownEmployer',
+    en: { title: 'Unknown employer', body: '' },
+    fr: { title: 'Employeur inconnu', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.table.position',
+    en: { title: 'Position', body: '' },
+    fr: { title: 'Poste', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.table.employer',
+    en: { title: 'Employer', body: '' },
+    fr: { title: 'Employeur', body: '' },
+  },
+  {
+    key: 'job-bank.applications-list.table.status',
+    en: { title: 'Status', body: '' },
+    fr: { title: 'État', body: '' },
+  },
+  // -- employment-insurance: claims --
+  {
+    key: 'employment-insurance.claims.heading',
+    en: { title: 'Claim status', body: '' },
+    fr: { title: 'État de la demande', body: '' },
+  },
+  {
+    key: 'employment-insurance.claims.error',
+    en: { title: 'Claim status is temporarily unavailable.', body: '' },
+    fr: { title: "L'état de la demande est temporairement indisponible.", body: '' },
+  },
+  {
+    key: 'employment-insurance.claims.cardTitle',
+    en: { title: 'Claim {id}', body: '' },
+    fr: { title: 'Demande {id}', body: '' },
+  },
+  {
+    key: 'employment-insurance.claims.status',
+    en: { title: 'Status: {status}.', body: '' },
+    fr: { title: 'État : {status}.', body: '' },
+  },
+  {
+    key: 'employment-insurance.claims.empty',
+    en: { title: 'No claim on file yet.', body: '' },
+    fr: { title: 'Aucune demande au dossier pour le moment.', body: '' },
+  },
+  // -- employment-insurance: applications --
+  {
+    key: 'employment-insurance.applications.heading',
+    en: { title: 'Employment Insurance — Apply', body: '' },
+    fr: { title: 'Assurance-emploi — Faire une demande', body: '' },
+  },
+  {
+    key: 'employment-insurance.applications.intro',
+    en: { title: 'Apply for Employment Insurance benefits.', body: '' },
+    fr: { title: "Faites une demande de prestations d'assurance-emploi.", body: '' },
+  },
+  {
+    key: 'employment-insurance.applications.button',
+    en: { title: 'Apply for EI', body: '' },
+    fr: { title: "Faire une demande d'AE", body: '' },
+  },
+  {
+    key: 'employment-insurance.applications.confirmationDescription',
+    en: { title: 'Status: {status}, weekly benefit: ${amount}.', body: '' },
+    fr: { title: 'État : {status}, prestation hebdomadaire : {amount} $.', body: '' },
+  },
+  {
+    key: 'employment-insurance.applications.error',
+    en: { title: 'EI applications are temporarily unavailable.', body: '' },
+    fr: { title: "Les demandes d'AE sont temporairement indisponibles.", body: '' },
+  },
+  // -- employment-insurance: reporting --
+  {
+    key: 'employment-insurance.reporting.heading',
+    en: { title: 'Submit your EI report', body: '' },
+    fr: { title: "Soumettre votre déclaration d'AE", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.error',
+    en: { title: 'EI reporting is temporarily unavailable.', body: '' },
+    fr: { title: "La déclaration d'AE est temporairement indisponible.", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.noClaim',
+    en: { title: 'You need an active EI claim before you can submit a report.', body: '' },
+    fr: { title: "Vous devez avoir une demande d'AE active avant de pouvoir soumettre une déclaration.", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.hoursLabel',
+    en: { title: 'Hours worked this period', body: '' },
+    fr: { title: 'Heures travaillées durant cette période', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.earningsLabel',
+    en: { title: 'Earnings this period ($)', body: '' },
+    fr: { title: 'Revenus durant cette période (en dollars)', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.submitButton',
+    en: { title: 'Submit report', body: '' },
+    fr: { title: 'Soumettre la déclaration', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting.confirmation',
+    en: { title: 'Report {id} submitted for {periodStart} to {periodEnd}.', body: '' },
+    fr: { title: 'Déclaration {id} soumise pour la période du {periodStart} au {periodEnd}.', body: '' },
+  },
+  // -- employment-insurance: reporting status widget (migrated off shared-i18n) --
+  {
+    key: 'employment-insurance.reporting-status.heading',
+    en: { title: 'EI Reporting Status', body: '' },
+    fr: { title: "État de la déclaration d'assurance-emploi", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.unavailable',
+    en: { title: 'EI reporting status is temporarily unavailable.', body: '' },
+    fr: { title: "L'état de la déclaration d'assurance-emploi est temporairement indisponible.", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.noClaim',
+    en: { title: 'No active EI claim on file.', body: '' },
+    fr: { title: "Aucune demande d'assurance-emploi active au dossier.", body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.notYetDue',
+    en: { title: 'Not yet due', body: '' },
+    fr: { title: 'Pas encore requise', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.dueSoon',
+    en: { title: 'Due soon', body: '' },
+    fr: { title: 'Bientôt requise', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.overdue',
+    en: { title: 'Overdue', body: '' },
+    fr: { title: 'En retard', body: '' },
+  },
+  {
+    key: 'employment-insurance.reporting-status.nextReportDue',
+    en: { title: 'Next report due {date} ({days} days)', body: '' },
+    fr: { title: 'Prochaine déclaration due le {date} ({days} jours)', body: '' },
+  },
 ];
 
 async function ensureFrenchLocale(strapi: Core.Strapi) {

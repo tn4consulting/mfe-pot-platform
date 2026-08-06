@@ -6,4 +6,5 @@ export interface PageContent {
 
 export interface ContentClient {
   getPageContent(key: string, locale: 'en' | 'fr'): Promise<PageContent | null>;
+  getPageContents(keys: string[], locale: 'en' | 'fr'): Promise<Record<string, PageContent>>;
 }

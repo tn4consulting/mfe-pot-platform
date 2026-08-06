@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-content-client",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "ContentClient abstraction (Strapi-backed and static implementations) for bilingual CMS-driven page content.",
   "repository": {
     "type": "git",

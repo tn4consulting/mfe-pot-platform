@@ -190,14 +190,9 @@ importers:
 
   libs/shared/i18n:
     dependencies:
-      '@tn4consulting/shared-locale-sync':
-        specifier: '>=0.1.0'
-        version: 0.1.0
       react:
         specifier: '>=19.0.0'
         version: 19.2.8
-
-  libs/shared/locale-sync: {}
 
   libs/shared/remote-registry: {}
 
@@ -2448,9 +2443,6 @@ packages:
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
-
-  '@tn4consulting/shared-locale-sync@0.1.0':
-    resolution: {integrity: sha512-NdgyqARoMtppo+fJJ+zLSSL/MovIzjF4jbk0x1AS/RJqbUejNzYi8ohFiPBRHF2uOp/vvw0pVL7nDRtZXKc+MQ==, tarball: https://npm.pkg.github.com/download/@tn4consulting/shared-locale-sync/0.1.0/ecda0022e21370dda3ec9c0ec92e21584d2033a9}
 
   '@tsconfig/node10@1.0.12':
     resolution: {integrity: sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==}
@@ -7686,8 +7678,6 @@ snapshots:
   '@testing-library/user-event@14.6.3(@testing-library/dom@10.4.1)':
     dependencies:
       '@testing-library/dom': 10.4.1
-
-  '@tn4consulting/shared-locale-sync@0.1.0': {}
 
   '@tsconfig/node10@1.0.12': {}
 

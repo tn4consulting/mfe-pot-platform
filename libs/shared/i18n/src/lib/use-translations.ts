@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Locale } from '@tn4consulting/shared-locale-sync';
+import { Locale } from './locale-sync';
 import { interpolate } from './interpolate';
 
 type Translations = Record<string, string>;

@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { broadcastLocaleChange } from '@tn4consulting/shared-locale-sync';
+import { broadcastLocaleChange } from './locale-sync';
 import { useLocale } from './use-locale';
 
 describe('useLocale', () => {

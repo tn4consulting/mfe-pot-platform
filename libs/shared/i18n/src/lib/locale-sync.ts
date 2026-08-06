@@ -14,10 +14,13 @@ const CHANGE_EVENT = 'mfe-pot-locale-change';
  * read/write the same storage key and listen for the same event, not
  * because they share one running instance of anything.
  *
- * Framework-agnostic on purpose -- extracted out of `shared-i18n` (which
- * re-exports these same names for backward compatibility) so a non-Angular
- * remote can use it without pulling in `@angular/core`/`@jsverse/transloco`
- * through that package's barrel export.
+ * Framework-agnostic on purpose -- used to be its own published package
+ * (`shared-locale-sync`), split out specifically so a non-Angular remote
+ * could use it without pulling in Angular/Transloco through shared-i18n's
+ * own barrel export. Folded back in once every app in the family converted
+ * to React and that reason stopped applying (2026-08) -- job-bank, the one
+ * consumer that used these primitives directly without shared-i18n's own
+ * hooks, now gets both from this package instead of two separate ones.
  */
 export function getStoredLocale(): Locale {
   const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;

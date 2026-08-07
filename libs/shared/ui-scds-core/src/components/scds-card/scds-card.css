@@ -12,6 +12,7 @@
   background: var(--scds-color-white);
   color: var(--scds-color-text);
   text-decoration: none;
+  box-shadow: var(--scds-shadow-sm);
 }
 
 a.scds-card--link {

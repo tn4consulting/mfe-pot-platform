@@ -45,11 +45,11 @@ const PAGE_CONTENT = [
     key: 'dashboard.overview.intro',
     en: {
       title: 'Welcome to your account',
-      body: 'Here is an overview of your benefits, payments, and tasks.',
+      body: 'Here is an overview of your benefits and payments.',
     },
     fr: {
       title: 'Bienvenue dans votre compte',
-      body: 'Voici un aperçu de vos prestations, paiements et tâches.',
+      body: 'Voici un aperçu de vos prestations et paiements.',
     },
   },
   {
@@ -112,6 +112,16 @@ const PAGE_CONTENT = [
     fr: { title: 'Montant', body: '' },
   },
   {
+    key: 'dashboard.payment-history.table.actions',
+    en: { title: 'Actions', body: '' },
+    fr: { title: 'Actions', body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.table.actions-label',
+    en: { title: 'Actions', body: '' },
+    fr: { title: 'Actions', body: '' },
+  },
+  {
     key: 'dashboard.payment-history.status.complete',
     en: { title: 'Complete', body: '' },
     fr: { title: 'Terminé', body: '' },
@@ -125,6 +135,11 @@ const PAGE_CONTENT = [
     key: 'dashboard.payment-history.error',
     en: { title: 'Payment history is temporarily unavailable.', body: '' },
     fr: { title: "L'historique des paiements est temporairement indisponible.", body: '' },
+  },
+  {
+    key: 'dashboard.payment-history.view-all',
+    en: { title: 'View payment history', body: '' },
+    fr: { title: "Voir l'historique des paiements", body: '' },
   },
   // -- job-bank: search --
   {

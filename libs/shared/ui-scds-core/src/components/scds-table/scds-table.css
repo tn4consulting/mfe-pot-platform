@@ -4,6 +4,7 @@
   background: var(--scds-color-white);
   border: 1px solid var(--scds-border-color);
   border-radius: var(--scds-radius-md);
+  box-shadow: var(--scds-shadow-sm);
 }
 
 .scds-table-wrapper table {

@@ -60,6 +60,16 @@ helm --kube-context "kind-$CLUSTER_NAME" upgrade --install strapi charts/strapi 
   -f charts/strapi/values-kind.yaml \
   --wait --timeout 180s
 
+# Static image tag + pullPolicy: Never means Kubernetes has no signal to
+# restart the pod just because a rebuilt image was loaded under the same
+# tag -- see the identical fix (and its full story) applied to mock-idp
+# below and in every app repo's own tools/deploy-local.sh. Missing here
+# previously meant a strapi code change (e.g. tools/cms/strapi/src/index.ts)
+# could sit built-and-loaded but never actually served, silently.
+echo "==> Restarting deployment to pick up the freshly built image..."
+kubectl --context "kind-$CLUSTER_NAME" rollout restart deployment/strapi
+kubectl --context "kind-$CLUSTER_NAME" rollout status deployment/strapi --timeout=60s
+
 echo "==> Waiting for ingress..."
 status=000
 for i in $(seq 1 30); do

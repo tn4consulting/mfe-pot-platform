@@ -23,7 +23,7 @@ backend:
     HOST: "0.0.0.0"
     PORT: "3005"
     MOCK_IDP_ISSUER: "http://mock-idp.default.svc.cluster.local:3005"
-    ALLOWED_REDIRECT_URI_ORIGINS: "http://msca-shell.mfe-pot.local,http://job-bank-shell.mfe-pot.local"
+    ALLOWED_REDIRECT_URI_ORIGINS: "http://msca.mfe-pot.local,http://job-bank.mfe-pot.local"
 
 ingress:
   host: mock-idp.mfe-pot.local

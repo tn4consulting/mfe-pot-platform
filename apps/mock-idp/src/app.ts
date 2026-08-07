@@ -127,7 +127,7 @@ export function createApp(): Express {
     // own documented fallback for a client that can't compute a SHA-256
     // digest -- e.g. a browser with no SubtleCrypto, which only exists in a
     // secure context (HTTPS, or the literal hostname `localhost`); a
-    // plain-HTTP deployment on a hostname like msca-shell.mfe-pot.local has
+    // plain-HTTP deployment on a hostname like msca.mfe-pot.local has
     // none at all). See a host app's auth-flight.ts (e.g. mfe-pot-msca-shell,
     // mfe-pot-job-bank-shell) for the matching client-side fallback.
     const pkceValid =

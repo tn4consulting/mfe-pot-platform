@@ -15,26 +15,26 @@ import type { Core } from '@strapi/strapi';
 // when Strapi itself is unavailable, not when its data is stale/wrong.
 const REMOTES = [
   {
-    name: 'dashboard',
-    url: process.env.REMOTE_DASHBOARD_URL ?? 'http://localhost:4201/remoteEntry.json',
+    name: 'dashboard-mfe',
+    url: process.env.REMOTE_DASHBOARD_MFE_URL ?? 'http://localhost:4201/remoteEntry.json',
     routePrefix: '/dashboard',
     version: '0.0.1',
   },
   {
-    name: 'employment-life-events',
-    url: process.env.REMOTE_EMPLOYMENT_LIFE_EVENTS_URL ?? 'http://localhost:4202/remoteEntry.json',
+    name: 'employment-life-events-mfe',
+    url: process.env.REMOTE_EMPLOYMENT_LIFE_EVENTS_MFE_URL ?? 'http://localhost:4202/remoteEntry.json',
     routePrefix: '/employment-life-events',
     version: '0.0.1',
   },
   {
-    name: 'job-bank',
-    url: process.env.REMOTE_JOB_BANK_URL ?? 'http://localhost:4203/remoteEntry.json',
+    name: 'job-bank-mfe',
+    url: process.env.REMOTE_JOB_BANK_MFE_URL ?? 'http://localhost:4203/remoteEntry.json',
     routePrefix: '/job-bank',
     version: '0.0.1',
   },
   {
-    name: 'employment-insurance',
-    url: process.env.REMOTE_EMPLOYMENT_INSURANCE_URL ?? 'http://localhost:4204/remoteEntry.json',
+    name: 'employment-insurance-mfe',
+    url: process.env.REMOTE_EMPLOYMENT_INSURANCE_MFE_URL ?? 'http://localhost:4204/remoteEntry.json',
     routePrefix: '/employment-insurance',
     version: '0.0.1',
   },

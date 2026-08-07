@@ -24,10 +24,10 @@ strapi:
     # working via docker-compose; not introducing an unproven production
     # build path just for this chart.
     NODE_ENV: "development"
-    REMOTE_DASHBOARD_URL: "http://dashboard-mfe.mfe-pot.local/remoteEntry.json"
-    REMOTE_JOB_BANK_URL: "http://job-bank-mfe.mfe-pot.local/remoteEntry.json"
-    REMOTE_EMPLOYMENT_INSURANCE_URL: "http://employment-insurance-mfe.mfe-pot.local/remoteEntry.json"
-    REMOTE_EMPLOYMENT_LIFE_EVENTS_URL: "http://employment-life-events-mfe.mfe-pot.local/remoteEntry.json"
+    REMOTE_DASHBOARD_MFE_URL: "http://dashboard-mfe.mfe-pot.local/remoteEntry.json"
+    REMOTE_JOB_BANK_MFE_URL: "http://job-bank-mfe.mfe-pot.local/remoteEntry.json"
+    REMOTE_EMPLOYMENT_INSURANCE_MFE_URL: "http://employment-insurance-mfe.mfe-pot.local/remoteEntry.json"
+    REMOTE_EMPLOYMENT_LIFE_EVENTS_MFE_URL: "http://employment-life-events-mfe.mfe-pot.local/remoteEntry.json"
   # Rendered as a Secret instead of the ConfigMap above. Dummy local-dev-only
   # values (no real user data behind this CMS, ever) -- do not reuse them
   # for anything real.

@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-notice {
+  border-left: 4px solid var(--scds-color-brand-500);
+  background: var(--scds-color-white);
+  border-radius: var(--scds-radius-sm);
+  padding: var(--scds-space-4) var(--scds-space-5);
+  box-shadow: var(--scds-shadow-sm);
+}
+
+.scds-notice--success {
+  border-left-color: var(--scds-color-status-success-text);
+}
+
+.scds-notice--warning {
+  border-left-color: var(--scds-color-status-warning-text);
+}
+
+.scds-notice--danger {
+  border-left-color: var(--scds-color-status-danger-text);
+}
+
+.scds-notice__body {
+  color: var(--scds-color-text);
+  font-size: var(--scds-font-size-base);
+  line-height: var(--scds-line-height-base);
+}
+
+.scds-notice__body ::slotted(:last-child) {
+  margin-bottom: 0;
+}

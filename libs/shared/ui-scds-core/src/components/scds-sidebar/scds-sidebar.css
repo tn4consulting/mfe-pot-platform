@@ -1,0 +1,117 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-sidebar__overlay {
+  display: none;
+}
+
+.scds-sidebar {
+  background: var(--scds-color-white);
+  border-right: 1px solid var(--scds-border-color);
+  width: var(--scds-sidebar-width);
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.scds-sidebar__header,
+.scds-sidebar__close {
+  display: none;
+}
+
+.scds-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  padding: var(--scds-space-3) 0;
+}
+
+.scds-sidebar__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.scds-sidebar__group:empty {
+  display: none;
+}
+
+/* Below the sidebar breakpoint: off-canvas drawer, controlled by `open`.
+   z-index is above the header's (not --scds-z-sidebar, which is for the
+   sticky desktop rail sitting *below* the header) -- confirmed live: at
+   --scds-z-sidebar the header's higher z-index rendered on top of the
+   open drawer, hiding its own close button entirely (present in the DOM,
+   just visually covered). An open mobile drawer should cover everything,
+   including the header, the same way any modal/off-canvas panel does. */
+@media (max-width: 47.9375em) {
+  .scds-sidebar-root {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--scds-z-header) + 1);
+    pointer-events: none;
+  }
+
+  .scds-sidebar-root--open {
+    pointer-events: auto;
+  }
+
+  .scds-sidebar__overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 32, 36, 0.5);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .scds-sidebar-root--open .scds-sidebar__overlay {
+    opacity: 1;
+  }
+
+  .scds-sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    max-width: 85vw;
+    box-shadow: var(--scds-shadow-md);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .scds-sidebar-root--open .scds-sidebar {
+    transform: translateX(0);
+  }
+
+  .scds-sidebar__header {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--scds-space-2);
+  }
+
+  .scds-sidebar__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: none;
+    border: none;
+    border-radius: var(--scds-radius-sm);
+    color: var(--scds-color-text);
+    cursor: pointer;
+  }
+
+  .scds-sidebar__close:hover {
+    background: var(--scds-color-gray-50);
+  }
+}
+
+@media (min-width: 48em) {
+  .scds-sidebar-root {
+    position: sticky;
+    top: var(--scds-header-height);
+    height: calc(100vh - var(--scds-header-height));
+    align-self: flex-start;
+  }
+}

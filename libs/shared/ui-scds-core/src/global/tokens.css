@@ -1,0 +1,122 @@
+/*
+ * SCDS design tokens -- the visual language for the whole mfe-pot family,
+ * modeled on docs/msca-screenshots/dashboard.png. Every scds-* component's
+ * shadow CSS reads these via var(--scds-*) (custom properties pierce shadow
+ * boundaries even though normal CSS selectors don't), and every consuming
+ * app imports this file once globally (see each app's styles.css).
+ *
+ * Status color pairs are pre-paired text/bg per tone specifically so a
+ * badge/pill consumer never composes a raw hue itself -- every pair here is
+ * independently contrast-checked (see tokens.contrast.spec.ts) at >=4.5:1,
+ * not just picked to look right.
+ */
+:root {
+  /* Brand blue -- links, active nav state, the "What's New" accent border */
+  --scds-color-brand-50: #eaf1fb;
+  --scds-color-brand-100: #cfe0f5;
+  --scds-color-brand-300: #6fa3d6;
+  --scds-color-brand-500: #2b6cb0;
+  --scds-color-brand-600: #1b4e8f;
+  --scds-color-brand-700: #143c70;
+
+  /* Navy -- footer, header background */
+  --scds-color-navy-900: #26374a;
+  --scds-color-navy-800: #33475c;
+  --scds-color-navy-700: #3f5670;
+
+  /* Neutrals */
+  --scds-color-white: #ffffff;
+  --scds-color-gray-50: #f7f8f9;
+  --scds-color-gray-100: #eef0f2;
+  --scds-color-gray-200: #dde1e5;
+  --scds-color-gray-300: #c3c9d0;
+  --scds-color-gray-500: #6b7280;
+  --scds-color-gray-700: #3d4451;
+  --scds-color-gray-900: #1c2024;
+
+  /* Text */
+  --scds-color-text: var(--scds-color-gray-900);
+  --scds-color-text-muted: var(--scds-color-gray-500);
+  --scds-color-text-inverse: var(--scds-color-white);
+
+  /* Status pairs: {tone}-bg / {tone}-text, each independently >=4.5:1 */
+  --scds-color-status-info-bg: #cff4fc;
+  --scds-color-status-info-text: #055160;
+  --scds-color-status-success-bg: #d1e7dd;
+  --scds-color-status-success-text: #0f5132;
+  --scds-color-status-warning-bg: #fff3cd;
+  --scds-color-status-warning-text: #664d03;
+  --scds-color-status-danger-bg: #f8d7da;
+  --scds-color-status-danger-text: #842029;
+  --scds-color-status-neutral-bg: #e2e3e5;
+  --scds-color-status-neutral-text: #41464b;
+
+  /* Typography */
+  --scds-font-family: 'Noto Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --scds-font-size-sm: 0.875rem;
+  --scds-font-size-base: 1rem;
+  --scds-font-size-lg: 1.125rem;
+  --scds-font-size-h1: 2rem;
+  --scds-font-size-h2: 1.5rem;
+  --scds-font-size-h3: 1.25rem;
+  --scds-font-size-h4: 1.125rem;
+  --scds-font-size-h5: 1rem;
+  --scds-font-size-h6: 0.875rem;
+  --scds-line-height-base: 1.5;
+  --scds-font-weight-normal: 400;
+  --scds-font-weight-medium: 500;
+  --scds-font-weight-bold: 700;
+
+  /* Spacing scale */
+  --scds-space-1: 0.25rem;
+  --scds-space-2: 0.5rem;
+  --scds-space-3: 0.75rem;
+  --scds-space-4: 1rem;
+  --scds-space-5: 1.5rem;
+  --scds-space-6: 2rem;
+  --scds-space-8: 3rem;
+
+  /* Shape */
+  --scds-radius-sm: 0.25rem;
+  --scds-radius-md: 0.5rem;
+  --scds-radius-pill: 999px;
+  --scds-border-color: var(--scds-color-gray-200);
+
+  /* Elevation */
+  --scds-shadow-sm: 0 1px 2px rgba(28, 32, 36, 0.08);
+  --scds-shadow-md: 0 2px 8px rgba(28, 32, 36, 0.12);
+
+  /* Layout */
+  --scds-container-max-width: 90rem;
+  --scds-breakpoint-sidebar: 48em;
+  --scds-sidebar-width: 17.5rem;
+  --scds-header-height: 3.75rem;
+
+  /* z-index scale */
+  --scds-z-header: 100;
+  --scds-z-sidebar: 90;
+  --scds-z-sidebar-overlay: 80;
+  --scds-z-dropdown: 110;
+
+  /* focus ring, shared by every interactive scds-* element */
+  --scds-focus-ring: 0 0 0 3px var(--scds-color-brand-300);
+}
+
+.scds-container {
+  max-width: var(--scds-container-max-width);
+  margin-inline: auto;
+  padding-inline: var(--scds-space-5);
+  box-sizing: border-box;
+}
+
+.scds-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

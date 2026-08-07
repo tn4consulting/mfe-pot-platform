@@ -13,5 +13,5 @@ module.exports = {
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  transformIgnorePatterns: ['node_modules/(?!\\.pnpm|(@angular-architects|@softarc|@gcds-core|@jsverse)/|.*\\.mjs$)'],
+  transformIgnorePatterns: ['node_modules/(?!\\.pnpm|(@softarc|@jsverse)/|.*\\.mjs$)'],
 };

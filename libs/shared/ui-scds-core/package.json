@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-ui-scds-core",
-  "version": "0.2.0",
-  "description": "ScdsCard and ScdsMultiColumnList -- Canada Design System (SCDS) components extending GCDS, as framework-agnostic Stencil custom elements, consumed directly by every mfe-pot app.",
+  "version": "1.0.0",
+  "description": "The Service Canada Design System (SCDS) -- a self-contained, MSCA-portal-styled component set (app frame, nav, cards, badges, tables, and more) as framework-agnostic Stencil custom elements, consumed directly by every mfe-pot app. No longer depends on or wraps GCDS (breaking change from 0.x).",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"

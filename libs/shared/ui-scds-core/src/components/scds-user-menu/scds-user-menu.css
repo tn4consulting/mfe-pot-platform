@@ -1,0 +1,89 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+  position: relative;
+}
+
+.scds-user-menu__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--scds-space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--scds-space-1) var(--scds-space-2);
+  border-radius: var(--scds-radius-sm);
+  color: var(--scds-color-text);
+  font-family: inherit;
+  font-size: var(--scds-font-size-base);
+}
+
+.scds-user-menu__trigger:hover {
+  background: var(--scds-color-gray-50);
+}
+
+.scds-user-menu__trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--scds-focus-ring);
+}
+
+.scds-user-menu__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--scds-color-brand-600);
+  color: var(--scds-color-text-inverse);
+  font-weight: var(--scds-font-weight-bold);
+  font-size: var(--scds-font-size-sm);
+  flex-shrink: 0;
+}
+
+.scds-user-menu__name {
+  font-weight: var(--scds-font-weight-medium);
+}
+
+@media (max-width: 29.9375em) {
+  .scds-user-menu__name {
+    display: none;
+  }
+}
+
+.scds-user-menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--scds-space-2));
+  min-width: 12rem;
+  background: var(--scds-color-white);
+  border: 1px solid var(--scds-border-color);
+  border-radius: var(--scds-radius-md);
+  box-shadow: var(--scds-shadow-md);
+  padding: var(--scds-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--scds-space-1);
+  z-index: var(--scds-z-dropdown);
+}
+
+.scds-user-menu__panel ::slotted(button),
+.scds-user-menu__panel ::slotted(a) {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: var(--scds-space-2) var(--scds-space-3);
+  border-radius: var(--scds-radius-sm);
+  color: var(--scds-color-text);
+  cursor: pointer;
+  font-family: var(--scds-font-family);
+  font-size: var(--scds-font-size-base);
+  text-decoration: none;
+}
+
+.scds-user-menu__panel ::slotted(button:hover),
+.scds-user-menu__panel ::slotted(a:hover) {
+  background: var(--scds-color-gray-50);
+}

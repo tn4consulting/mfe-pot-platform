@@ -56,7 +56,6 @@
     "typescript-eslint": "^8.58.0"
   },
   "dependencies": {
-    "@gcds-core/components": "1.4.0",
     "cors": "^2.8.6",
     "express": "^5.1.0",
     "jose": "^6.0.0",

@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+  color: var(--scds-color-text);
+}
+
+.scds-text {
+  margin: 0 0 var(--scds-space-3) 0;
+  line-height: var(--scds-line-height-base);
+}
+
+.scds-text--small {
+  font-size: var(--scds-font-size-sm);
+  color: var(--scds-color-text-muted);
+}
+
+.scds-text--base {
+  font-size: var(--scds-font-size-base);
+}

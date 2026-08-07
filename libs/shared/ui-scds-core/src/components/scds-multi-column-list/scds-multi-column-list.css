@@ -1,5 +1,7 @@
 :host {
   display: block;
+  font-family: var(--scds-font-family);
+  color: var(--scds-color-text);
 }
 
 .scds-list {
@@ -12,18 +14,18 @@
 .scds-list__row {
   display: grid;
   grid-template-columns: repeat(var(--scds-list-column-count), 1fr);
-  gap: 1rem;
+  gap: var(--scds-space-4);
 }
 
 .scds-list__header {
-  font-weight: bold;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--gcds-card-border-color, #333);
+  font-weight: var(--scds-font-weight-bold);
+  padding-bottom: var(--scds-space-2);
+  border-bottom: 2px solid var(--scds-color-gray-300);
 }
 
 .scds-list__row {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--gcds-card-border-color, #d3d3d3);
+  padding: var(--scds-space-3) 0;
+  border-bottom: 1px solid var(--scds-border-color);
 }
 
 .scds-list__cell {
@@ -63,7 +65,7 @@
   }
 
   .scds-list__cell--secondary {
-    border-top: 1px dashed var(--gcds-card-border-color, #d3d3d3);
+    border-top: 1px dashed var(--scds-border-color);
     margin-top: 0.25rem;
     padding-top: 0.25rem;
   }

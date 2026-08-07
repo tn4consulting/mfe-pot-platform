@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+  color: inherit;
+}
+
+.scds-icon {
+  display: block;
+}
+
+.scds-icon--sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.scds-icon--md {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.scds-icon--lg {
+  width: 1.75rem;
+  height: 1.75rem;
+}

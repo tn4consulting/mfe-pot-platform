@@ -1,50 +1,53 @@
 :host {
   display: block;
+  font-family: var(--scds-font-family);
 }
 
 .scds-card {
-  border: 1px solid var(--gcds-card-border-color, #d3d3d3);
-  border-radius: 0.25rem;
-  padding: 1.5rem;
+  display: block;
+  border: 1px solid var(--scds-border-color);
+  border-radius: var(--scds-radius-md);
+  padding: var(--scds-space-5);
   box-sizing: border-box;
+  background: var(--scds-color-white);
+  color: var(--scds-color-text);
+  text-decoration: none;
+}
+
+a.scds-card--link {
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+a.scds-card--link:hover {
+  box-shadow: var(--scds-shadow-md);
+  border-color: var(--scds-color-brand-300);
+}
+
+a.scds-card--link:focus-visible {
+  outline: none;
+  box-shadow: var(--scds-focus-ring);
 }
 
 .scds-card__image {
   display: block;
   width: 100%;
   height: auto;
-  margin-bottom: 1rem;
+  border-radius: var(--scds-radius-sm);
+  margin-bottom: var(--scds-space-3);
 }
 
-.scds-card__badge {
+scds-badge {
   display: inline-flex;
-  align-items: center;
-  font-weight: bold;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
-.scds-card__badge--info {
-  color: var(--gcds-notice-info-text);
-}
-
-.scds-card__badge--success {
-  color: var(--gcds-notice-success-text);
-}
-
-.scds-card__badge--warning {
-  color: var(--gcds-notice-warning-text);
-}
-
-.scds-card__badge--danger {
-  color: var(--gcds-notice-danger-text);
+  margin-bottom: var(--scds-space-2);
 }
 
 .scds-card__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: var(--scds-space-3);
+  margin-top: var(--scds-space-4);
 }
 
 /* Under shadow DOM the <slot> is always a child of .scds-card__actions,
@@ -52,4 +55,12 @@
    on whether any light-DOM node is actually slotted in instead. */
 .scds-card__actions:not(:has(::slotted(*))) {
   display: none;
+}
+
+scds-heading {
+  margin-bottom: var(--scds-space-2);
+}
+
+scds-text {
+  margin-bottom: 0;
 }

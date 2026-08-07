@@ -6,6 +6,7 @@ import { Config } from '@stencil/core';
 // directly (see shared-ui-scds-core's own README).
 export const config: Config = {
   namespace: 'scds',
+  globalStyle: 'src/global/tokens.css',
   outputTargets: [
     {
       type: 'dist',

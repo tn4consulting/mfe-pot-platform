@@ -90,14 +90,15 @@ export const sharedFederationRuntimeDependency = share({
   '@tn4consulting/shared-federation-runtime': sharedSingleton,
 });
 
-// Framework-agnostic layer only (@gcds-core/components, and now
-// @tn4consulting/shared-ui-scds-core) -- no Angular wrapper
-// (@gcds-core/components-angular / shared-ui-scds) available to a React
-// remote. Kept as one export (not renamed/split) despite covering two
-// packages now, to avoid a breaking change for existing importers
-// (job-bank, shell) -- both are the same "framework-agnostic custom
-// elements a React remote can use directly" category.
-export const sharedGcdsFederationDependency = share({
-  '@gcds-core/components': sharedSingleton,
+// Framework-agnostic custom-element layer a React remote uses directly --
+// formerly covered @gcds-core/components too (renamed from
+// sharedGcdsFederationDependency), but GCDS has been removed from the
+// family entirely: shared-ui-scds-core is now a self-contained design
+// system with no GCDS dependency of its own, so this export shrank to just
+// the one package. Every importer (job-bank, shell, dashboard) updated in
+// the same change that renamed this export -- a rename is already a
+// breaking change for this module's consumers, so there's no reason to
+// keep the old GCDS-flavored name around it.
+export const sharedUiScdsCoreFederationDependency = share({
   '@tn4consulting/shared-ui-scds-core': sharedSingleton,
 });

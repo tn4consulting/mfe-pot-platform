@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0 0 var(--scds-space-3) 0;
+  padding: 0;
+  gap: var(--scds-space-1);
+  font-size: var(--scds-font-size-sm);
+}
+
+.scds-breadcrumbs ::slotted(scds-breadcrumbs-item) {
+  display: flex;
+  align-items: center;
+}
+
+.scds-breadcrumbs a {
+  color: var(--scds-color-brand-600);
+  text-decoration: none;
+}
+
+.scds-breadcrumbs a:hover {
+  text-decoration: underline;
+}

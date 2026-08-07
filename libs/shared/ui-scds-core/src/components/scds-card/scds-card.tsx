@@ -1,24 +1,13 @@
 import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
-
-export type ScdsCardTone = 'info' | 'success' | 'warning' | 'danger';
-
-const TONE_ICON: Record<ScdsCardTone, string> = {
-  danger: 'exclamation-circle',
-  info: 'info-circle',
-  success: 'checkmark-circle',
-  warning: 'warning-triangle',
-};
+import { ScdsBadgeTone } from '../scds-badge/scds-badge-types';
 
 /**
- * A card that extends `gcds-card` with what it doesn't have: a variant that
- * renders without a destination link (`gcds-card` renders nothing at all if
- * `href` is omitted -- both `cardTitle` and `href` are required props on the
- * underlying Stencil component), a severity tone badge reusing
- * `gcds-notice`'s tone vocabulary/icons, and a footer actions slot.
- *
- * Framework-agnostic (Stencil, shadow DOM). Angular consumers get a typed
- * wrapper via @tn4consulting/shared-ui-scds (auto-generated from this
- * package); other frameworks (e.g. React) use this custom element directly.
+ * A card that renders with or without a destination link -- unlike the
+ * GCDS equivalent this used to delegate to, both a static variant (no
+ * `href`) and a severity tone badge (via scds-badge) are first-class here,
+ * not bolted on. Public attribute/slot/event contract is unchanged from
+ * the GCDS-delegating version: job-bank and employment-insurance depend on
+ * it unmodified.
  */
 @Component({
   tag: 'scds-card',
@@ -34,74 +23,49 @@ export class ScdsCard {
   @Prop() target?: string;
   @Prop() imgSrc?: string;
   @Prop() imgAlt?: string;
-  @Prop() tone?: ScdsCardTone;
+  @Prop() tone?: ScdsBadgeTone;
   @Prop() toneLabel?: string;
 
-  /** Re-emits `gcds-card`'s own `gcdsClick` (fired only in link mode). */
   @Event() scdsClick!: EventEmitter<string>;
 
-  private bindGcdsClick = (el: Element | undefined): void => {
-    if (!el || (el as unknown as { __scdsBound?: boolean }).__scdsBound) {
-      return;
+  private handleClick = (): void => {
+    if (this.href) {
+      this.scdsClick.emit(this.href);
     }
-    (el as unknown as { __scdsBound?: boolean }).__scdsBound = true;
-    el.addEventListener('gcdsClick', (event: Event) => {
-      this.scdsClick.emit((event as CustomEvent<string>).detail);
-    });
   };
 
   private renderBadge() {
     if (!this.tone) {
       return null;
     }
-    return (
-      <span class={`scds-card__badge scds-card__badge--${this.tone}`} role="status">
-        <gcds-icon name={TONE_ICON[this.tone]} size="text-small" margin-right="100"></gcds-icon>
-        {this.toneLabel}
-      </span>
-    );
+    return <scds-badge tone={this.tone} label={this.toneLabel ?? ''} variant="subtle"></scds-badge>;
   }
 
-  render() {
-    const badge = this.renderBadge();
-
-    if (this.href) {
-      return (
-        <gcds-card
-          ref={this.bindGcdsClick}
-          card-title={this.cardTitle}
-          card-title-tag={this.cardTitleTag}
-          description={this.description ?? ''}
-          href={this.href}
-          rel={this.rel}
-          target={this.target}
-          img-src={this.imgSrc ?? ''}
-          img-alt={this.imgAlt ?? ''}
-        >
-          {badge}
-          <slot name="scdsCardIcon"></slot>
-          <slot></slot>
-          <div class="scds-card__actions">
-            <slot name="scdsCardActions"></slot>
-          </div>
-        </gcds-card>
-      );
-    }
-
+  private renderBody() {
     return (
-      <div class="scds-card scds-card--static">
+      <div class="scds-card__body">
         {this.imgSrc ? <img src={this.imgSrc} alt={this.imgAlt ?? ''} class="scds-card__image" /> : null}
-        <gcds-heading tag={this.cardTitleTag} margin-top="0">
-          {this.cardTitle}
-        </gcds-heading>
-        {this.description ? <gcds-text margin-bottom="0">{this.description}</gcds-text> : null}
-        {badge}
+        {this.renderBadge()}
         <slot name="scdsCardIcon"></slot>
+        <scds-heading tag={this.cardTitleTag}>{this.cardTitle}</scds-heading>
+        {this.description ? <scds-text>{this.description}</scds-text> : null}
         <slot></slot>
         <div class="scds-card__actions">
           <slot name="scdsCardActions"></slot>
         </div>
       </div>
     );
+  }
+
+  render() {
+    if (this.href) {
+      return (
+        <a class="scds-card scds-card--link" href={this.href} rel={this.rel} target={this.target} onClick={this.handleClick}>
+          {this.renderBody()}
+        </a>
+      );
+    }
+
+    return <div class="scds-card scds-card--static">{this.renderBody()}</div>;
   }
 }

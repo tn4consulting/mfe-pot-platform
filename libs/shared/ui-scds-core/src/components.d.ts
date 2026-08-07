@@ -5,21 +5,79 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ScdsCardTone } from "./components/scds-card/scds-card";
+import { ScdsBadgeTone } from "./components/scds-badge/scds-badge-types";
+import { ScdsIconName } from "./components/scds-icon/scds-icon-paths";
 import { ScdsListColumn } from "./components/scds-multi-column-list/scds-multi-column-list";
-export { ScdsCardTone } from "./components/scds-card/scds-card";
+export { ScdsBadgeTone } from "./components/scds-badge/scds-badge-types";
+export { ScdsIconName } from "./components/scds-icon/scds-icon-paths";
 export { ScdsListColumn } from "./components/scds-multi-column-list/scds-multi-column-list";
 export namespace Components {
     /**
-     * A card that extends `gcds-card` with what it doesn't have: a variant that
-     * renders without a destination link (`gcds-card` renders nothing at all if
-     * `href` is omitted -- both `cardTitle` and `href` are required props on the
-     * underlying Stencil component), a severity tone badge reusing
-     * `gcds-notice`'s tone vocabulary/icons, and a footer actions slot.
-     * Framework-agnostic (Stencil, shadow DOM). Angular consumers get a typed
-     * wrapper via
-     * @tn4consulting /shared-ui-scds (auto-generated from this
-     * package); other frameworks (e.g. React) use this custom element directly.
+     * Status/severity badge or pill -- extracted from scds-card's original
+     * inline badge logic. `variant="subtle"` drives Needs Attention's badges
+     * (Expiring soon/Reminder/Not Secure/Active/Inactive); `variant="pill"`
+     * drives Payments Activity's status pills (Pending/Complete). Both variants
+     * share the same tone->color-pair mapping, so contrast is verified once
+     * (tokens.contrast.spec.ts) and never re-composed by a consumer.
+     */
+    interface ScdsBadge {
+        "label": string;
+        /**
+          * Pills (short status words) skip the tone icon by default -- keep it for a subtle badge that needs the extra visual weight.
+          * @default true
+         */
+        "showIcon": boolean;
+        /**
+          * @default 'neutral'
+         */
+        "tone": ScdsBadgeTone;
+        /**
+          * @default 'subtle'
+         */
+        "variant": 'subtle' | 'pill';
+    }
+    /**
+     * Replaces gcds-breadcrumbs. Children are scds-breadcrumbs-item elements --
+     * unlike GCDS, there's no built-in "Canada.ca" crumb; the consuming app
+     * passes every crumb explicitly (see dashboard's Overview.tsx), including
+     * its own Home item.
+     */
+    interface ScdsBreadcrumbs {
+    }
+    /**
+     * Replaces gcds-breadcrumbs-item. A "/" separator renders before every item except the first -- determined via :host(:first-child) in the light DOM, see scds-breadcrumbs-item.css.
+     */
+    interface ScdsBreadcrumbsItem {
+        "href"?: string;
+    }
+    /**
+     * Replaces gcds-button. A small surface deliberately -- scds-link takes over most former card-action button use (see scds-link).
+     */
+    interface ScdsButton {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'regular'
+         */
+        "size": 'small' | 'regular';
+        /**
+          * @default 'button'
+         */
+        "type": 'button' | 'submit' | 'reset';
+        /**
+          * @default 'primary'
+         */
+        "variant": 'primary' | 'secondary';
+    }
+    /**
+     * A card that renders with or without a destination link -- unlike the
+     * GCDS equivalent this used to delegate to, both a static variant (no
+     * `href`) and a severity tone badge (via scds-badge) are first-class here,
+     * not bolted on. Public attribute/slot/event contract is unchanged from
+     * the GCDS-delegating version: job-bank and employment-insurance depend on
+     * it unmodified.
      */
     interface ScdsCard {
         "cardTitle": string;
@@ -33,8 +91,71 @@ export namespace Components {
         "imgSrc"?: string;
         "rel"?: string;
         "target"?: string;
-        "tone"?: ScdsCardTone;
+        "tone"?: ScdsBadgeTone;
         "toneLabel"?: string;
+    }
+    /**
+     * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
+     * Layout-driven by slotted content rather than a prop-configured variant
+     * (gcds-footer's `display`/`contextual-heading` attributes have no
+     * equivalent here) -- the consuming app supplies its own link markup per
+     * column, this component only supplies the shared visual chrome.
+     */
+    interface ScdsFooter {
+    }
+    /**
+     * Top app bar: brand/title + skip link + slotted content. Replaces
+     * gcds-header + gcds-signature. Unlike gcds-header, there's no `menu`
+     * slot -- the nav moved into scds-sidebar entirely -- and no `toggle`
+     * slot -- the language switch is plain JSX rendered by the consuming app
+     * inside the `account` slot alongside scds-user-menu (see AppFrame.tsx).
+     * `nav-toggle` is a dedicated slot for the app's own hamburger button,
+     * since sidebar open/close state is owned by the app (AppFrame.tsx), not
+     * this component.
+     */
+    interface ScdsHeader {
+        "appTitle": string;
+        "skipToHref"?: string;
+    }
+    /**
+     * Replaces gcds-heading.
+     */
+    interface ScdsHeading {
+        /**
+          * @default 'h2'
+         */
+        "tag": 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    }
+    /**
+     * Replaces gcds-icon -- GCDS's own icon font/sprite goes away with the
+     * package, so this renders a fixed set of inline SVGs (original path data,
+     * not vendored) using stroke="currentColor" so it inherits color from CSS
+     * context (nav links, badges, buttons).
+     */
+    interface ScdsIcon {
+        /**
+          * Accessible name. Omitted (the default) renders the icon aria-hidden -- use only when the icon is purely decorative alongside visible text.
+         */
+        "label"?: string;
+        "name": ScdsIconName;
+        /**
+          * @default 'md'
+         */
+        "size": 'sm' | 'md' | 'lg';
+    }
+    /**
+     * Text link with an optional leading/trailing icon -- matches the
+     * screenshot's "Apply for CDCP ->" / "Edit Profile ->" style. Replaces the
+     * gcds-button previously used in ConsiderThisList's card actions, which was
+     * visually wrong for this design (a secondary button, not a text link).
+     */
+    interface ScdsLink {
+        "href": string;
+        "iconName"?: ScdsIconName;
+        /**
+          * @default 'end'
+         */
+        "iconPosition": 'start' | 'end';
     }
     /**
      * A multi-column list for data GCDS has no component for (e.g. tasks,
@@ -73,25 +194,193 @@ export namespace Components {
          */
         "trackBy": (item: unknown) => unknown;
     }
+    /**
+     * Visual separator between scds-sidebar's primary and secondary nav groups.
+     */
+    interface ScdsNavDivider {
+    }
+    /**
+     * Expandable category item (icon + label + chevron + children). Default
+     * slot holds scds-nav-link children. `disabled` renders an inert row for
+     * categories with no backing app in this family (Health/Recreation-Sport/
+     * Travel/Education) -- no expand affordance, dimmed, no children rendered.
+     */
+    interface ScdsNavGroup {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "expanded": boolean;
+        "iconName"?: ScdsIconName;
+        "label": string;
+    }
+    /**
+     * Leaf nav item, real or inert. Replaces gcds-nav-link -- the app's
+     * existing AppNavLink click-intercept wrapper (preventDefault + React
+     * Router navigate()) attaches its onClick to this host element the same
+     * way it did for gcds-nav-link, since the click event is composed and
+     * bubbles across the shadow boundary from the internal <a>.
+     * `disabled` renders an inert row (categories with no backing app in this
+     * family, e.g. Health/Travel) -- no href, no click handling, dimmed. When
+     * not disabled and `href` is omitted, renders a real <button> instead of
+     * an anchor with no href (which wouldn't be keyboard-focusable/operable)
+     * -- for a real nav action that isn't a navigation, e.g. shell's Log Out.
+     */
+    interface ScdsNavLink {
+        /**
+          * @default false
+         */
+        "current": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "href"?: string;
+        "iconName"?: ScdsIconName;
+    }
+    /**
+     * Left-accent-border block. Replaces gcds-notice for dashboard's single
+     * "What's New?" card (see docs/msca-screenshots/dashboard.png) -- distinct
+     * from NeedsAttentionList, which moved to scds-card + scds-badge to match
+     * the screenshot's per-item card shape instead.
+     */
+    interface ScdsNotice {
+        "noticeTitle": string;
+        /**
+          * @default 'h3'
+         */
+        "titleTag": 'h2' | 'h3' | 'h4';
+        /**
+          * @default 'info'
+         */
+        "tone": ScdsBadgeTone;
+    }
+    /**
+     * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
+     * fixed, always-visible column; below that it becomes an off-canvas drawer
+     * controlled by `open`, which the app owns (AppFrame.tsx's own
+     * useState) -- this component stays presentational/attribute-driven, same
+     * as every other scds-* element. Two named slots keep the category nav
+     * and the account/utility nav visually and semantically distinct; a
+     * scds-nav-divider between them is up to the consumer to place.
+     */
+    interface ScdsSidebar {
+        /**
+          * @default 'Site menu'
+         */
+        "label": string;
+        /**
+          * @default false
+         */
+        "open": boolean;
+    }
+    /**
+     * Styling shell around a real, app-authored semantic <table> passed in via
+     * the default slot -- keeps the existing accessible markup (<caption>,
+     * <th scope="col">) fully under the consuming app's control, this
+     * component only supplies shared visual styling (used by
+     * dashboard's Payments Activity table).
+     * Deliberately shadow:false (scoped CSS instead) -- unlike every other
+     * scds-* component, this one needs descendant selectors reaching into the
+     * app-authored table's own thead/tbody/th/td, and ::slotted() in a real
+     * shadow tree can only match the directly slotted element itself, never
+     * its descendants.
+     */
+    interface ScdsTable {
+        /**
+          * @default false
+         */
+        "dense": boolean;
+    }
+    /**
+     * Replaces gcds-text.
+     */
+    interface ScdsText {
+        /**
+          * @default 'base'
+         */
+        "size": 'small' | 'base';
+        /**
+          * @default 'p'
+         */
+        "tag": 'p' | 'span';
+    }
+    /**
+     * Avatar/name trigger + dropdown panel. Replaces the ad hoc
+     * `<button slot="account">` sign-out control -- the default slot holds
+     * plain app-authored menu items (sign-out button, language-switch button),
+     * see AppFrame.tsx.
+     */
+    interface ScdsUserMenu {
+        "name": string;
+    }
 }
 export interface ScdsCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLScdsCardElement;
 }
+export interface ScdsSidebarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLScdsSidebarElement;
+}
 declare global {
+    /**
+     * Status/severity badge or pill -- extracted from scds-card's original
+     * inline badge logic. `variant="subtle"` drives Needs Attention's badges
+     * (Expiring soon/Reminder/Not Secure/Active/Inactive); `variant="pill"`
+     * drives Payments Activity's status pills (Pending/Complete). Both variants
+     * share the same tone->color-pair mapping, so contrast is verified once
+     * (tokens.contrast.spec.ts) and never re-composed by a consumer.
+     */
+    interface HTMLScdsBadgeElement extends Components.ScdsBadge, HTMLStencilElement {
+    }
+    var HTMLScdsBadgeElement: {
+        prototype: HTMLScdsBadgeElement;
+        new (): HTMLScdsBadgeElement;
+    };
+    /**
+     * Replaces gcds-breadcrumbs. Children are scds-breadcrumbs-item elements --
+     * unlike GCDS, there's no built-in "Canada.ca" crumb; the consuming app
+     * passes every crumb explicitly (see dashboard's Overview.tsx), including
+     * its own Home item.
+     */
+    interface HTMLScdsBreadcrumbsElement extends Components.ScdsBreadcrumbs, HTMLStencilElement {
+    }
+    var HTMLScdsBreadcrumbsElement: {
+        prototype: HTMLScdsBreadcrumbsElement;
+        new (): HTMLScdsBreadcrumbsElement;
+    };
+    /**
+     * Replaces gcds-breadcrumbs-item. A "/" separator renders before every item except the first -- determined via :host(:first-child) in the light DOM, see scds-breadcrumbs-item.css.
+     */
+    interface HTMLScdsBreadcrumbsItemElement extends Components.ScdsBreadcrumbsItem, HTMLStencilElement {
+    }
+    var HTMLScdsBreadcrumbsItemElement: {
+        prototype: HTMLScdsBreadcrumbsItemElement;
+        new (): HTMLScdsBreadcrumbsItemElement;
+    };
+    /**
+     * Replaces gcds-button. A small surface deliberately -- scds-link takes over most former card-action button use (see scds-link).
+     */
+    interface HTMLScdsButtonElement extends Components.ScdsButton, HTMLStencilElement {
+    }
+    var HTMLScdsButtonElement: {
+        prototype: HTMLScdsButtonElement;
+        new (): HTMLScdsButtonElement;
+    };
     interface HTMLScdsCardElementEventMap {
         "scdsClick": string;
     }
     /**
-     * A card that extends `gcds-card` with what it doesn't have: a variant that
-     * renders without a destination link (`gcds-card` renders nothing at all if
-     * `href` is omitted -- both `cardTitle` and `href` are required props on the
-     * underlying Stencil component), a severity tone badge reusing
-     * `gcds-notice`'s tone vocabulary/icons, and a footer actions slot.
-     * Framework-agnostic (Stencil, shadow DOM). Angular consumers get a typed
-     * wrapper via
-     * @tn4consulting /shared-ui-scds (auto-generated from this
-     * package); other frameworks (e.g. React) use this custom element directly.
+     * A card that renders with or without a destination link -- unlike the
+     * GCDS equivalent this used to delegate to, both a static variant (no
+     * `href`) and a severity tone badge (via scds-badge) are first-class here,
+     * not bolted on. Public attribute/slot/event contract is unchanged from
+     * the GCDS-delegating version: job-bank and employment-insurance depend on
+     * it unmodified.
      */
     interface HTMLScdsCardElement extends Components.ScdsCard, HTMLStencilElement {
         addEventListener<K extends keyof HTMLScdsCardElementEventMap>(type: K, listener: (this: HTMLScdsCardElement, ev: ScdsCardCustomEvent<HTMLScdsCardElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -106,6 +395,68 @@ declare global {
     var HTMLScdsCardElement: {
         prototype: HTMLScdsCardElement;
         new (): HTMLScdsCardElement;
+    };
+    /**
+     * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
+     * Layout-driven by slotted content rather than a prop-configured variant
+     * (gcds-footer's `display`/`contextual-heading` attributes have no
+     * equivalent here) -- the consuming app supplies its own link markup per
+     * column, this component only supplies the shared visual chrome.
+     */
+    interface HTMLScdsFooterElement extends Components.ScdsFooter, HTMLStencilElement {
+    }
+    var HTMLScdsFooterElement: {
+        prototype: HTMLScdsFooterElement;
+        new (): HTMLScdsFooterElement;
+    };
+    /**
+     * Top app bar: brand/title + skip link + slotted content. Replaces
+     * gcds-header + gcds-signature. Unlike gcds-header, there's no `menu`
+     * slot -- the nav moved into scds-sidebar entirely -- and no `toggle`
+     * slot -- the language switch is plain JSX rendered by the consuming app
+     * inside the `account` slot alongside scds-user-menu (see AppFrame.tsx).
+     * `nav-toggle` is a dedicated slot for the app's own hamburger button,
+     * since sidebar open/close state is owned by the app (AppFrame.tsx), not
+     * this component.
+     */
+    interface HTMLScdsHeaderElement extends Components.ScdsHeader, HTMLStencilElement {
+    }
+    var HTMLScdsHeaderElement: {
+        prototype: HTMLScdsHeaderElement;
+        new (): HTMLScdsHeaderElement;
+    };
+    /**
+     * Replaces gcds-heading.
+     */
+    interface HTMLScdsHeadingElement extends Components.ScdsHeading, HTMLStencilElement {
+    }
+    var HTMLScdsHeadingElement: {
+        prototype: HTMLScdsHeadingElement;
+        new (): HTMLScdsHeadingElement;
+    };
+    /**
+     * Replaces gcds-icon -- GCDS's own icon font/sprite goes away with the
+     * package, so this renders a fixed set of inline SVGs (original path data,
+     * not vendored) using stroke="currentColor" so it inherits color from CSS
+     * context (nav links, badges, buttons).
+     */
+    interface HTMLScdsIconElement extends Components.ScdsIcon, HTMLStencilElement {
+    }
+    var HTMLScdsIconElement: {
+        prototype: HTMLScdsIconElement;
+        new (): HTMLScdsIconElement;
+    };
+    /**
+     * Text link with an optional leading/trailing icon -- matches the
+     * screenshot's "Apply for CDCP ->" / "Edit Profile ->" style. Replaces the
+     * gcds-button previously used in ConsiderThisList's card actions, which was
+     * visually wrong for this design (a secondary button, not a text link).
+     */
+    interface HTMLScdsLinkElement extends Components.ScdsLink, HTMLStencilElement {
+    }
+    var HTMLScdsLinkElement: {
+        prototype: HTMLScdsLinkElement;
+        new (): HTMLScdsLinkElement;
     };
     /**
      * A multi-column list for data GCDS has no component for (e.g. tasks,
@@ -131,24 +482,213 @@ declare global {
         prototype: HTMLScdsMultiColumnListElement;
         new (): HTMLScdsMultiColumnListElement;
     };
+    /**
+     * Visual separator between scds-sidebar's primary and secondary nav groups.
+     */
+    interface HTMLScdsNavDividerElement extends Components.ScdsNavDivider, HTMLStencilElement {
+    }
+    var HTMLScdsNavDividerElement: {
+        prototype: HTMLScdsNavDividerElement;
+        new (): HTMLScdsNavDividerElement;
+    };
+    /**
+     * Expandable category item (icon + label + chevron + children). Default
+     * slot holds scds-nav-link children. `disabled` renders an inert row for
+     * categories with no backing app in this family (Health/Recreation-Sport/
+     * Travel/Education) -- no expand affordance, dimmed, no children rendered.
+     */
+    interface HTMLScdsNavGroupElement extends Components.ScdsNavGroup, HTMLStencilElement {
+    }
+    var HTMLScdsNavGroupElement: {
+        prototype: HTMLScdsNavGroupElement;
+        new (): HTMLScdsNavGroupElement;
+    };
+    /**
+     * Leaf nav item, real or inert. Replaces gcds-nav-link -- the app's
+     * existing AppNavLink click-intercept wrapper (preventDefault + React
+     * Router navigate()) attaches its onClick to this host element the same
+     * way it did for gcds-nav-link, since the click event is composed and
+     * bubbles across the shadow boundary from the internal <a>.
+     * `disabled` renders an inert row (categories with no backing app in this
+     * family, e.g. Health/Travel) -- no href, no click handling, dimmed. When
+     * not disabled and `href` is omitted, renders a real <button> instead of
+     * an anchor with no href (which wouldn't be keyboard-focusable/operable)
+     * -- for a real nav action that isn't a navigation, e.g. shell's Log Out.
+     */
+    interface HTMLScdsNavLinkElement extends Components.ScdsNavLink, HTMLStencilElement {
+    }
+    var HTMLScdsNavLinkElement: {
+        prototype: HTMLScdsNavLinkElement;
+        new (): HTMLScdsNavLinkElement;
+    };
+    /**
+     * Left-accent-border block. Replaces gcds-notice for dashboard's single
+     * "What's New?" card (see docs/msca-screenshots/dashboard.png) -- distinct
+     * from NeedsAttentionList, which moved to scds-card + scds-badge to match
+     * the screenshot's per-item card shape instead.
+     */
+    interface HTMLScdsNoticeElement extends Components.ScdsNotice, HTMLStencilElement {
+    }
+    var HTMLScdsNoticeElement: {
+        prototype: HTMLScdsNoticeElement;
+        new (): HTMLScdsNoticeElement;
+    };
+    interface HTMLScdsSidebarElementEventMap {
+        "scdsClose": void;
+    }
+    /**
+     * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
+     * fixed, always-visible column; below that it becomes an off-canvas drawer
+     * controlled by `open`, which the app owns (AppFrame.tsx's own
+     * useState) -- this component stays presentational/attribute-driven, same
+     * as every other scds-* element. Two named slots keep the category nav
+     * and the account/utility nav visually and semantically distinct; a
+     * scds-nav-divider between them is up to the consumer to place.
+     */
+    interface HTMLScdsSidebarElement extends Components.ScdsSidebar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLScdsSidebarElementEventMap>(type: K, listener: (this: HTMLScdsSidebarElement, ev: ScdsSidebarCustomEvent<HTMLScdsSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLScdsSidebarElementEventMap>(type: K, listener: (this: HTMLScdsSidebarElement, ev: ScdsSidebarCustomEvent<HTMLScdsSidebarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLScdsSidebarElement: {
+        prototype: HTMLScdsSidebarElement;
+        new (): HTMLScdsSidebarElement;
+    };
+    /**
+     * Styling shell around a real, app-authored semantic <table> passed in via
+     * the default slot -- keeps the existing accessible markup (<caption>,
+     * <th scope="col">) fully under the consuming app's control, this
+     * component only supplies shared visual styling (used by
+     * dashboard's Payments Activity table).
+     * Deliberately shadow:false (scoped CSS instead) -- unlike every other
+     * scds-* component, this one needs descendant selectors reaching into the
+     * app-authored table's own thead/tbody/th/td, and ::slotted() in a real
+     * shadow tree can only match the directly slotted element itself, never
+     * its descendants.
+     */
+    interface HTMLScdsTableElement extends Components.ScdsTable, HTMLStencilElement {
+    }
+    var HTMLScdsTableElement: {
+        prototype: HTMLScdsTableElement;
+        new (): HTMLScdsTableElement;
+    };
+    /**
+     * Replaces gcds-text.
+     */
+    interface HTMLScdsTextElement extends Components.ScdsText, HTMLStencilElement {
+    }
+    var HTMLScdsTextElement: {
+        prototype: HTMLScdsTextElement;
+        new (): HTMLScdsTextElement;
+    };
+    /**
+     * Avatar/name trigger + dropdown panel. Replaces the ad hoc
+     * `<button slot="account">` sign-out control -- the default slot holds
+     * plain app-authored menu items (sign-out button, language-switch button),
+     * see AppFrame.tsx.
+     */
+    interface HTMLScdsUserMenuElement extends Components.ScdsUserMenu, HTMLStencilElement {
+    }
+    var HTMLScdsUserMenuElement: {
+        prototype: HTMLScdsUserMenuElement;
+        new (): HTMLScdsUserMenuElement;
+    };
     interface HTMLElementTagNameMap {
+        "scds-badge": HTMLScdsBadgeElement;
+        "scds-breadcrumbs": HTMLScdsBreadcrumbsElement;
+        "scds-breadcrumbs-item": HTMLScdsBreadcrumbsItemElement;
+        "scds-button": HTMLScdsButtonElement;
         "scds-card": HTMLScdsCardElement;
+        "scds-footer": HTMLScdsFooterElement;
+        "scds-header": HTMLScdsHeaderElement;
+        "scds-heading": HTMLScdsHeadingElement;
+        "scds-icon": HTMLScdsIconElement;
+        "scds-link": HTMLScdsLinkElement;
         "scds-multi-column-list": HTMLScdsMultiColumnListElement;
+        "scds-nav-divider": HTMLScdsNavDividerElement;
+        "scds-nav-group": HTMLScdsNavGroupElement;
+        "scds-nav-link": HTMLScdsNavLinkElement;
+        "scds-notice": HTMLScdsNoticeElement;
+        "scds-sidebar": HTMLScdsSidebarElement;
+        "scds-table": HTMLScdsTableElement;
+        "scds-text": HTMLScdsTextElement;
+        "scds-user-menu": HTMLScdsUserMenuElement;
     }
 }
 declare namespace LocalJSX {
     type OneOf<K extends string, PropT, AttrT = PropT> = { [P in K]: PropT } & { [P in `attr:${K}` | `prop:${K}`]?: never } | { [P in `attr:${K}`]: AttrT } & { [P in K | `prop:${K}`]?: never } | { [P in `prop:${K}`]: PropT } & { [P in K | `attr:${K}`]?: never };
 
     /**
-     * A card that extends `gcds-card` with what it doesn't have: a variant that
-     * renders without a destination link (`gcds-card` renders nothing at all if
-     * `href` is omitted -- both `cardTitle` and `href` are required props on the
-     * underlying Stencil component), a severity tone badge reusing
-     * `gcds-notice`'s tone vocabulary/icons, and a footer actions slot.
-     * Framework-agnostic (Stencil, shadow DOM). Angular consumers get a typed
-     * wrapper via
-     * @tn4consulting /shared-ui-scds (auto-generated from this
-     * package); other frameworks (e.g. React) use this custom element directly.
+     * Status/severity badge or pill -- extracted from scds-card's original
+     * inline badge logic. `variant="subtle"` drives Needs Attention's badges
+     * (Expiring soon/Reminder/Not Secure/Active/Inactive); `variant="pill"`
+     * drives Payments Activity's status pills (Pending/Complete). Both variants
+     * share the same tone->color-pair mapping, so contrast is verified once
+     * (tokens.contrast.spec.ts) and never re-composed by a consumer.
+     */
+    interface ScdsBadge {
+        "label": string;
+        /**
+          * Pills (short status words) skip the tone icon by default -- keep it for a subtle badge that needs the extra visual weight.
+          * @default true
+         */
+        "showIcon"?: boolean;
+        /**
+          * @default 'neutral'
+         */
+        "tone"?: ScdsBadgeTone;
+        /**
+          * @default 'subtle'
+         */
+        "variant"?: 'subtle' | 'pill';
+    }
+    /**
+     * Replaces gcds-breadcrumbs. Children are scds-breadcrumbs-item elements --
+     * unlike GCDS, there's no built-in "Canada.ca" crumb; the consuming app
+     * passes every crumb explicitly (see dashboard's Overview.tsx), including
+     * its own Home item.
+     */
+    interface ScdsBreadcrumbs {
+    }
+    /**
+     * Replaces gcds-breadcrumbs-item. A "/" separator renders before every item except the first -- determined via :host(:first-child) in the light DOM, see scds-breadcrumbs-item.css.
+     */
+    interface ScdsBreadcrumbsItem {
+        "href"?: string;
+    }
+    /**
+     * Replaces gcds-button. A small surface deliberately -- scds-link takes over most former card-action button use (see scds-link).
+     */
+    interface ScdsButton {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'regular'
+         */
+        "size"?: 'small' | 'regular';
+        /**
+          * @default 'button'
+         */
+        "type"?: 'button' | 'submit' | 'reset';
+        /**
+          * @default 'primary'
+         */
+        "variant"?: 'primary' | 'secondary';
+    }
+    /**
+     * A card that renders with or without a destination link -- unlike the
+     * GCDS equivalent this used to delegate to, both a static variant (no
+     * `href`) and a severity tone badge (via scds-badge) are first-class here,
+     * not bolted on. Public attribute/slot/event contract is unchanged from
+     * the GCDS-delegating version: job-bank and employment-insurance depend on
+     * it unmodified.
      */
     interface ScdsCard {
         "cardTitle": string;
@@ -160,14 +700,74 @@ declare namespace LocalJSX {
         "href"?: string;
         "imgAlt"?: string;
         "imgSrc"?: string;
-        /**
-          * Re-emits `gcds-card`'s own `gcdsClick` (fired only in link mode).
-         */
         "onScdsClick"?: (event: ScdsCardCustomEvent<string>) => void;
         "rel"?: string;
         "target"?: string;
-        "tone"?: ScdsCardTone;
+        "tone"?: ScdsBadgeTone;
         "toneLabel"?: string;
+    }
+    /**
+     * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
+     * Layout-driven by slotted content rather than a prop-configured variant
+     * (gcds-footer's `display`/`contextual-heading` attributes have no
+     * equivalent here) -- the consuming app supplies its own link markup per
+     * column, this component only supplies the shared visual chrome.
+     */
+    interface ScdsFooter {
+    }
+    /**
+     * Top app bar: brand/title + skip link + slotted content. Replaces
+     * gcds-header + gcds-signature. Unlike gcds-header, there's no `menu`
+     * slot -- the nav moved into scds-sidebar entirely -- and no `toggle`
+     * slot -- the language switch is plain JSX rendered by the consuming app
+     * inside the `account` slot alongside scds-user-menu (see AppFrame.tsx).
+     * `nav-toggle` is a dedicated slot for the app's own hamburger button,
+     * since sidebar open/close state is owned by the app (AppFrame.tsx), not
+     * this component.
+     */
+    interface ScdsHeader {
+        "appTitle": string;
+        "skipToHref"?: string;
+    }
+    /**
+     * Replaces gcds-heading.
+     */
+    interface ScdsHeading {
+        /**
+          * @default 'h2'
+         */
+        "tag"?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    }
+    /**
+     * Replaces gcds-icon -- GCDS's own icon font/sprite goes away with the
+     * package, so this renders a fixed set of inline SVGs (original path data,
+     * not vendored) using stroke="currentColor" so it inherits color from CSS
+     * context (nav links, badges, buttons).
+     */
+    interface ScdsIcon {
+        /**
+          * Accessible name. Omitted (the default) renders the icon aria-hidden -- use only when the icon is purely decorative alongside visible text.
+         */
+        "label"?: string;
+        "name": ScdsIconName;
+        /**
+          * @default 'md'
+         */
+        "size"?: 'sm' | 'md' | 'lg';
+    }
+    /**
+     * Text link with an optional leading/trailing icon -- matches the
+     * screenshot's "Apply for CDCP ->" / "Edit Profile ->" style. Replaces the
+     * gcds-button previously used in ConsiderThisList's card actions, which was
+     * visually wrong for this design (a secondary button, not a text link).
+     */
+    interface ScdsLink {
+        "href": string;
+        "iconName"?: ScdsIconName;
+        /**
+          * @default 'end'
+         */
+        "iconPosition"?: 'start' | 'end';
     }
     /**
      * A multi-column list for data GCDS has no component for (e.g. tasks,
@@ -206,7 +806,146 @@ declare namespace LocalJSX {
          */
         "trackBy"?: (item: unknown) => unknown;
     }
+    /**
+     * Visual separator between scds-sidebar's primary and secondary nav groups.
+     */
+    interface ScdsNavDivider {
+    }
+    /**
+     * Expandable category item (icon + label + chevron + children). Default
+     * slot holds scds-nav-link children. `disabled` renders an inert row for
+     * categories with no backing app in this family (Health/Recreation-Sport/
+     * Travel/Education) -- no expand affordance, dimmed, no children rendered.
+     */
+    interface ScdsNavGroup {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "expanded"?: boolean;
+        "iconName"?: ScdsIconName;
+        "label": string;
+    }
+    /**
+     * Leaf nav item, real or inert. Replaces gcds-nav-link -- the app's
+     * existing AppNavLink click-intercept wrapper (preventDefault + React
+     * Router navigate()) attaches its onClick to this host element the same
+     * way it did for gcds-nav-link, since the click event is composed and
+     * bubbles across the shadow boundary from the internal <a>.
+     * `disabled` renders an inert row (categories with no backing app in this
+     * family, e.g. Health/Travel) -- no href, no click handling, dimmed. When
+     * not disabled and `href` is omitted, renders a real <button> instead of
+     * an anchor with no href (which wouldn't be keyboard-focusable/operable)
+     * -- for a real nav action that isn't a navigation, e.g. shell's Log Out.
+     */
+    interface ScdsNavLink {
+        /**
+          * @default false
+         */
+        "current"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "href"?: string;
+        "iconName"?: ScdsIconName;
+    }
+    /**
+     * Left-accent-border block. Replaces gcds-notice for dashboard's single
+     * "What's New?" card (see docs/msca-screenshots/dashboard.png) -- distinct
+     * from NeedsAttentionList, which moved to scds-card + scds-badge to match
+     * the screenshot's per-item card shape instead.
+     */
+    interface ScdsNotice {
+        "noticeTitle": string;
+        /**
+          * @default 'h3'
+         */
+        "titleTag"?: 'h2' | 'h3' | 'h4';
+        /**
+          * @default 'info'
+         */
+        "tone"?: ScdsBadgeTone;
+    }
+    /**
+     * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
+     * fixed, always-visible column; below that it becomes an off-canvas drawer
+     * controlled by `open`, which the app owns (AppFrame.tsx's own
+     * useState) -- this component stays presentational/attribute-driven, same
+     * as every other scds-* element. Two named slots keep the category nav
+     * and the account/utility nav visually and semantically distinct; a
+     * scds-nav-divider between them is up to the consumer to place.
+     */
+    interface ScdsSidebar {
+        /**
+          * @default 'Site menu'
+         */
+        "label"?: string;
+        "onScdsClose"?: (event: ScdsSidebarCustomEvent<void>) => void;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+    }
+    /**
+     * Styling shell around a real, app-authored semantic <table> passed in via
+     * the default slot -- keeps the existing accessible markup (<caption>,
+     * <th scope="col">) fully under the consuming app's control, this
+     * component only supplies shared visual styling (used by
+     * dashboard's Payments Activity table).
+     * Deliberately shadow:false (scoped CSS instead) -- unlike every other
+     * scds-* component, this one needs descendant selectors reaching into the
+     * app-authored table's own thead/tbody/th/td, and ::slotted() in a real
+     * shadow tree can only match the directly slotted element itself, never
+     * its descendants.
+     */
+    interface ScdsTable {
+        /**
+          * @default false
+         */
+        "dense"?: boolean;
+    }
+    /**
+     * Replaces gcds-text.
+     */
+    interface ScdsText {
+        /**
+          * @default 'base'
+         */
+        "size"?: 'small' | 'base';
+        /**
+          * @default 'p'
+         */
+        "tag"?: 'p' | 'span';
+    }
+    /**
+     * Avatar/name trigger + dropdown panel. Replaces the ad hoc
+     * `<button slot="account">` sign-out control -- the default slot holds
+     * plain app-authored menu items (sign-out button, language-switch button),
+     * see AppFrame.tsx.
+     */
+    interface ScdsUserMenu {
+        "name": string;
+    }
 
+    interface ScdsBadgeAttributes {
+        "tone": ScdsBadgeTone;
+        "label": string;
+        "variant": 'subtle' | 'pill';
+        "showIcon": boolean;
+    }
+    interface ScdsBreadcrumbsItemAttributes {
+        "href": string;
+    }
+    interface ScdsButtonAttributes {
+        "variant": 'primary' | 'secondary';
+        "size": 'small' | 'regular';
+        "type": 'button' | 'submit' | 'reset';
+        "disabled": boolean;
+    }
     interface ScdsCardAttributes {
         "cardTitle": string;
         "cardTitleTag": 'h3' | 'h4' | 'h5' | 'h6';
@@ -216,17 +955,82 @@ declare namespace LocalJSX {
         "target": string;
         "imgSrc": string;
         "imgAlt": string;
-        "tone": ScdsCardTone;
+        "tone": ScdsBadgeTone;
         "toneLabel": string;
+    }
+    interface ScdsHeaderAttributes {
+        "appTitle": string;
+        "skipToHref": string;
+    }
+    interface ScdsHeadingAttributes {
+        "tag": 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    }
+    interface ScdsIconAttributes {
+        "name": ScdsIconName;
+        "size": 'sm' | 'md' | 'lg';
+        "label": string;
+    }
+    interface ScdsLinkAttributes {
+        "href": string;
+        "iconName": ScdsIconName;
+        "iconPosition": 'start' | 'end';
     }
     interface ScdsMultiColumnListAttributes {
         "emptyLabel": string;
         "listLabel": string;
     }
+    interface ScdsNavGroupAttributes {
+        "label": string;
+        "iconName": ScdsIconName;
+        "expanded": boolean;
+        "disabled": boolean;
+    }
+    interface ScdsNavLinkAttributes {
+        "href": string;
+        "iconName": ScdsIconName;
+        "current": boolean;
+        "disabled": boolean;
+    }
+    interface ScdsNoticeAttributes {
+        "noticeTitle": string;
+        "titleTag": 'h2' | 'h3' | 'h4';
+        "tone": ScdsBadgeTone;
+    }
+    interface ScdsSidebarAttributes {
+        "open": boolean;
+        "label": string;
+    }
+    interface ScdsTableAttributes {
+        "dense": boolean;
+    }
+    interface ScdsTextAttributes {
+        "tag": 'p' | 'span';
+        "size": 'small' | 'base';
+    }
+    interface ScdsUserMenuAttributes {
+        "name": string;
+    }
 
     interface IntrinsicElements {
+        "scds-badge": Omit<ScdsBadge, keyof ScdsBadgeAttributes> & { [K in keyof ScdsBadge & keyof ScdsBadgeAttributes]?: ScdsBadge[K] } & { [K in keyof ScdsBadge & keyof ScdsBadgeAttributes as `attr:${K}`]?: ScdsBadgeAttributes[K] } & { [K in keyof ScdsBadge & keyof ScdsBadgeAttributes as `prop:${K}`]?: ScdsBadge[K] } & OneOf<"label", ScdsBadge["label"], ScdsBadgeAttributes["label"]>;
+        "scds-breadcrumbs": ScdsBreadcrumbs;
+        "scds-breadcrumbs-item": Omit<ScdsBreadcrumbsItem, keyof ScdsBreadcrumbsItemAttributes> & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes]?: ScdsBreadcrumbsItem[K] } & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes as `attr:${K}`]?: ScdsBreadcrumbsItemAttributes[K] } & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes as `prop:${K}`]?: ScdsBreadcrumbsItem[K] };
+        "scds-button": Omit<ScdsButton, keyof ScdsButtonAttributes> & { [K in keyof ScdsButton & keyof ScdsButtonAttributes]?: ScdsButton[K] } & { [K in keyof ScdsButton & keyof ScdsButtonAttributes as `attr:${K}`]?: ScdsButtonAttributes[K] } & { [K in keyof ScdsButton & keyof ScdsButtonAttributes as `prop:${K}`]?: ScdsButton[K] };
         "scds-card": Omit<ScdsCard, keyof ScdsCardAttributes> & { [K in keyof ScdsCard & keyof ScdsCardAttributes]?: ScdsCard[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `attr:${K}`]?: ScdsCardAttributes[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `prop:${K}`]?: ScdsCard[K] } & OneOf<"cardTitle", ScdsCard["cardTitle"], ScdsCardAttributes["cardTitle"]>;
+        "scds-footer": ScdsFooter;
+        "scds-header": Omit<ScdsHeader, keyof ScdsHeaderAttributes> & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes]?: ScdsHeader[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `attr:${K}`]?: ScdsHeaderAttributes[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `prop:${K}`]?: ScdsHeader[K] } & OneOf<"appTitle", ScdsHeader["appTitle"], ScdsHeaderAttributes["appTitle"]>;
+        "scds-heading": Omit<ScdsHeading, keyof ScdsHeadingAttributes> & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes]?: ScdsHeading[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `attr:${K}`]?: ScdsHeadingAttributes[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `prop:${K}`]?: ScdsHeading[K] };
+        "scds-icon": Omit<ScdsIcon, keyof ScdsIconAttributes> & { [K in keyof ScdsIcon & keyof ScdsIconAttributes]?: ScdsIcon[K] } & { [K in keyof ScdsIcon & keyof ScdsIconAttributes as `attr:${K}`]?: ScdsIconAttributes[K] } & { [K in keyof ScdsIcon & keyof ScdsIconAttributes as `prop:${K}`]?: ScdsIcon[K] } & OneOf<"name", ScdsIcon["name"], ScdsIconAttributes["name"]>;
+        "scds-link": Omit<ScdsLink, keyof ScdsLinkAttributes> & { [K in keyof ScdsLink & keyof ScdsLinkAttributes]?: ScdsLink[K] } & { [K in keyof ScdsLink & keyof ScdsLinkAttributes as `attr:${K}`]?: ScdsLinkAttributes[K] } & { [K in keyof ScdsLink & keyof ScdsLinkAttributes as `prop:${K}`]?: ScdsLink[K] } & OneOf<"href", ScdsLink["href"], ScdsLinkAttributes["href"]>;
         "scds-multi-column-list": Omit<ScdsMultiColumnList, keyof ScdsMultiColumnListAttributes> & { [K in keyof ScdsMultiColumnList & keyof ScdsMultiColumnListAttributes]?: ScdsMultiColumnList[K] } & { [K in keyof ScdsMultiColumnList & keyof ScdsMultiColumnListAttributes as `attr:${K}`]?: ScdsMultiColumnListAttributes[K] } & { [K in keyof ScdsMultiColumnList & keyof ScdsMultiColumnListAttributes as `prop:${K}`]?: ScdsMultiColumnList[K] };
+        "scds-nav-divider": ScdsNavDivider;
+        "scds-nav-group": Omit<ScdsNavGroup, keyof ScdsNavGroupAttributes> & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes]?: ScdsNavGroup[K] } & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes as `attr:${K}`]?: ScdsNavGroupAttributes[K] } & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes as `prop:${K}`]?: ScdsNavGroup[K] } & OneOf<"label", ScdsNavGroup["label"], ScdsNavGroupAttributes["label"]>;
+        "scds-nav-link": Omit<ScdsNavLink, keyof ScdsNavLinkAttributes> & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes]?: ScdsNavLink[K] } & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes as `attr:${K}`]?: ScdsNavLinkAttributes[K] } & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes as `prop:${K}`]?: ScdsNavLink[K] };
+        "scds-notice": Omit<ScdsNotice, keyof ScdsNoticeAttributes> & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes]?: ScdsNotice[K] } & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes as `attr:${K}`]?: ScdsNoticeAttributes[K] } & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes as `prop:${K}`]?: ScdsNotice[K] } & OneOf<"noticeTitle", ScdsNotice["noticeTitle"], ScdsNoticeAttributes["noticeTitle"]>;
+        "scds-sidebar": Omit<ScdsSidebar, keyof ScdsSidebarAttributes> & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes]?: ScdsSidebar[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `attr:${K}`]?: ScdsSidebarAttributes[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `prop:${K}`]?: ScdsSidebar[K] };
+        "scds-table": Omit<ScdsTable, keyof ScdsTableAttributes> & { [K in keyof ScdsTable & keyof ScdsTableAttributes]?: ScdsTable[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `attr:${K}`]?: ScdsTableAttributes[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `prop:${K}`]?: ScdsTable[K] };
+        "scds-text": Omit<ScdsText, keyof ScdsTextAttributes> & { [K in keyof ScdsText & keyof ScdsTextAttributes]?: ScdsText[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `attr:${K}`]?: ScdsTextAttributes[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `prop:${K}`]?: ScdsText[K] };
+        "scds-user-menu": Omit<ScdsUserMenu, keyof ScdsUserMenuAttributes> & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes]?: ScdsUserMenu[K] } & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes as `attr:${K}`]?: ScdsUserMenuAttributes[K] } & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes as `prop:${K}`]?: ScdsUserMenu[K] } & OneOf<"name", ScdsUserMenu["name"], ScdsUserMenuAttributes["name"]>;
     }
 }
 export { LocalJSX as JSX };
@@ -234,17 +1038,75 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             /**
-             * A card that extends `gcds-card` with what it doesn't have: a variant that
-             * renders without a destination link (`gcds-card` renders nothing at all if
-             * `href` is omitted -- both `cardTitle` and `href` are required props on the
-             * underlying Stencil component), a severity tone badge reusing
-             * `gcds-notice`'s tone vocabulary/icons, and a footer actions slot.
-             * Framework-agnostic (Stencil, shadow DOM). Angular consumers get a typed
-             * wrapper via
-             * @tn4consulting /shared-ui-scds (auto-generated from this
-             * package); other frameworks (e.g. React) use this custom element directly.
+             * Status/severity badge or pill -- extracted from scds-card's original
+             * inline badge logic. `variant="subtle"` drives Needs Attention's badges
+             * (Expiring soon/Reminder/Not Secure/Active/Inactive); `variant="pill"`
+             * drives Payments Activity's status pills (Pending/Complete). Both variants
+             * share the same tone->color-pair mapping, so contrast is verified once
+             * (tokens.contrast.spec.ts) and never re-composed by a consumer.
+             */
+            "scds-badge": LocalJSX.IntrinsicElements["scds-badge"] & JSXBase.HTMLAttributes<HTMLScdsBadgeElement>;
+            /**
+             * Replaces gcds-breadcrumbs. Children are scds-breadcrumbs-item elements --
+             * unlike GCDS, there's no built-in "Canada.ca" crumb; the consuming app
+             * passes every crumb explicitly (see dashboard's Overview.tsx), including
+             * its own Home item.
+             */
+            "scds-breadcrumbs": LocalJSX.IntrinsicElements["scds-breadcrumbs"] & JSXBase.HTMLAttributes<HTMLScdsBreadcrumbsElement>;
+            /**
+             * Replaces gcds-breadcrumbs-item. A "/" separator renders before every item except the first -- determined via :host(:first-child) in the light DOM, see scds-breadcrumbs-item.css.
+             */
+            "scds-breadcrumbs-item": LocalJSX.IntrinsicElements["scds-breadcrumbs-item"] & JSXBase.HTMLAttributes<HTMLScdsBreadcrumbsItemElement>;
+            /**
+             * Replaces gcds-button. A small surface deliberately -- scds-link takes over most former card-action button use (see scds-link).
+             */
+            "scds-button": LocalJSX.IntrinsicElements["scds-button"] & JSXBase.HTMLAttributes<HTMLScdsButtonElement>;
+            /**
+             * A card that renders with or without a destination link -- unlike the
+             * GCDS equivalent this used to delegate to, both a static variant (no
+             * `href`) and a severity tone badge (via scds-badge) are first-class here,
+             * not bolted on. Public attribute/slot/event contract is unchanged from
+             * the GCDS-delegating version: job-bank and employment-insurance depend on
+             * it unmodified.
              */
             "scds-card": LocalJSX.IntrinsicElements["scds-card"] & JSXBase.HTMLAttributes<HTMLScdsCardElement>;
+            /**
+             * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
+             * Layout-driven by slotted content rather than a prop-configured variant
+             * (gcds-footer's `display`/`contextual-heading` attributes have no
+             * equivalent here) -- the consuming app supplies its own link markup per
+             * column, this component only supplies the shared visual chrome.
+             */
+            "scds-footer": LocalJSX.IntrinsicElements["scds-footer"] & JSXBase.HTMLAttributes<HTMLScdsFooterElement>;
+            /**
+             * Top app bar: brand/title + skip link + slotted content. Replaces
+             * gcds-header + gcds-signature. Unlike gcds-header, there's no `menu`
+             * slot -- the nav moved into scds-sidebar entirely -- and no `toggle`
+             * slot -- the language switch is plain JSX rendered by the consuming app
+             * inside the `account` slot alongside scds-user-menu (see AppFrame.tsx).
+             * `nav-toggle` is a dedicated slot for the app's own hamburger button,
+             * since sidebar open/close state is owned by the app (AppFrame.tsx), not
+             * this component.
+             */
+            "scds-header": LocalJSX.IntrinsicElements["scds-header"] & JSXBase.HTMLAttributes<HTMLScdsHeaderElement>;
+            /**
+             * Replaces gcds-heading.
+             */
+            "scds-heading": LocalJSX.IntrinsicElements["scds-heading"] & JSXBase.HTMLAttributes<HTMLScdsHeadingElement>;
+            /**
+             * Replaces gcds-icon -- GCDS's own icon font/sprite goes away with the
+             * package, so this renders a fixed set of inline SVGs (original path data,
+             * not vendored) using stroke="currentColor" so it inherits color from CSS
+             * context (nav links, badges, buttons).
+             */
+            "scds-icon": LocalJSX.IntrinsicElements["scds-icon"] & JSXBase.HTMLAttributes<HTMLScdsIconElement>;
+            /**
+             * Text link with an optional leading/trailing icon -- matches the
+             * screenshot's "Apply for CDCP ->" / "Edit Profile ->" style. Replaces the
+             * gcds-button previously used in ConsiderThisList's card actions, which was
+             * visually wrong for this design (a secondary button, not a text link).
+             */
+            "scds-link": LocalJSX.IntrinsicElements["scds-link"] & JSXBase.HTMLAttributes<HTMLScdsLinkElement>;
             /**
              * A multi-column list for data GCDS has no component for (e.g. tasks,
              * documents) that isn't a literal table (`gcds-table`). Real `<ul>`/`<li>`
@@ -264,6 +1126,71 @@ declare module "@stencil/core" {
              * consumer needs it (see mfe-pot-platform's TODO/plan history).
              */
             "scds-multi-column-list": LocalJSX.IntrinsicElements["scds-multi-column-list"] & JSXBase.HTMLAttributes<HTMLScdsMultiColumnListElement>;
+            /**
+             * Visual separator between scds-sidebar's primary and secondary nav groups.
+             */
+            "scds-nav-divider": LocalJSX.IntrinsicElements["scds-nav-divider"] & JSXBase.HTMLAttributes<HTMLScdsNavDividerElement>;
+            /**
+             * Expandable category item (icon + label + chevron + children). Default
+             * slot holds scds-nav-link children. `disabled` renders an inert row for
+             * categories with no backing app in this family (Health/Recreation-Sport/
+             * Travel/Education) -- no expand affordance, dimmed, no children rendered.
+             */
+            "scds-nav-group": LocalJSX.IntrinsicElements["scds-nav-group"] & JSXBase.HTMLAttributes<HTMLScdsNavGroupElement>;
+            /**
+             * Leaf nav item, real or inert. Replaces gcds-nav-link -- the app's
+             * existing AppNavLink click-intercept wrapper (preventDefault + React
+             * Router navigate()) attaches its onClick to this host element the same
+             * way it did for gcds-nav-link, since the click event is composed and
+             * bubbles across the shadow boundary from the internal <a>.
+             * `disabled` renders an inert row (categories with no backing app in this
+             * family, e.g. Health/Travel) -- no href, no click handling, dimmed. When
+             * not disabled and `href` is omitted, renders a real <button> instead of
+             * an anchor with no href (which wouldn't be keyboard-focusable/operable)
+             * -- for a real nav action that isn't a navigation, e.g. shell's Log Out.
+             */
+            "scds-nav-link": LocalJSX.IntrinsicElements["scds-nav-link"] & JSXBase.HTMLAttributes<HTMLScdsNavLinkElement>;
+            /**
+             * Left-accent-border block. Replaces gcds-notice for dashboard's single
+             * "What's New?" card (see docs/msca-screenshots/dashboard.png) -- distinct
+             * from NeedsAttentionList, which moved to scds-card + scds-badge to match
+             * the screenshot's per-item card shape instead.
+             */
+            "scds-notice": LocalJSX.IntrinsicElements["scds-notice"] & JSXBase.HTMLAttributes<HTMLScdsNoticeElement>;
+            /**
+             * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
+             * fixed, always-visible column; below that it becomes an off-canvas drawer
+             * controlled by `open`, which the app owns (AppFrame.tsx's own
+             * useState) -- this component stays presentational/attribute-driven, same
+             * as every other scds-* element. Two named slots keep the category nav
+             * and the account/utility nav visually and semantically distinct; a
+             * scds-nav-divider between them is up to the consumer to place.
+             */
+            "scds-sidebar": LocalJSX.IntrinsicElements["scds-sidebar"] & JSXBase.HTMLAttributes<HTMLScdsSidebarElement>;
+            /**
+             * Styling shell around a real, app-authored semantic <table> passed in via
+             * the default slot -- keeps the existing accessible markup (<caption>,
+             * <th scope="col">) fully under the consuming app's control, this
+             * component only supplies shared visual styling (used by
+             * dashboard's Payments Activity table).
+             * Deliberately shadow:false (scoped CSS instead) -- unlike every other
+             * scds-* component, this one needs descendant selectors reaching into the
+             * app-authored table's own thead/tbody/th/td, and ::slotted() in a real
+             * shadow tree can only match the directly slotted element itself, never
+             * its descendants.
+             */
+            "scds-table": LocalJSX.IntrinsicElements["scds-table"] & JSXBase.HTMLAttributes<HTMLScdsTableElement>;
+            /**
+             * Replaces gcds-text.
+             */
+            "scds-text": LocalJSX.IntrinsicElements["scds-text"] & JSXBase.HTMLAttributes<HTMLScdsTextElement>;
+            /**
+             * Avatar/name trigger + dropdown panel. Replaces the ad hoc
+             * `<button slot="account">` sign-out control -- the default slot holds
+             * plain app-authored menu items (sign-out button, language-switch button),
+             * see AppFrame.tsx.
+             */
+            "scds-user-menu": LocalJSX.IntrinsicElements["scds-user-menu"] & JSXBase.HTMLAttributes<HTMLScdsUserMenuElement>;
         }
     }
 }

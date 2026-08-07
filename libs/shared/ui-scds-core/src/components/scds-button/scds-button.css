@@ -1,0 +1,55 @@
+:host {
+  display: inline-block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--scds-space-2);
+  font-weight: var(--scds-font-weight-bold);
+  border-radius: var(--scds-radius-sm);
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-family: inherit;
+}
+
+.scds-button--regular {
+  font-size: var(--scds-font-size-base);
+  padding: var(--scds-space-2) var(--scds-space-5);
+}
+
+.scds-button--small {
+  font-size: var(--scds-font-size-sm);
+  padding: var(--scds-space-1) var(--scds-space-3);
+}
+
+.scds-button--primary {
+  background: var(--scds-color-brand-600);
+  color: var(--scds-color-text-inverse);
+}
+
+.scds-button--primary:hover {
+  background: var(--scds-color-brand-700);
+}
+
+.scds-button--secondary {
+  background: var(--scds-color-white);
+  color: var(--scds-color-brand-600);
+  border-color: var(--scds-color-brand-600);
+}
+
+.scds-button--secondary:hover {
+  background: var(--scds-color-brand-50);
+}
+
+.scds-button:focus-visible {
+  outline: none;
+  box-shadow: var(--scds-focus-ring);
+}
+
+.scds-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

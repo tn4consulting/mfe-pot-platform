@@ -1,11 +1,11 @@
 {
-  "$comment": "Single source of truth for the versions every mfe-pot app repo must stay aligned on. See CLAUDE.md's 'Strong contracts' section: Native Federation's shared-singleton contract (see @tn4consulting/shared-federation-config/react) requires every app to run the same React/GCDS version, or the singleton sharing silently breaks at runtime with no compile-time warning across repos. A future version-alignment check reads each deployed remote's live remoteEntry.json (which lists every shared package's exact resolved version) and each BFF's /health, and asserts they all agree with this file.",
+  "$comment": "Single source of truth for the versions every mfe-pot app repo must stay aligned on. See CLAUDE.md's 'Strong contracts' section: Native Federation's shared-singleton contract (see @tn4consulting/shared-federation-config/react) requires every app to run the same React/SCDS version, or the singleton sharing silently breaks at runtime with no compile-time warning across repos. A future version-alignment check reads each deployed remote's live remoteEntry.json (which lists every shared package's exact resolved version) and each BFF's /health, and asserts they all agree with this file.",
   "node": "22.22.0",
   "pnpm": "10.33.2",
   "typescript": "6.0.3",
-  "gcdsComponents": "1.4.0",
+  "sharedUiScdsCore": "1.0.0",
   "sharedFederationRuntime": "1.0.1",
-  "sharedFederationConfig": "0.6.0",
+  "sharedFederationConfig": "0.7.0",
   "$reactComment": "Every app repo bundles react/react-dom as federation-shared singletons via @tn4consulting/shared-federation-config/react -- all 5 apps converted from Angular to React across the phased migration completed 2026-08 (see mfe-pot's docs/plans/).",
   "react": "19.2.8",
   "reactDom": "19.2.8"

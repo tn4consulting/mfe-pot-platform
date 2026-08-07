@@ -1,0 +1,25 @@
+:host {
+  display: inline-flex;
+  font-family: var(--scds-font-family);
+}
+
+.scds-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--scds-space-1);
+  color: var(--scds-color-brand-600);
+  font-weight: var(--scds-font-weight-medium);
+  font-size: var(--scds-font-size-base);
+  text-decoration: none;
+}
+
+.scds-link:hover .scds-link__label,
+.scds-link:focus-visible .scds-link__label {
+  text-decoration: underline;
+}
+
+.scds-link:focus-visible {
+  outline: none;
+  box-shadow: var(--scds-focus-ring);
+  border-radius: var(--scds-radius-sm);
+}

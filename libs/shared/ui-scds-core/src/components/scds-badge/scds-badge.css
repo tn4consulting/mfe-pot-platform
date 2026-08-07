@@ -1,0 +1,50 @@
+:host {
+  display: inline-flex;
+  font-family: var(--scds-font-family);
+}
+
+.scds-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--scds-space-1);
+  font-weight: var(--scds-font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.scds-badge--subtle {
+  font-size: var(--scds-font-size-sm);
+  padding: var(--scds-space-1) var(--scds-space-2);
+  border-radius: var(--scds-radius-sm);
+}
+
+.scds-badge--pill {
+  font-size: 0.75rem;
+  padding: 0.3125rem var(--scds-space-3);
+  border-radius: var(--scds-radius-pill);
+}
+
+.scds-badge--info {
+  background: var(--scds-color-status-info-bg);
+  color: var(--scds-color-status-info-text);
+}
+
+.scds-badge--success {
+  background: var(--scds-color-status-success-bg);
+  color: var(--scds-color-status-success-text);
+}
+
+.scds-badge--warning {
+  background: var(--scds-color-status-warning-bg);
+  color: var(--scds-color-status-warning-text);
+}
+
+.scds-badge--danger {
+  background: var(--scds-color-status-danger-bg);
+  color: var(--scds-color-status-danger-text);
+}
+
+.scds-badge--neutral {
+  background: var(--scds-color-status-neutral-bg);
+  color: var(--scds-color-status-neutral-text);
+}

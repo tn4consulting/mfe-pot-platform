@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+.scds-nav-divider {
+  border: none;
+  border-top: 1px solid var(--scds-border-color);
+  margin: var(--scds-space-3) var(--scds-space-4);
+}

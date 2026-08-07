@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+  color: var(--scds-color-text);
+}
+
+.scds-heading {
+  margin: 0 0 var(--scds-space-3) 0;
+  font-weight: var(--scds-font-weight-bold);
+  line-height: 1.25;
+}
+
+:host([tag='h1']) .scds-heading,
+h1.scds-heading {
+  font-size: var(--scds-font-size-h1);
+}
+
+h2.scds-heading {
+  font-size: var(--scds-font-size-h2);
+}
+
+h3.scds-heading {
+  font-size: var(--scds-font-size-h3);
+}
+
+h4.scds-heading {
+  font-size: var(--scds-font-size-h4);
+}
+
+h5.scds-heading {
+  font-size: var(--scds-font-size-h5);
+}
+
+h6.scds-heading {
+  font-size: var(--scds-font-size-h6);
+}

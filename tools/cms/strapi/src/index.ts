@@ -88,8 +88,8 @@ const PAGE_CONTENT = [
   // -- dashboard: payment history --
   {
     key: 'dashboard.payment-history.heading',
-    en: { title: 'Payment history', body: '' },
-    fr: { title: 'Historique des paiements', body: '' },
+    en: { title: 'Payments Activity', body: '' },
+    fr: { title: 'Activité des paiements', body: '' },
   },
   {
     key: 'dashboard.payment-history.table.program',

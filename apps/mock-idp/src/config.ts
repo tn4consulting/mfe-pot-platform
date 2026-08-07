@@ -15,7 +15,7 @@ export const config = {
   port,
   /** Also doubles as this token's `iss` claim -- BFFs verify against the same value. */
   issuer: process.env['MOCK_IDP_ISSUER'] ?? `http://localhost:${port}`,
-  /** Single shared literal: one SPA client (the shell) calling 3 resource servers (the BFFs). */
+  /** Single shared literal: every SPA client (both host apps) calling the same 3 resource servers (the BFFs). */
   audience: 'mfe-pot-bffs',
   /** 30 min, matching @tn4consulting/shared-auth's mock session TTL. */
   tokenTtlSeconds: 30 * 60,

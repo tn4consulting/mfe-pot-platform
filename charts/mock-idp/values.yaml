@@ -12,14 +12,18 @@ backend:
   # BFFs' own MOCK_IDP_ISSUER (their own charts) must match this exact
   # value for verification to succeed. Real cluster-internal traffic, same
   # pattern as dashboard-bff's JOB_BANK_BFF_URL/EMPLOYMENT_INSURANCE_BFF_URL.
-  # ALLOWED_REDIRECT_URI_ORIGINS is the opposite direction: the shell's
-  # public Ingress hostname, since that's what the citizen's own browser
-  # sends as redirect_uri during the real top-level /authorize navigation.
+  # ALLOWED_REDIRECT_URI_ORIGINS is the opposite direction: each host app's
+  # own public Ingress hostname, since that's what the citizen's own
+  # browser sends as redirect_uri during the real top-level /authorize
+  # navigation. Comma-separated (see apps/mock-idp/src/config.ts's
+  # .split(',')) -- two hosts (mfe-pot-msca-shell, mfe-pot-job-bank-shell)
+  # share this one mock-idp, proving the federation pattern generalizes to
+  # more than one host app.
   env:
     HOST: "0.0.0.0"
     PORT: "3005"
     MOCK_IDP_ISSUER: "http://mock-idp.default.svc.cluster.local:3005"
-    ALLOWED_REDIRECT_URI_ORIGINS: "http://shell.mfe-pot.local"
+    ALLOWED_REDIRECT_URI_ORIGINS: "http://msca-shell.mfe-pot.local,http://job-bank-shell.mfe-pot.local"
 
 ingress:
   host: mock-idp.mfe-pot.local

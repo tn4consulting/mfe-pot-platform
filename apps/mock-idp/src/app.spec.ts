@@ -6,7 +6,7 @@ import { getJwks } from './jwks';
 import { config } from './config';
 
 const REDIRECT_URI = 'http://localhost:4200/auth/callback';
-const CLIENT_ID = 'mfe-pot-shell';
+const CLIENT_ID = 'mfe-pot-msca-shell';
 
 function pkcePair() {
   const codeVerifier = 'a'.repeat(43);

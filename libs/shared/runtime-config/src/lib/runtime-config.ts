@@ -30,10 +30,10 @@ declare global {
  * (missing all of the remote's own keys), and fell back to its dev
  * defaults in every real deployment -- confirmed the hard way via an
  * actual browser (Playwright), not curl, against every extracted app
- * (`shell.mfe-pot.local` proxying job-bank/employment-insurance/dashboard
+ * (`msca-shell.mfe-pot.local` proxying job-bank/employment-insurance/dashboard
  * all failed to reach their own BFFs). Use `fetchRuntimeConfig` instead
  * for anything that might run as a federated remote, which is every app
- * except the actual host (`shell`).
+ * except the actual host apps (`msca-shell`, `job-bank-shell`).
  */
 export function getRuntimeConfig<T extends object>(devDefaults: T): T {
   const injected = typeof window !== 'undefined' ? window.__mfePotEnv : undefined;

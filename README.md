@@ -15,8 +15,8 @@ architecture, rationale, and gotchas, see [`CLAUDE.md`](./CLAUDE.md) (this
 repo) and [`../CLAUDE.md`](../CLAUDE.md) (the repo map one level up).
 
 If you only care about one app in isolation, see that app's own README
-instead (`mfe-pot-shell/README.md`, `mfe-pot-dashboard/README.md`, etc.) —
-each is independently buildable/testable/servable on its own.
+instead (`mfe-pot-msca-shell/README.md`, `mfe-pot-dashboard-mfe/README.md`,
+etc.) — each is independently buildable/testable/servable on its own.
 
 ## Prerequisites
 
@@ -78,6 +78,10 @@ reuses the cluster this creates.
   "Hosting / CI" section, "Phase 2"). Until then, run it against an
   already-running stack (`reuseExistingServer` picks up anything already
   listening on the expected ports).
+
+For testing changes to one sibling app federated into the shell without a
+full `kind` redeploy of every app, see [`../README.md`](../README.md)'s
+"Iterating on one app without a full kind rebuild" section.
 
 ## Publishing a `libs/shared/*` package
 

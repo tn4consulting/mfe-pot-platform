@@ -89,6 +89,33 @@ describe('RemoteRouteHost', () => {
     expect(loadRemoteModuleMock).toHaveBeenCalledWith('job-bank', './Component');
   });
 
+  it('recovers on the next remote after a previous remote failed to load', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    loadRemoteModuleMock.mockImplementation((remoteName) =>
+      remoteName === 'job-bank'
+        ? Promise.reject(new Error('remote unreachable'))
+        : Promise.resolve({ App: () => <p>content from {remoteName}</p> }),
+    );
+
+    const { rerender } = render(
+      <RemoteModuleLoaderContext.Provider value={loadRemoteModuleMock}>
+        <RemoteRouteHost remoteName="job-bank" />
+      </RemoteModuleLoaderContext.Provider>,
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent('temporarily unavailable'),
+    );
+
+    rerender(
+      <RemoteModuleLoaderContext.Provider value={loadRemoteModuleMock}>
+        <RemoteRouteHost remoteName="employment-insurance" />
+      </RemoteModuleLoaderContext.Provider>,
+    );
+
+    expect(await screen.findByText('content from employment-insurance')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it('throws if RemoteModuleLoaderContext has no value -- a setup error, not a runtime remote failure', () => {
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 

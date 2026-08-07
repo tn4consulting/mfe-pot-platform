@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-federation-runtime",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "RemoteRouteHost, RemoteModuleLoaderContext, PaymentHistoryWidgetLoaderContext, JobApplicationsWidgetLoaderContext, and EiReportingStatusWidgetLoaderContext -- the shared React Context patterns for safely loading federated modules. Every app repo converted to this major as of the family's completed React-only migration (2026-08); the last 0.x (Angular DI-token-shaped: REMOTE_MODULE_LOADER, REACT_MOUNTER, kind-discriminated widget loaders) major stays published only as a historical artifact.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

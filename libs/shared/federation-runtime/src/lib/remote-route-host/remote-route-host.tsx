@@ -90,7 +90,7 @@ export function RemoteRouteHost({ remoteName }: RemoteRouteHostProps) {
   );
 
   return (
-    <RemoteErrorBoundary remoteName={remoteName}>
+    <RemoteErrorBoundary key={remoteName} remoteName={remoteName}>
       <Suspense fallback={null}>
         <RemoteComponent />
       </Suspense>

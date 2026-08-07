@@ -11,7 +11,7 @@ import { signIn } from './support/sign-in';
  */
 test('employment-life-events embeds dashboard\'s live payment-history widget', async ({ page }) => {
   await signIn(page);
-  await page.goto('/employment-life-events');
+  await page.goto('/job-loss');
 
   await expect(page.getByText('Payment history')).toBeVisible();
   await expect(page.getByText(/Employment Insurance — \$638\.00/).first()).toBeVisible();

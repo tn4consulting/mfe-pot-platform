@@ -10,7 +10,7 @@ import { signIn } from './support/sign-in';
  */
 test('switching language updates both the shell and an embedded remote at once', async ({ page }) => {
   await signIn(page);
-  await page.goto('/employment-life-events');
+  await page.goto('/job-loss');
 
   await expect(page.getByRole('link', { name: /dashboard \(federated remote\)/i })).toBeVisible();
   await expect(page.getByText("you lost your job")).toBeVisible();

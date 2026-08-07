@@ -32,7 +32,7 @@ test.describe('federation: routed remotes', () => {
   });
 
   test('shell loads employment-life-events as a federated remote', async ({ page }) => {
-    await page.goto('/employment-life-events');
+    await page.goto('/job-loss');
     await expect(page.getByText("you lost your job")).toBeVisible();
   });
 

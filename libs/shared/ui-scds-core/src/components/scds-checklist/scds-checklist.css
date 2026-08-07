@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-checklist {
+  display: block;
+}
+
+scds-heading {
+  margin-bottom: var(--scds-space-2);
+}
+
+.scds-checklist__list {
+  display: block;
+}

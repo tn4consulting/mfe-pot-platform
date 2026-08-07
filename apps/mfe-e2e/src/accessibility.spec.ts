@@ -40,7 +40,7 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
 
   test('employment-life-events has no violations', async ({ page }) => {
     await signIn(page);
-    await page.goto('/employment-life-events');
+    await page.goto('/job-loss');
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
     expect(results.violations).toEqual([]);
   });

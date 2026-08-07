@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-ui-scds-core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The Service Canada Design System (SCDS) -- a self-contained, MSCA-portal-styled component set (app frame, nav, cards, badges, tables, and more) as framework-agnostic Stencil custom elements, consumed directly by every mfe-pot app. No longer depends on or wraps GCDS (breaking change from 0.x).",
   "repository": {
     "type": "git",

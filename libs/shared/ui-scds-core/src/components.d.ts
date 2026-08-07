@@ -95,6 +95,51 @@ export namespace Components {
         "toneLabel"?: string;
     }
     /**
+     * A labelled `role="list"` wrapper for `scds-checklist-item` children --
+     * consistent spacing/dividers between rows, plus an optional heading
+     * rendered via `scds-heading` above the list. `checklistHeading` is
+     * optional: omit it when a consumer already renders its own heading
+     * immediately before this element (e.g. one page-level `scds-heading`
+     * shared across several checklists) -- in that case set `list-label` for
+     * screen readers instead, since a `role="list"` with no accessible name
+     * announces as just "list".
+     */
+    interface ScdsChecklist {
+        "checklistHeading"?: string;
+        /**
+          * @default 'h3'
+         */
+        "headingTag": 'h2' | 'h3' | 'h4';
+        /**
+          * Accessible name for the `role="list"` element when `checklistHeading` is omitted.
+         */
+        "listLabel"?: string;
+    }
+    /**
+     * One row in a `scds-checklist` -- a title/description pair, a leading
+     * complete/incomplete marker, and a default slot for whatever interactive
+     * control actually drives completion (a checkbox, a link that becomes a
+     * status link once complete, or an embedded widget from another app).
+     * Deliberately owns no completion state of its own -- `complete` is fully
+     * caller-controlled, the same "presentational, state lives in the
+     * consumer" shape as `scds-badge`'s `tone`. First consumer:
+     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
+     * some items are self-reported and others derive completion from another
+     * federated app's real data -- this component doesn't need to know which.
+     */
+    interface ScdsChecklistItem {
+        /**
+          * @default false
+         */
+        "complete": boolean;
+        /**
+          * Announced (visually hidden) alongside the title once complete -- caller-supplied so it's bilingual, same as scds-badge's own `label`.
+         */
+        "completeLabel"?: string;
+        "description"?: string;
+        "itemTitle": string;
+    }
+    /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
      * Layout-driven by slotted content rather than a prop-configured variant
      * (gcds-footer's `display`/`contextual-heading` attributes have no
@@ -397,6 +442,40 @@ declare global {
         new (): HTMLScdsCardElement;
     };
     /**
+     * A labelled `role="list"` wrapper for `scds-checklist-item` children --
+     * consistent spacing/dividers between rows, plus an optional heading
+     * rendered via `scds-heading` above the list. `checklistHeading` is
+     * optional: omit it when a consumer already renders its own heading
+     * immediately before this element (e.g. one page-level `scds-heading`
+     * shared across several checklists) -- in that case set `list-label` for
+     * screen readers instead, since a `role="list"` with no accessible name
+     * announces as just "list".
+     */
+    interface HTMLScdsChecklistElement extends Components.ScdsChecklist, HTMLStencilElement {
+    }
+    var HTMLScdsChecklistElement: {
+        prototype: HTMLScdsChecklistElement;
+        new (): HTMLScdsChecklistElement;
+    };
+    /**
+     * One row in a `scds-checklist` -- a title/description pair, a leading
+     * complete/incomplete marker, and a default slot for whatever interactive
+     * control actually drives completion (a checkbox, a link that becomes a
+     * status link once complete, or an embedded widget from another app).
+     * Deliberately owns no completion state of its own -- `complete` is fully
+     * caller-controlled, the same "presentational, state lives in the
+     * consumer" shape as `scds-badge`'s `tone`. First consumer:
+     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
+     * some items are self-reported and others derive completion from another
+     * federated app's real data -- this component doesn't need to know which.
+     */
+    interface HTMLScdsChecklistItemElement extends Components.ScdsChecklistItem, HTMLStencilElement {
+    }
+    var HTMLScdsChecklistItemElement: {
+        prototype: HTMLScdsChecklistItemElement;
+        new (): HTMLScdsChecklistItemElement;
+    };
+    /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
      * Layout-driven by slotted content rather than a prop-configured variant
      * (gcds-footer's `display`/`contextual-heading` attributes have no
@@ -604,6 +683,8 @@ declare global {
         "scds-breadcrumbs-item": HTMLScdsBreadcrumbsItemElement;
         "scds-button": HTMLScdsButtonElement;
         "scds-card": HTMLScdsCardElement;
+        "scds-checklist": HTMLScdsChecklistElement;
+        "scds-checklist-item": HTMLScdsChecklistItemElement;
         "scds-footer": HTMLScdsFooterElement;
         "scds-header": HTMLScdsHeaderElement;
         "scds-heading": HTMLScdsHeadingElement;
@@ -705,6 +786,51 @@ declare namespace LocalJSX {
         "target"?: string;
         "tone"?: ScdsBadgeTone;
         "toneLabel"?: string;
+    }
+    /**
+     * A labelled `role="list"` wrapper for `scds-checklist-item` children --
+     * consistent spacing/dividers between rows, plus an optional heading
+     * rendered via `scds-heading` above the list. `checklistHeading` is
+     * optional: omit it when a consumer already renders its own heading
+     * immediately before this element (e.g. one page-level `scds-heading`
+     * shared across several checklists) -- in that case set `list-label` for
+     * screen readers instead, since a `role="list"` with no accessible name
+     * announces as just "list".
+     */
+    interface ScdsChecklist {
+        "checklistHeading"?: string;
+        /**
+          * @default 'h3'
+         */
+        "headingTag"?: 'h2' | 'h3' | 'h4';
+        /**
+          * Accessible name for the `role="list"` element when `checklistHeading` is omitted.
+         */
+        "listLabel"?: string;
+    }
+    /**
+     * One row in a `scds-checklist` -- a title/description pair, a leading
+     * complete/incomplete marker, and a default slot for whatever interactive
+     * control actually drives completion (a checkbox, a link that becomes a
+     * status link once complete, or an embedded widget from another app).
+     * Deliberately owns no completion state of its own -- `complete` is fully
+     * caller-controlled, the same "presentational, state lives in the
+     * consumer" shape as `scds-badge`'s `tone`. First consumer:
+     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
+     * some items are self-reported and others derive completion from another
+     * federated app's real data -- this component doesn't need to know which.
+     */
+    interface ScdsChecklistItem {
+        /**
+          * @default false
+         */
+        "complete"?: boolean;
+        /**
+          * Announced (visually hidden) alongside the title once complete -- caller-supplied so it's bilingual, same as scds-badge's own `label`.
+         */
+        "completeLabel"?: string;
+        "description"?: string;
+        "itemTitle": string;
     }
     /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
@@ -958,6 +1084,17 @@ declare namespace LocalJSX {
         "tone": ScdsBadgeTone;
         "toneLabel": string;
     }
+    interface ScdsChecklistAttributes {
+        "checklistHeading": string;
+        "headingTag": 'h2' | 'h3' | 'h4';
+        "listLabel": string;
+    }
+    interface ScdsChecklistItemAttributes {
+        "itemTitle": string;
+        "description": string;
+        "complete": boolean;
+        "completeLabel": string;
+    }
     interface ScdsHeaderAttributes {
         "appTitle": string;
         "skipToHref": string;
@@ -1017,6 +1154,8 @@ declare namespace LocalJSX {
         "scds-breadcrumbs-item": Omit<ScdsBreadcrumbsItem, keyof ScdsBreadcrumbsItemAttributes> & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes]?: ScdsBreadcrumbsItem[K] } & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes as `attr:${K}`]?: ScdsBreadcrumbsItemAttributes[K] } & { [K in keyof ScdsBreadcrumbsItem & keyof ScdsBreadcrumbsItemAttributes as `prop:${K}`]?: ScdsBreadcrumbsItem[K] };
         "scds-button": Omit<ScdsButton, keyof ScdsButtonAttributes> & { [K in keyof ScdsButton & keyof ScdsButtonAttributes]?: ScdsButton[K] } & { [K in keyof ScdsButton & keyof ScdsButtonAttributes as `attr:${K}`]?: ScdsButtonAttributes[K] } & { [K in keyof ScdsButton & keyof ScdsButtonAttributes as `prop:${K}`]?: ScdsButton[K] };
         "scds-card": Omit<ScdsCard, keyof ScdsCardAttributes> & { [K in keyof ScdsCard & keyof ScdsCardAttributes]?: ScdsCard[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `attr:${K}`]?: ScdsCardAttributes[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `prop:${K}`]?: ScdsCard[K] } & OneOf<"cardTitle", ScdsCard["cardTitle"], ScdsCardAttributes["cardTitle"]>;
+        "scds-checklist": Omit<ScdsChecklist, keyof ScdsChecklistAttributes> & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes]?: ScdsChecklist[K] } & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes as `attr:${K}`]?: ScdsChecklistAttributes[K] } & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes as `prop:${K}`]?: ScdsChecklist[K] };
+        "scds-checklist-item": Omit<ScdsChecklistItem, keyof ScdsChecklistItemAttributes> & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes]?: ScdsChecklistItem[K] } & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes as `attr:${K}`]?: ScdsChecklistItemAttributes[K] } & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes as `prop:${K}`]?: ScdsChecklistItem[K] } & OneOf<"itemTitle", ScdsChecklistItem["itemTitle"], ScdsChecklistItemAttributes["itemTitle"]>;
         "scds-footer": ScdsFooter;
         "scds-header": Omit<ScdsHeader, keyof ScdsHeaderAttributes> & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes]?: ScdsHeader[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `attr:${K}`]?: ScdsHeaderAttributes[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `prop:${K}`]?: ScdsHeader[K] } & OneOf<"appTitle", ScdsHeader["appTitle"], ScdsHeaderAttributes["appTitle"]>;
         "scds-heading": Omit<ScdsHeading, keyof ScdsHeadingAttributes> & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes]?: ScdsHeading[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `attr:${K}`]?: ScdsHeadingAttributes[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `prop:${K}`]?: ScdsHeading[K] };
@@ -1070,6 +1209,30 @@ declare module "@stencil/core" {
              * it unmodified.
              */
             "scds-card": LocalJSX.IntrinsicElements["scds-card"] & JSXBase.HTMLAttributes<HTMLScdsCardElement>;
+            /**
+             * A labelled `role="list"` wrapper for `scds-checklist-item` children --
+             * consistent spacing/dividers between rows, plus an optional heading
+             * rendered via `scds-heading` above the list. `checklistHeading` is
+             * optional: omit it when a consumer already renders its own heading
+             * immediately before this element (e.g. one page-level `scds-heading`
+             * shared across several checklists) -- in that case set `list-label` for
+             * screen readers instead, since a `role="list"` with no accessible name
+             * announces as just "list".
+             */
+            "scds-checklist": LocalJSX.IntrinsicElements["scds-checklist"] & JSXBase.HTMLAttributes<HTMLScdsChecklistElement>;
+            /**
+             * One row in a `scds-checklist` -- a title/description pair, a leading
+             * complete/incomplete marker, and a default slot for whatever interactive
+             * control actually drives completion (a checkbox, a link that becomes a
+             * status link once complete, or an embedded widget from another app).
+             * Deliberately owns no completion state of its own -- `complete` is fully
+             * caller-controlled, the same "presentational, state lives in the
+             * consumer" shape as `scds-badge`'s `tone`. First consumer:
+             * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
+             * some items are self-reported and others derive completion from another
+             * federated app's real data -- this component doesn't need to know which.
+             */
+            "scds-checklist-item": LocalJSX.IntrinsicElements["scds-checklist-item"] & JSXBase.HTMLAttributes<HTMLScdsChecklistItemElement>;
             /**
              * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
              * Layout-driven by slotted content rather than a prop-configured variant

@@ -79,6 +79,12 @@ jobs:
       - name: Publish shared-session-cache
         run: node tools/scripts/publish-shared-lib.mjs session-cache --publish
 
+      - name: Publish shared-observability-server
+        run: node tools/scripts/publish-shared-lib.mjs observability-server --publish
+
+      - name: Publish shared-observability
+        run: node tools/scripts/publish-shared-lib.mjs observability --publish
+
       # Framework-agnostic Stencil custom elements (ScdsCard,
       # ScdsMultiColumnList) -- no @tn4consulting dependencies of its own,
       # published before ui-scds since ui-scds's Angular wrapper is (or

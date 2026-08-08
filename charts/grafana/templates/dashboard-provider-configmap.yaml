@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.grafana.name }}-dashboard-provider
+  labels:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+data:
+  # Tells Grafana to load any dashboard JSON files from the directory
+  # templates/dashboards-configmap.yaml mounts separately (see
+  # templates/deployment.yaml) -- kept as its own ConfigMap/mount rather
+  # than living alongside the dashboard JSON itself, since Grafana's file
+  # provider scans this directory for *.yaml provider configs specifically,
+  # not for the dashboards themselves.
+  provider.yaml: |
+    apiVersion: 1
+    providers:
+      - name: mfe-pot
+        type: file
+        updateIntervalSeconds: 30
+        options:
+          path: /var/lib/grafana/dashboards

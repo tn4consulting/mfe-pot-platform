@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.tempo.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.tempo.name }}
+    app.kubernetes.io/component: observability
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Values.tempo.name }}
+    app.kubernetes.io/component: observability
+  ports:
+    - name: http
+      port: {{ .Values.tempo.httpPort }}
+      targetPort: {{ .Values.tempo.httpPort }}
+    - name: otlp-grpc
+      port: {{ .Values.tempo.otlpGrpcPort }}
+      targetPort: {{ .Values.tempo.otlpGrpcPort }}

@@ -1,0 +1,19 @@
+tempo:
+  name: tempo
+  replicaCount: 1
+  image:
+    repository: grafana/tempo
+    # Pinned to the 2.x line deliberately, not the newer 3.x -- confirmed
+    # live that 3.x replaced the classic single-binary `ingester`/
+    # `compactor` config schema this chart uses with a new Kafka-based
+    # ingest architecture (`block-builder`/`live-store`), which is real
+    # added complexity this PoC's simple local-storage single-binary setup
+    # doesn't need. 2.10.7 (latest 2.x as of writing) still speaks the
+    # classic schema below.
+    tag: "2.10.7"
+    pullPolicy: IfNotPresent
+  # 3200 is Tempo's own HTTP API port (Grafana's Tempo datasource queries
+  # this); 4317 is the OTLP/gRPC receiver charts/otel-collector's own
+  # otlp/tempo exporter sends traces to.
+  httpPort: 3200
+  otlpGrpcPort: 4317

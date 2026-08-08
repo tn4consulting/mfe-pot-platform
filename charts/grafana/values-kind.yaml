@@ -1,0 +1,6 @@
+# Nothing to override for the local kind cluster: like charts/session-cache,
+# grafana/grafana is a public Docker Hub image pulled normally, not
+# something built locally and side-loaded via `kind load docker-image` --
+# so there's no image.tag/pullPolicy swap needed here. Kept as an empty
+# file (rather than omitted) so every chart's `helm upgrade -f values.yaml
+# -f values-kind.yaml` invocation stays uniform across this repo.

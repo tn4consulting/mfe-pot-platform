@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.grafana.name }}-datasources
+  labels:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+data:
+  # Grafana auto-loads any *.yaml under GF_PATHS_PROVISIONING (default
+  # /etc/grafana/provisioning) on startup -- see templates/deployment.yaml
+  # for the mount path. Fixed in-cluster Service DNS, identical on kind and
+  # EKS, same as charts/otel-collector's own exporter targets.
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Tempo
+        # Fixed uid (not auto-generated) so the provisioned dashboard
+        # (templates/dashboards-configmap.yaml) can reference it reliably
+        # by a stable id, not a hash Grafana derives on its own.
+        uid: tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.default.svc.cluster.local:3200
+        jsonData:
+          httpMethod: GET
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus.default.svc.cluster.local:9090
+        isDefault: true

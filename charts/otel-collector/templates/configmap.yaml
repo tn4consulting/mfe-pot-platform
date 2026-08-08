@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.otelCollector.name }}-config
+  labels:
+    app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+    app.kubernetes.io/component: observability
+data:
+  # Mounted over the image's own baked-in default at this exact path (see
+  # templates/deployment.yaml) -- no CMD/args override needed.
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:{{ .Values.otelCollector.otlpGrpcPort }}
+          http:
+            endpoint: 0.0.0.0:{{ .Values.otelCollector.otlpHttpPort }}
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 200
+      batch: {}
+
+    exporters:
+      # Fixed in-cluster Service DNS, identical on kind and EKS -- same
+      # hardcoded-topology convention every other chart's values.yaml env
+      # block already uses for cross-release Service DNS (e.g.
+      # REDIS_URL/MOCK_IDP_JWKS_URL), not something that needs templating.
+      # "otlp_grpc", not "otlp" -- the contrib collector warns the plain
+      # "otlp" exporter type alias is deprecated in favor of this explicit
+      # name (confirmed live: startup logs warned about this before the
+      # rename).
+      otlp_grpc/tempo:
+        endpoint: tempo.default.svc.cluster.local:4317
+        tls:
+          insecure: true
+      prometheus:
+        endpoint: 0.0.0.0:{{ .Values.otelCollector.prometheusPort }}
+
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:{{ .Values.otelCollector.healthPort }}
+
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [otlp_grpc/tempo]
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [prometheus]

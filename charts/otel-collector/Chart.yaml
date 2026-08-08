@@ -1,0 +1,14 @@
+apiVersion: v2
+name: otel-collector
+description: >-
+  Deploys the OpenTelemetry Collector as its own shared Helm release -- the
+  single OTLP/HTTP ingestion point every BFF (in-cluster Service DNS) and
+  every frontend (this chart's own Ingress host, browser-reachable) exports
+  traces/metrics to. Fans out traces to charts/tempo and metrics to
+  charts/prometheus. See mfe-pot-platform/CLAUDE.md's observability section
+  and mfe-pot/TODO.md's "Observability" item. Bare upstream image
+  (otel/opentelemetry-collector-contrib), no app code of its own --
+  installed once, independently of any per-app chart, the same way
+  charts/session-cache is.
+type: application
+version: 0.1.0

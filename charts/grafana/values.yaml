@@ -1,0 +1,26 @@
+grafana:
+  name: grafana
+  replicaCount: 1
+  image:
+    repository: grafana/grafana
+    tag: "13.1.3"
+    pullPolicy: IfNotPresent
+  httpPort: 3000
+  # Dummy local-dev-only admin credentials, same posture as charts/strapi's
+  # committed dummy secretEnv -- no real data behind this Grafana, ever, so
+  # not reused for anything real regardless of environment.
+  adminUser: admin
+  adminPassword: devGrafanaAdminPassword==
+
+# The hostname is deliberately "grafana", not e.g. "observability" -- this
+# is genuinely Grafana, unlike "cms" standing in for Strapi, so there's no
+# implementation detail to hide behind a different name.
+ingress:
+  host: grafana.mfe-pot.local
+  className: nginx
+  # TLS off by default (kind/local has no real cert authority) --
+  # values-eks.yaml turns this on for a real AWS deployment. See
+  # templates/ingress.yaml for how these two fields are consumed.
+  tls:
+    enabled: false
+    clusterIssuer: letsencrypt-staging

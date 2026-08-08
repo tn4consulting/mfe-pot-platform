@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.otelCollector.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+    app.kubernetes.io/component: observability
+spec:
+  replicas: {{ .Values.otelCollector.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+      app.kubernetes.io/component: observability
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+        app.kubernetes.io/component: observability
+    spec:
+      containers:
+        - name: {{ .Values.otelCollector.name }}
+          image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
+          imagePullPolicy: {{ .Values.otelCollector.image.pullPolicy | default "IfNotPresent" }}
+          # Explicit rather than relying on the image's own baked-in default
+          # CMD, so the ConfigMap mount below is unambiguously what's used.
+          args:
+            - "--config=/etc/otelcol-contrib/config.yaml"
+          ports:
+            - name: otlp-grpc
+              containerPort: {{ .Values.otelCollector.otlpGrpcPort }}
+            - name: otlp-http
+              containerPort: {{ .Values.otelCollector.otlpHttpPort }}
+            - name: prometheus
+              containerPort: {{ .Values.otelCollector.prometheusPort }}
+            - name: health
+              containerPort: {{ .Values.otelCollector.healthPort }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otelcol-contrib/config.yaml
+              subPath: config.yaml
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.otelCollector.healthPort }}
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.otelCollector.healthPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.otelCollector.name }}-config

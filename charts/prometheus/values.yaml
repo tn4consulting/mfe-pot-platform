@@ -1,0 +1,12 @@
+prometheus:
+  name: prometheus
+  replicaCount: 1
+  image:
+    repository: prom/prometheus
+    tag: "v3.13.2"
+    pullPolicy: IfNotPresent
+  httpPort: 9090
+  # Short retention -- this is a resettable demo metrics store, not durable
+  # (same posture as charts/session-cache's Redis / charts/tempo's short
+  # block_retention), not a real ops/compliance requirement.
+  retention: 6h

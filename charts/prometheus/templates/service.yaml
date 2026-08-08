@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.prometheus.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.prometheus.name }}
+    app.kubernetes.io/component: observability
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Values.prometheus.name }}
+    app.kubernetes.io/component: observability
+  ports:
+    - name: http
+      port: {{ .Values.prometheus.httpPort }}
+      targetPort: {{ .Values.prometheus.httpPort }}

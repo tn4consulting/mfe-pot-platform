@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Builds the Strapi and mock-idp images, spins up (or reuses) a local kind
 # cluster with ingress-nginx, and helm-upgrades charts/strapi,
-# charts/session-cache, and charts/mock-idp onto it -- the platform repo's
-# equivalent of each app repo's own tools/deploy-local.sh. Unlike those,
-# kind-config.yaml already lives in this repo (no sibling checkout needed).
-# session-cache has no image to build at all (redis:7-alpine is pulled
-# straight from Docker Hub) and Strapi has no @tn4consulting/* dependency,
-# so neither needs GitHub Packages auth -- mock-idp's build does (the
-# whole workspace's pnpm-lock.yaml pulls other @tn4consulting/* packages
-# even though mock-idp itself doesn't import any), same as every app
-# repo's own BFF image build.
+# charts/session-cache, charts/mock-idp, and the observability stack
+# (charts/otel-collector, charts/tempo, charts/prometheus, charts/grafana)
+# onto it -- the platform repo's equivalent of each app repo's own
+# tools/deploy-local.sh. Unlike those, kind-config.yaml already lives in
+# this repo (no sibling checkout needed). session-cache and the 4
+# observability charts have no image to build at all (all bare upstream
+# Docker Hub images) and Strapi has no @tn4consulting/* dependency, so none
+# of those need GitHub Packages auth -- mock-idp's build does (the whole
+# workspace's pnpm-lock.yaml pulls other @tn4consulting/* packages even
+# though mock-idp itself doesn't import any), same as every app repo's own
+# BFF image build.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -46,6 +48,34 @@ echo "==> Deploying session-cache..."
 helm --kube-context "kind-$CLUSTER_NAME" upgrade --install session-cache charts/session-cache \
   -f charts/session-cache/values.yaml \
   -f charts/session-cache/values-kind.yaml \
+  --wait --timeout 120s
+
+# otel-collector/tempo/prometheus/grafana are all bare upstream images, same
+# as session-cache -- no build/kind-load/restart dance needed. Deployed in
+# this dependency order (collector needs tempo/prometheus reachable before
+# its first export attempt) before anything that exports telemetry to them.
+echo "==> Deploying otel-collector..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install otel-collector charts/otel-collector \
+  -f charts/otel-collector/values.yaml \
+  -f charts/otel-collector/values-kind.yaml \
+  --wait --timeout 120s
+
+echo "==> Deploying tempo..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install tempo charts/tempo \
+  -f charts/tempo/values.yaml \
+  -f charts/tempo/values-kind.yaml \
+  --wait --timeout 120s
+
+echo "==> Deploying prometheus..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install prometheus charts/prometheus \
+  -f charts/prometheus/values.yaml \
+  -f charts/prometheus/values-kind.yaml \
+  --wait --timeout 120s
+
+echo "==> Deploying grafana..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install grafana charts/grafana \
+  -f charts/grafana/values.yaml \
+  -f charts/grafana/values-kind.yaml \
   --wait --timeout 120s
 
 echo "==> Building strapi image..."

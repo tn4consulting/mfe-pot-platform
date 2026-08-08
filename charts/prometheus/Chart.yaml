@@ -1,0 +1,12 @@
+apiVersion: v2
+name: prometheus
+description: >-
+  Deploys Prometheus as its own shared Helm release -- scrapes
+  charts/otel-collector's own Prometheus exporter endpoint, backing the
+  Grafana Explore view for BFF request-rate/error/duration metrics.
+  Cluster-internal only, no Ingress -- nothing outside the cluster talks to
+  Prometheus directly. Bare upstream image, no PersistentVolume (resettable
+  demo metrics store, not durable -- same posture as charts/session-cache's
+  Redis). Installed once, independently of any per-app chart.
+type: application
+version: 0.1.0

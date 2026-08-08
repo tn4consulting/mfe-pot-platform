@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.prometheus.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.prometheus.name }}
+    app.kubernetes.io/component: observability
+spec:
+  replicas: {{ .Values.prometheus.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.prometheus.name }}
+      app.kubernetes.io/component: observability
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.prometheus.name }}
+        app.kubernetes.io/component: observability
+    spec:
+      # The official image runs as uid 65534 ("nobody") and can't write to
+      # an emptyDir mounted with default root ownership without this --
+      # a real, easy-to-hit permission error on first boot otherwise.
+      securityContext:
+        runAsUser: 65534
+        fsGroup: 65534
+      containers:
+        - name: {{ .Values.prometheus.name }}
+          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
+          imagePullPolicy: {{ .Values.prometheus.image.pullPolicy | default "IfNotPresent" }}
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.retention.time={{ .Values.prometheus.retention }}"
+            # Required so charts/tempo's metrics-generator (span-metrics,
+            # deriving RED metrics from spans -- see its own configmap.yaml
+            # comment) can remote_write into Prometheus. Off by default
+            # upstream since a remote-write receiver is a real attack
+            # surface in production; acceptable here, same posture as every
+            # other charts/* choice made for PoT simplicity over hardening.
+            - "--web.enable-remote-write-receiver"
+          ports:
+            - name: http
+              containerPort: {{ .Values.prometheus.httpPort }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: storage
+              mountPath: /prometheus
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: {{ .Values.prometheus.httpPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: {{ .Values.prometheus.httpPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.prometheus.name }}-config
+        # emptyDir, not a PersistentVolumeClaim -- a resettable demo metrics
+        # store, not durable storage. Gone on pod restart, same as Redis's
+        # own lack of persistence in charts/session-cache.
+        - name: storage
+          emptyDir: {}

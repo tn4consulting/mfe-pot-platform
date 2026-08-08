@@ -1,0 +1,14 @@
+apiVersion: v2
+name: grafana
+description: >-
+  Deploys Grafana as its own shared Helm release -- the "way to view the
+  data collected" for the whole observability stack: Explore against
+  charts/tempo (traces) and charts/prometheus (metrics), both provisioned
+  as datasources at startup. See mfe-pot-platform/CLAUDE.md's observability
+  section. Bare upstream image, no PersistentVolume (dashboards/state are
+  not expected to survive a pod restart -- v1 ships Explore-only, no
+  provisioned dashboards, so there's nothing stateful worth persisting yet).
+  Installed once, independently of any per-app chart, and Ingress-exposed
+  the same way charts/strapi (cms.mfe-pot.local) already is.
+type: application
+version: 0.1.0

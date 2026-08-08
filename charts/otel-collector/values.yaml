@@ -1,0 +1,28 @@
+otelCollector:
+  name: otel-collector
+  replicaCount: 1
+  image:
+    repository: otel/opentelemetry-collector-contrib
+    tag: "0.158.0"
+    pullPolicy: IfNotPresent
+  # otlpHttpPort is the one port both BFFs (in-cluster) and browsers (via
+  # this chart's Ingress) export to -- see charts/otel-collector/templates/
+  # configmap.yaml's receivers block. otlpGrpcPort stays enabled (the
+  # contrib image's default) but unexposed via the Service/Ingress -- no
+  # current consumer needs it, kept as headroom rather than actively used.
+  # prometheusPort is where Prometheus (charts/prometheus) scrapes exported
+  # metrics from -- cluster-internal only, same as otlpGrpcPort.
+  otlpHttpPort: 4318
+  otlpGrpcPort: 4317
+  prometheusPort: 8889
+  healthPort: 13133
+
+ingress:
+  host: otel.mfe-pot.local
+  className: nginx
+  # TLS off by default (kind/local has no real cert authority) --
+  # values-eks.yaml turns this on for a real AWS deployment. See
+  # templates/ingress.yaml for how these two fields are consumed.
+  tls:
+    enabled: false
+    clusterIssuer: letsencrypt-staging

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.grafana.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+  ports:
+    - port: {{ .Values.grafana.httpPort }}
+      targetPort: {{ .Values.grafana.httpPort }}

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.grafana.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+spec:
+  replicas: {{ .Values.grafana.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.grafana.name }}
+      app.kubernetes.io/component: observability
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.grafana.name }}
+        app.kubernetes.io/component: observability
+    spec:
+      containers:
+        - name: {{ .Values.grafana.name }}
+          image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
+          imagePullPolicy: {{ .Values.grafana.image.pullPolicy | default "IfNotPresent" }}
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: {{ .Values.grafana.adminUser | quote }}
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: {{ .Values.grafana.adminPassword | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.grafana.httpPort }}
+          volumeMounts:
+            - name: datasources
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: dashboards
+              mountPath: /var/lib/grafana/dashboards
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.grafana.httpPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.grafana.httpPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: datasources
+          configMap:
+            name: {{ .Values.grafana.name }}-datasources
+        - name: dashboard-provider
+          configMap:
+            name: {{ .Values.grafana.name }}-dashboard-provider
+        - name: dashboards
+          configMap:
+            name: {{ .Values.grafana.name }}-dashboards

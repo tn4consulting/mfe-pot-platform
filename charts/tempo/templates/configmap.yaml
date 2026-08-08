@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.tempo.name }}-config
+  labels:
+    app.kubernetes.io/name: {{ .Values.tempo.name }}
+    app.kubernetes.io/component: observability
+data:
+  # Mounted over the image's own baked-in default at this exact path (see
+  # templates/deployment.yaml).
+  tempo.yaml: |
+    server:
+      http_listen_port: {{ .Values.tempo.httpPort }}
+
+    distributor:
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: 0.0.0.0:{{ .Values.tempo.otlpGrpcPort }}
+
+    ingester:
+      max_block_duration: 5m
+
+    compactor:
+      compaction:
+        # This is a resettable demo trace store, not durable storage (same
+        # posture as charts/session-cache's Redis) -- a short retention
+        # keeps local disk usage bounded rather than matching any real
+        # compliance/ops requirement.
+        block_retention: 1h
+
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        wal:
+          path: /var/tempo/wal
+
+    # Derives RED metrics (request rate/error rate/duration) directly from
+    # spans, remote-written to charts/prometheus -- used instead of each
+    # BFF's own Node auto-instrumentation emitting http.server.request.duration
+    # itself, since deriving RED from spans (one proven-reliable signal) is
+    # simpler than depending on per-instrumentation-package metrics support,
+    # which varies. See mfe-pot-platform/CLAUDE.md's observability section
+    # for the live-verified gotcha this sidesteps: it's an ESM-vs-CJS
+    # loading nuance in the underlying require-in-the-middle hook, not a
+    # bug in the BFFs' own (CJS-compiled) code.
+    overrides:
+      defaults:
+        metrics_generator:
+          processors: [span-metrics]
+
+    metrics_generator:
+      registry:
+        external_labels:
+          source: tempo
+      storage:
+        path: /var/tempo/generator/wal
+        remote_write:
+          - url: http://prometheus.default.svc.cluster.local:9090/api/v1/write
+      traces_storage:
+        path: /var/tempo/generator/traces

@@ -1,0 +1,14 @@
+# Overrides layered on top of values.yaml for a real AWS EKS deployment (see
+# mfe-pot/docs/plans/20260808-1500-mfe-pot-aws-eks-terraform.md). No
+# image.repository override needed -- unlike strapi/mock-idp, this chart has
+# no Dockerfile of its own to push to ECR; it pulls the same public Docker
+# Hub image on both kind and EKS.
+
+ingress:
+  host: otel.aws.tn4consulting.com
+  tls:
+    enabled: true
+    # letsencrypt-staging while iterating (avoids Let's Encrypt rate limits
+    # across repeated cluster destroy/recreate cycles); switch to
+    # letsencrypt-prod only right before an actual demo.
+    clusterIssuer: letsencrypt-staging

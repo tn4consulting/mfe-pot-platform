@@ -680,6 +680,144 @@ const PAGE_CONTENT = [
     en: { title: 'Next report due {date} ({days} days)', body: '' },
     fr: { title: 'Prochaine déclaration due le {date} ({days} jours)', body: '' },
   },
+  // -- job-bank-shell: homepage (jobbank.gc.ca-style landing page) --
+  // `job-bank-shell.*`, not `job-bank.*` -- that namespace belongs to
+  // job-bank-mfe's own domain content (seeded above). This is
+  // hosting-identity content (this host's own bespoke homepage), not
+  // job-search-domain content -- see mfe-pot-job-bank-shell's
+  // content-client.ts.
+  {
+    key: 'job-bank-shell.home.hero.heading',
+    en: { title: 'Find your next job', body: '' },
+    fr: { title: 'Trouvez votre prochain emploi', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.hero.intro',
+    en: {
+      title: 'Search thousands of job postings from across Canada, and get free access to job market tools and services.',
+      body: '',
+    },
+    fr: {
+      title:
+        "Consultez des milliers d'offres d'emploi partout au Canada et accédez gratuitement à des outils et services du marché du travail.",
+      body: '',
+    },
+  },
+  {
+    key: 'job-bank-shell.home.hero.ctaButton',
+    en: { title: 'Search jobs', body: '' },
+    fr: { title: 'Rechercher des emplois', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.hero.searchLabel',
+    en: { title: 'Job title or keyword', body: '' },
+    fr: { title: 'Titre du poste ou mot-clé', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.hero.searchPlaceholder',
+    en: { title: 'e.g. software developer', body: '' },
+    fr: { title: 'p. ex. développeur de logiciels', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.heading',
+    en: { title: 'Featured tools', body: '' },
+    fr: { title: 'Outils en vedette', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.findJob.title',
+    en: { title: 'Find a job', body: '' },
+    fr: { title: 'Trouver un emploi', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.findJob.description',
+    en: { title: 'Search job postings and submit applications.', body: '' },
+    fr: { title: "Consultez les offres d'emploi et soumettez vos candidatures.", body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.fillPosition.title',
+    en: { title: 'Fill a position', body: '' },
+    fr: { title: 'Pourvoir un poste', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.fillPosition.description',
+    en: { title: 'Post a job and find qualified candidates.', body: '' },
+    fr: { title: 'Affichez un poste et trouvez des candidats qualifiés.', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.findTraining.title',
+    en: { title: 'Find training', body: '' },
+    fr: { title: 'Trouver une formation', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.featuredTools.findTraining.description',
+    en: { title: 'Explore programs to build in-demand skills.', body: '' },
+    fr: { title: 'Explorez des programmes pour développer des compétences recherchées.', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.heading',
+    en: { title: 'Trending topics', body: '' },
+    fr: { title: 'Sujets tendance', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.aiTraining.title',
+    en: { title: 'Explore AI training', body: '' },
+    fr: { title: 'Découvrir la formation en IA', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.aiTraining.description',
+    en: { title: 'Learn how artificial intelligence is changing the way we work.', body: '' },
+    fr: { title: "Découvrez comment l'intelligence artificielle transforme le monde du travail.", body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.careerDevelopment.title',
+    en: { title: 'Career development', body: '' },
+    fr: { title: 'Développement de carrière', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.careerDevelopment.description',
+    en: { title: 'Tools and resources to help plan your next career move.', body: '' },
+    fr: { title: 'Des outils et ressources pour planifier votre prochaine étape de carrière.', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.skilledTrades.title',
+    en: { title: 'Skilled trades', body: '' },
+    fr: { title: 'Métiers spécialisés', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.trendingTopics.skilledTrades.description',
+    en: { title: 'Discover opportunities in the skilled trades.', body: '' },
+    fr: { title: 'Découvrez les possibilités dans les métiers spécialisés.', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.heading',
+    en: { title: 'Resources for specific groups', body: '' },
+    fr: { title: 'Ressources pour groupes précis', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.youngCanadians.title',
+    en: { title: 'Young Canadians', body: '' },
+    fr: { title: 'Jeunes Canadiens', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.indigenousPeoples.title',
+    en: { title: 'Indigenous peoples', body: '' },
+    fr: { title: 'Peuples autochtones', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.newcomers.title',
+    en: { title: 'Newcomers to Canada', body: '' },
+    fr: { title: 'Nouveaux arrivants au Canada', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.personsWithDisabilities.title',
+    en: { title: 'Persons with disabilities', body: '' },
+    fr: { title: 'Personnes en situation de handicap', body: '' },
+  },
+  {
+    key: 'job-bank-shell.home.audienceResources.veterans.title',
+    en: { title: 'Armed Forces veterans', body: '' },
+    fr: { title: 'Vétérans des Forces armées', body: '' },
+  },
 ];
 
 async function ensureFrenchLocale(strapi: Core.Strapi) {

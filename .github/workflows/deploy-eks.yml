@@ -69,7 +69,7 @@ jobs:
           push: true
           tags: ${{ steps.ecr-login.outputs.registry }}/mfe-pot-mock-idp:${{ github.sha }}
           secrets: |
-            npm_token=${{ secrets.GITHUB_TOKEN }}
+            npm_token=${{ secrets.NPM_READ_TOKEN }}
 
       - name: Update kubeconfig
         if: steps.check.outputs.cluster_up == 'true'

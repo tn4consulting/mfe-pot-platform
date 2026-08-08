@@ -36,10 +36,22 @@ data "aws_iam_policy_document" "github_actions_trust" {
 
     # Scoped to `main` only -- matches exactly when Stage 2 (the deploy-eks CI
     # job) should run, never on a PR build.
+    #
+    # The classic AWS/GitHub OIDC tutorial pattern is
+    # "repo:ORG/REPO:ref:refs/heads/BRANCH" -- that does NOT match what this
+    # org's tokens actually carry. Confirmed live by decoding a real token
+    # (temporary debug step, since removed): the sub claim embeds numeric
+    # owner/repo IDs, e.g.
+    # "repo:tn4consulting@79846699/mfe-pot-platform@1319472070:ref:refs/heads/main"
+    # -- GitHub's newer repo-rename-hijack-resistant subject format, not
+    # documented in most existing AWS/GitHub OIDC tutorials as of when this
+    # was written. Wildcards cover both IDs so this survives a repo rename
+    # (the numeric repo ID doesn't change, but wildcarding it anyway costs
+    # nothing and is one less thing to get wrong).
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_org}/${var.github_repo_pattern}:ref:refs/heads/main"]
+      values   = ["repo:${var.github_org}@*/${var.github_repo_pattern}@*:ref:refs/heads/main"]
     }
   }
 }

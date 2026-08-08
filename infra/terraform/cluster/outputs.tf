@@ -2,6 +2,14 @@ output "cluster_endpoint" {
   value = module.eks.cluster_endpoint
 }
 
+output "cluster_name" {
+  value = var.cluster_name
+}
+
+output "aws_region" {
+  value = var.aws_region
+}
+
 output "update_kubeconfig_command" {
   value = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
 }

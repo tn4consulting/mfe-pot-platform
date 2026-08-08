@@ -66,6 +66,12 @@ reads the same three):
 
 ## Cluster (apply before a demo, destroy after)
 
+**Convenience scripts** (from `mfe-pot-platform`'s repo root): `pnpm eks:up` /
+`pnpm eks:down` wrap the `terraform plan`/`apply`/`destroy` cycle below with a
+preflight check (AWS credentials, foundation already applied) and a
+confirmation prompt before spending real money (`-y`/`--yes` to skip it for
+scripted use). Manual steps, if you want more control:
+
 ```sh
 cd cluster
 cp terraform.tfvars.example terraform.tfvars   # set acme_email at minimum

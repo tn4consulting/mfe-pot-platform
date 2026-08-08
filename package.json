@@ -6,7 +6,9 @@
     "build": "nx run-many -t build --all",
     "lint": "nx run-many -t lint --all",
     "test": "nx run-many -t test --all",
-    "deploy:local": "bash tools/deploy-local.sh"
+    "deploy:local": "bash tools/deploy-local.sh",
+    "eks:up": "bash tools/eks-up.sh",
+    "eks:down": "bash tools/eks-down.sh"
   },
   "private": true,
   "devDependencies": {

@@ -1,0 +1,173 @@
+name: Deploy to AWS EKS
+
+# Net-new workflow: unlike the 6 app repos, this repo never had a per-chart
+# kind-based CI validation stage for mock-idp/strapi (validated manually so
+# far -- see CLAUDE.md's "Hosting: Kubernetes + Helm" section). This workflow
+# only adds the Stage 2 half (build+push to ECR, deploy to the real AWS EKS
+# cluster) for those two charts; it deliberately does not also retrofit a
+# kind-validation stage, out of scope for the EKS pass. See
+# mfe-pot/docs/plans/20260808-1500-mfe-pot-aws-eks-terraform.md for the full
+# design.
+#
+# The demo cluster is intentionally torn down between demos (cost-conscious
+# PoC) -- most pushes to main happen while it doesn't exist, so every step
+# past the liveness check is individually gated on
+# `steps.check.outputs.cluster_up` rather than skipping the whole job.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mock-idp/**'
+      - 'tools/cms/strapi/**'
+      - 'charts/mock-idp/**'
+      - 'charts/strapi/**'
+      - 'charts/mfe-backend-lib/**'
+      - '.github/workflows/deploy-eks.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-mock-idp:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (GitHub OIDC, no long-lived keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Check whether the demo cluster currently exists
+        id: check
+        continue-on-error: true
+        run: |
+          if aws eks describe-cluster --name "${{ vars.EKS_CLUSTER_NAME }}" >/dev/null 2>&1; then
+            echo "cluster_up=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cluster_up=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to ECR
+        if: steps.check.outputs.cluster_up == 'true'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push mock-idp image
+        if: steps.check.outputs.cluster_up == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/mock-idp/Dockerfile
+          push: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/mfe-pot-mock-idp:${{ github.sha }}
+          secrets: |
+            npm_token=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update kubeconfig
+        if: steps.check.outputs.cluster_up == 'true'
+        run: aws eks update-kubeconfig --name "${{ vars.EKS_CLUSTER_NAME }}" --region "${{ vars.AWS_REGION }}"
+
+      - uses: azure/setup-helm@v4
+        if: steps.check.outputs.cluster_up == 'true'
+
+      # No sibling checkout needed here -- mock-idp's Chart.yaml depends on
+      # mfe-backend-lib via a plain same-repo relative path
+      # (file://../mfe-backend-lib), not the sibling-checkout-relative path
+      # the 6 app repos need.
+      - name: helm dependency update
+        if: steps.check.outputs.cluster_up == 'true'
+        run: helm dependency update charts/mock-idp
+
+      - name: helm upgrade --install against EKS
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          helm upgrade --install mock-idp charts/mock-idp \
+            -f charts/mock-idp/values.yaml \
+            -f charts/mock-idp/values-eks.yaml \
+            --set backend.image.tag=${{ github.sha }} \
+            --wait --timeout 180s
+
+      - name: Verify the deployed app is actually reachable over HTTPS
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          set -eu
+          for i in $(seq 1 60); do
+            status=$(curl -s -o /dev/null -w '%{http_code}' https://mock-idp.aws.tn4consulting.com/.well-known/jwks.json || echo 000)
+            [ "$status" = "200" ] && break
+            sleep 5
+          done
+          curl -sf https://mock-idp.aws.tn4consulting.com/.well-known/jwks.json | grep -q '"keys"'
+
+  deploy-strapi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (GitHub OIDC, no long-lived keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Check whether the demo cluster currently exists
+        id: check
+        continue-on-error: true
+        run: |
+          if aws eks describe-cluster --name "${{ vars.EKS_CLUSTER_NAME }}" >/dev/null 2>&1; then
+            echo "cluster_up=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cluster_up=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to ECR
+        if: steps.check.outputs.cluster_up == 'true'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push strapi image
+        if: steps.check.outputs.cluster_up == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: tools/cms/strapi
+          file: tools/cms/strapi/Dockerfile
+          push: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/mfe-pot-strapi:${{ github.sha }}
+
+      - name: Update kubeconfig
+        if: steps.check.outputs.cluster_up == 'true'
+        run: aws eks update-kubeconfig --name "${{ vars.EKS_CLUSTER_NAME }}" --region "${{ vars.AWS_REGION }}"
+
+      - uses: azure/setup-helm@v4
+        if: steps.check.outputs.cluster_up == 'true'
+
+      - name: helm upgrade --install against EKS
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          helm upgrade --install strapi charts/strapi \
+            -f charts/strapi/values.yaml \
+            -f charts/strapi/values-eks.yaml \
+            --set strapi.image.tag=${{ github.sha }} \
+            --wait --timeout 180s
+
+      - name: Verify the deployed app is actually reachable over HTTPS
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          set -eu
+          for i in $(seq 1 60); do
+            status=$(curl -s -o /dev/null -w '%{http_code}' https://cms.aws.tn4consulting.com/_health || echo 000)
+            [ "$status" = "204" ] && break
+            sleep 5
+          done
+          status=$(curl -s -o /dev/null -w '%{http_code}' https://cms.aws.tn4consulting.com/_health)
+          [ "$status" = "204" ]

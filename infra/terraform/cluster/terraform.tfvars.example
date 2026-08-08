@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars. acme_email has no default -- you must set it.
+
+aws_region              = "ca-central-1"
+domain_name             = "aws.tn4consulting.com"
+cluster_name            = "mfe-pot"
+kubernetes_version      = "1.31"
+letsencrypt_environment = "staging" # switch to "prod" right before an actual demo
+acme_email              = "you@tn4consulting.com"

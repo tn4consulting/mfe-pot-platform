@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars and adjust if you want anything other than the
+# defaults already baked into variables.tf. Nothing here is secret -- these
+# are all safe to commit if you do create a real terraform.tfvars, but the
+# .example suffix keeps it from being picked up automatically so you don't
+# accidentally apply before reviewing the defaults.
+
+aws_region  = "ca-central-1"
+domain_name = "aws.tn4consulting.com"
+github_org  = "tn4consulting"
+cluster_name = "mfe-pot"

@@ -72,3 +72,16 @@ Thumbs.db
 # charts/*/.gitignore entry for their own library-chart dependencies.
 charts/*/charts/
 charts/*/Chart.lock
+
+# Terraform (infra/terraform/{bootstrap,foundation,cluster}) -- state files
+# (including bootstrap's local one) and the local provider plugin cache are
+# never committed, even when remote; .terraform.lock.hcl IS committed
+# (per-layer, pins exact provider versions) so it's not listed here.
+infra/terraform/**/.terraform/
+infra/terraform/**/*.tfstate
+infra/terraform/**/*.tfstate.*
+infra/terraform/**/*.tfplan
+infra/terraform/**/*.tfvars
+!infra/terraform/**/*.tfvars.example
+crash.log
+crash.*.log

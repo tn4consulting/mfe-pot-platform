@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-progress-bar__track {
+  height: 0.5rem;
+  border-radius: var(--scds-radius-pill);
+  background: var(--scds-color-gray-200);
+  overflow: hidden;
+}
+
+.scds-progress-bar__fill {
+  height: 100%;
+  background: var(--scds-color-brand-600);
+  border-radius: var(--scds-radius-pill);
+  transition: width 0.2s ease;
+}
+
+.scds-progress-bar__text {
+  margin: var(--scds-space-2) 0 0;
+  display: flex;
+  gap: var(--scds-space-2);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.scds-progress-bar__step-count {
+  font-size: var(--scds-font-size-sm);
+  font-weight: var(--scds-font-weight-bold);
+  color: var(--scds-color-text-muted);
+}
+
+.scds-progress-bar__step-label {
+  font-size: var(--scds-font-size-base);
+  font-weight: var(--scds-font-weight-bold);
+  color: var(--scds-color-text);
+}

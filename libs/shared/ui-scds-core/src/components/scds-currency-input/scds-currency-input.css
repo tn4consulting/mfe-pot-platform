@@ -1,0 +1,78 @@
+:host {
+  display: block;
+  font-family: var(--scds-font-family);
+}
+
+.scds-currency-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--scds-space-1);
+}
+
+.scds-currency-input__label {
+  font-weight: var(--scds-font-weight-bold);
+  color: var(--scds-color-text);
+}
+
+.scds-currency-input__required {
+  color: var(--scds-color-status-danger-text);
+}
+
+.scds-currency-input__hint {
+  margin: 0;
+  font-size: var(--scds-font-size-sm);
+  color: var(--scds-color-text-muted);
+}
+
+.scds-currency-input__group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 14rem;
+  border: 1px solid var(--scds-color-gray-300);
+  border-radius: var(--scds-radius-sm);
+  background: var(--scds-color-white);
+}
+
+.scds-currency-input__group:focus-within {
+  box-shadow: var(--scds-focus-ring);
+  border-color: var(--scds-color-brand-500);
+}
+
+.scds-currency-input__group--error {
+  border-color: var(--scds-color-status-danger-text);
+}
+
+.scds-currency-input__symbol {
+  padding-inline-start: var(--scds-space-3);
+  color: var(--scds-color-text-muted);
+  font-weight: var(--scds-font-weight-medium);
+}
+
+.scds-currency-input__control {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: var(--scds-font-size-base);
+  color: var(--scds-color-text);
+  padding: var(--scds-space-2) var(--scds-space-3);
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.scds-currency-input__control:focus-visible {
+  outline: none;
+}
+
+.scds-currency-input__control:disabled {
+  color: var(--scds-color-text-muted);
+  cursor: not-allowed;
+}
+
+.scds-currency-input__error {
+  margin: 0;
+  font-size: var(--scds-font-size-sm);
+  font-weight: var(--scds-font-weight-medium);
+  color: var(--scds-color-status-danger-text);
+}

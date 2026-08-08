@@ -140,6 +140,34 @@ export namespace Components {
         "itemTitle": string;
     }
     /**
+     * A `$`-prefixed amount field -- e.g. the EI application wizard's "Rate of
+     * pay" question. Deliberately `<input inputmode="decimal">`, not
+     * `type="number"`: a native number input's browser-dependent spinner/locale
+     * formatting fights the fixed-2-decimal formatting this component owns
+     * (format-on-blur, raw text while actively typing so a trailing "." or
+     * partial "12.5" isn't clobbered mid-keystroke).
+     */
+    interface ScdsCurrencyInput {
+        /**
+          * @default '$'
+         */
+        "currencySymbol": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        "max"?: number;
+        "min"?: number;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "value"?: number;
+    }
+    /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
      * Layout-driven by slotted content rather than a prop-configured variant
      * (gcds-footer's `display`/`contextual-heading` attributes have no
@@ -304,6 +332,79 @@ export namespace Components {
         "tone": ScdsBadgeTone;
     }
     /**
+     * Single-choice control for the EI application wizard's enumerated
+     * questions (Yes/No eligibility screens, reason for separation, pay
+     * period, education level, preferred language, ...). Options are
+     * `scds-picker-option` light-DOM children, not a JSON-string or
+     * imperative-property prop -- see scds-picker-option's own comment for
+     * why this fits the family's existing `scds-breadcrumbs`/
+     * `scds-breadcrumbs-item` compositional idiom better than
+     * `scds-multi-column-list`'s approach.
+     * Options are read **once**, in `componentWillLoad`, not kept in sync via
+     * `slotchange`/`MutationObserver` -- every real consumer in this family
+     * passes a static option list authored directly in JSX (the option set
+     * for "reason for separation" never changes at runtime). If a future
+     * consumer needs a dynamically-changing option set after mount, that's
+     * the point to add slot-change handling; not needed today.
+     */
+    interface ScdsPicker {
+        /**
+          * @default 'radio'
+         */
+        "display": 'radio' | 'select';
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        /**
+          * @default this.controlId
+         */
+        "name": string;
+        /**
+          * @default 'Select an option'
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "value"?: string;
+    }
+    /**
+     * A single option for `scds-picker` -- composition mirrors
+     * `scds-breadcrumbs`/`scds-breadcrumbs-item` (light-DOM child elements
+     * carrying plain, serializable data), not a JSON-string/imperative-property
+     * prop on the parent the way `scds-multi-column-list`'s `columns` has to be
+     * (that component's columns embed non-serializable render functions --
+     * these options don't). Meaningless outside a `scds-picker` parent, same
+     * spirit as `scds-breadcrumbs-item`.
+     * `scds-picker` is `shadow: true` with no `<slot>` in its own template, so
+     * these children are never actually rendered/projected by the browser --
+     * `scds-picker` reads `value`/textContent directly off its own light-DOM
+     * children instead, once, in `componentWillLoad` (see its own comment on
+     * why a one-time read is enough here). Deliberately has **no `render()`
+     * method at all** -- not even one returning `null` -- so Stencil never
+     * touches this host's children: a `render()` that overwrote them (even
+     * with nothing) would race `scds-picker`'s own read of this element's
+     * `textContent`, and could clear the label text before the parent ever
+     * sees it. `display: none` is set directly via the DOM API instead of a
+     * `styleUrl`, for the same reason -- no shadow root, no scoped stylesheet.
+     */
+    interface ScdsPickerOption {
+        "value": string;
+    }
+    /**
+     * Step-progress indicator for a multi-step flow (first consumer: the EI
+     * application wizard in mfe-pot-employment-insurance-mfe). Deliberately a
+     * plain proportional bar + text, not a full stepper-with-dots component --
+     * the name is "progress-bar", and no consumer today needs a per-step dot
+     * list.
+     */
+    interface ScdsProgressBar {
+        "current": number;
+        "stepLabel"?: string;
+        "total": number;
+    }
+    /**
      * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
      * fixed, always-visible column; below that it becomes an off-canvas drawer
      * controlled by `open`, which the app owns (AppFrame.tsx's own
@@ -354,6 +455,39 @@ export namespace Components {
         "tag": 'p' | 'span';
     }
     /**
+     * Labeled single-line text control -- the first of the EI-application-form
+     * primitives (see scds-picker/scds-currency-input/scds-progress-bar,
+     * added alongside it). `value` stays a caller-controlled prop (same
+     * "presentational, state lives in the consumer" shape as scds-badge's
+     * `tone`) rather than internal state, so a consuming wizard can validate
+     * and re-render `error` on every keystroke without fighting this
+     * component for ownership of the value.
+     */
+    interface ScdsTextInput {
+        "autocomplete"?: string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        "maxlength"?: number;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default 'text'
+         */
+        "type": 'text' | 'tel' | 'email' | 'date';
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    /**
      * Avatar/name trigger + dropdown panel. Replaces the ad hoc
      * `<button slot="account">` sign-out control -- the default slot holds
      * plain app-authored menu items (sign-out button, language-switch button),
@@ -367,9 +501,21 @@ export interface ScdsCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLScdsCardElement;
 }
+export interface ScdsCurrencyInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLScdsCurrencyInputElement;
+}
+export interface ScdsPickerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLScdsPickerElement;
+}
 export interface ScdsSidebarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLScdsSidebarElement;
+}
+export interface ScdsTextInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLScdsTextInputElement;
 }
 declare global {
     /**
@@ -474,6 +620,31 @@ declare global {
     var HTMLScdsChecklistItemElement: {
         prototype: HTMLScdsChecklistItemElement;
         new (): HTMLScdsChecklistItemElement;
+    };
+    interface HTMLScdsCurrencyInputElementEventMap {
+        "scdsChange": number | null;
+    }
+    /**
+     * A `$`-prefixed amount field -- e.g. the EI application wizard's "Rate of
+     * pay" question. Deliberately `<input inputmode="decimal">`, not
+     * `type="number"`: a native number input's browser-dependent spinner/locale
+     * formatting fights the fixed-2-decimal formatting this component owns
+     * (format-on-blur, raw text while actively typing so a trailing "." or
+     * partial "12.5" isn't clobbered mid-keystroke).
+     */
+    interface HTMLScdsCurrencyInputElement extends Components.ScdsCurrencyInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLScdsCurrencyInputElementEventMap>(type: K, listener: (this: HTMLScdsCurrencyInputElement, ev: ScdsCurrencyInputCustomEvent<HTMLScdsCurrencyInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLScdsCurrencyInputElementEventMap>(type: K, listener: (this: HTMLScdsCurrencyInputElement, ev: ScdsCurrencyInputCustomEvent<HTMLScdsCurrencyInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLScdsCurrencyInputElement: {
+        prototype: HTMLScdsCurrencyInputElement;
+        new (): HTMLScdsCurrencyInputElement;
     };
     /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
@@ -612,6 +783,78 @@ declare global {
         prototype: HTMLScdsNoticeElement;
         new (): HTMLScdsNoticeElement;
     };
+    interface HTMLScdsPickerElementEventMap {
+        "scdsChange": string;
+    }
+    /**
+     * Single-choice control for the EI application wizard's enumerated
+     * questions (Yes/No eligibility screens, reason for separation, pay
+     * period, education level, preferred language, ...). Options are
+     * `scds-picker-option` light-DOM children, not a JSON-string or
+     * imperative-property prop -- see scds-picker-option's own comment for
+     * why this fits the family's existing `scds-breadcrumbs`/
+     * `scds-breadcrumbs-item` compositional idiom better than
+     * `scds-multi-column-list`'s approach.
+     * Options are read **once**, in `componentWillLoad`, not kept in sync via
+     * `slotchange`/`MutationObserver` -- every real consumer in this family
+     * passes a static option list authored directly in JSX (the option set
+     * for "reason for separation" never changes at runtime). If a future
+     * consumer needs a dynamically-changing option set after mount, that's
+     * the point to add slot-change handling; not needed today.
+     */
+    interface HTMLScdsPickerElement extends Components.ScdsPicker, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLScdsPickerElementEventMap>(type: K, listener: (this: HTMLScdsPickerElement, ev: ScdsPickerCustomEvent<HTMLScdsPickerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLScdsPickerElementEventMap>(type: K, listener: (this: HTMLScdsPickerElement, ev: ScdsPickerCustomEvent<HTMLScdsPickerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLScdsPickerElement: {
+        prototype: HTMLScdsPickerElement;
+        new (): HTMLScdsPickerElement;
+    };
+    /**
+     * A single option for `scds-picker` -- composition mirrors
+     * `scds-breadcrumbs`/`scds-breadcrumbs-item` (light-DOM child elements
+     * carrying plain, serializable data), not a JSON-string/imperative-property
+     * prop on the parent the way `scds-multi-column-list`'s `columns` has to be
+     * (that component's columns embed non-serializable render functions --
+     * these options don't). Meaningless outside a `scds-picker` parent, same
+     * spirit as `scds-breadcrumbs-item`.
+     * `scds-picker` is `shadow: true` with no `<slot>` in its own template, so
+     * these children are never actually rendered/projected by the browser --
+     * `scds-picker` reads `value`/textContent directly off its own light-DOM
+     * children instead, once, in `componentWillLoad` (see its own comment on
+     * why a one-time read is enough here). Deliberately has **no `render()`
+     * method at all** -- not even one returning `null` -- so Stencil never
+     * touches this host's children: a `render()` that overwrote them (even
+     * with nothing) would race `scds-picker`'s own read of this element's
+     * `textContent`, and could clear the label text before the parent ever
+     * sees it. `display: none` is set directly via the DOM API instead of a
+     * `styleUrl`, for the same reason -- no shadow root, no scoped stylesheet.
+     */
+    interface HTMLScdsPickerOptionElement extends Components.ScdsPickerOption, HTMLStencilElement {
+    }
+    var HTMLScdsPickerOptionElement: {
+        prototype: HTMLScdsPickerOptionElement;
+        new (): HTMLScdsPickerOptionElement;
+    };
+    /**
+     * Step-progress indicator for a multi-step flow (first consumer: the EI
+     * application wizard in mfe-pot-employment-insurance-mfe). Deliberately a
+     * plain proportional bar + text, not a full stepper-with-dots component --
+     * the name is "progress-bar", and no consumer today needs a per-step dot
+     * list.
+     */
+    interface HTMLScdsProgressBarElement extends Components.ScdsProgressBar, HTMLStencilElement {
+    }
+    var HTMLScdsProgressBarElement: {
+        prototype: HTMLScdsProgressBarElement;
+        new (): HTMLScdsProgressBarElement;
+    };
     interface HTMLScdsSidebarElementEventMap {
         "scdsClose": void;
     }
@@ -665,6 +908,33 @@ declare global {
         prototype: HTMLScdsTextElement;
         new (): HTMLScdsTextElement;
     };
+    interface HTMLScdsTextInputElementEventMap {
+        "scdsInput": string;
+        "scdsChange": string;
+    }
+    /**
+     * Labeled single-line text control -- the first of the EI-application-form
+     * primitives (see scds-picker/scds-currency-input/scds-progress-bar,
+     * added alongside it). `value` stays a caller-controlled prop (same
+     * "presentational, state lives in the consumer" shape as scds-badge's
+     * `tone`) rather than internal state, so a consuming wizard can validate
+     * and re-render `error` on every keystroke without fighting this
+     * component for ownership of the value.
+     */
+    interface HTMLScdsTextInputElement extends Components.ScdsTextInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLScdsTextInputElementEventMap>(type: K, listener: (this: HTMLScdsTextInputElement, ev: ScdsTextInputCustomEvent<HTMLScdsTextInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLScdsTextInputElementEventMap>(type: K, listener: (this: HTMLScdsTextInputElement, ev: ScdsTextInputCustomEvent<HTMLScdsTextInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLScdsTextInputElement: {
+        prototype: HTMLScdsTextInputElement;
+        new (): HTMLScdsTextInputElement;
+    };
     /**
      * Avatar/name trigger + dropdown panel. Replaces the ad hoc
      * `<button slot="account">` sign-out control -- the default slot holds
@@ -685,6 +955,7 @@ declare global {
         "scds-card": HTMLScdsCardElement;
         "scds-checklist": HTMLScdsChecklistElement;
         "scds-checklist-item": HTMLScdsChecklistItemElement;
+        "scds-currency-input": HTMLScdsCurrencyInputElement;
         "scds-footer": HTMLScdsFooterElement;
         "scds-header": HTMLScdsHeaderElement;
         "scds-heading": HTMLScdsHeadingElement;
@@ -695,9 +966,13 @@ declare global {
         "scds-nav-group": HTMLScdsNavGroupElement;
         "scds-nav-link": HTMLScdsNavLinkElement;
         "scds-notice": HTMLScdsNoticeElement;
+        "scds-picker": HTMLScdsPickerElement;
+        "scds-picker-option": HTMLScdsPickerOptionElement;
+        "scds-progress-bar": HTMLScdsProgressBarElement;
         "scds-sidebar": HTMLScdsSidebarElement;
         "scds-table": HTMLScdsTableElement;
         "scds-text": HTMLScdsTextElement;
+        "scds-text-input": HTMLScdsTextInputElement;
         "scds-user-menu": HTMLScdsUserMenuElement;
     }
 }
@@ -831,6 +1106,35 @@ declare namespace LocalJSX {
         "completeLabel"?: string;
         "description"?: string;
         "itemTitle": string;
+    }
+    /**
+     * A `$`-prefixed amount field -- e.g. the EI application wizard's "Rate of
+     * pay" question. Deliberately `<input inputmode="decimal">`, not
+     * `type="number"`: a native number input's browser-dependent spinner/locale
+     * formatting fights the fixed-2-decimal formatting this component owns
+     * (format-on-blur, raw text while actively typing so a trailing "." or
+     * partial "12.5" isn't clobbered mid-keystroke).
+     */
+    interface ScdsCurrencyInput {
+        /**
+          * @default '$'
+         */
+        "currencySymbol"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        "max"?: number;
+        "min"?: number;
+        "onScdsChange"?: (event: ScdsCurrencyInputCustomEvent<number | null>) => void;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        "value"?: number;
     }
     /**
      * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
@@ -997,6 +1301,80 @@ declare namespace LocalJSX {
         "tone"?: ScdsBadgeTone;
     }
     /**
+     * Single-choice control for the EI application wizard's enumerated
+     * questions (Yes/No eligibility screens, reason for separation, pay
+     * period, education level, preferred language, ...). Options are
+     * `scds-picker-option` light-DOM children, not a JSON-string or
+     * imperative-property prop -- see scds-picker-option's own comment for
+     * why this fits the family's existing `scds-breadcrumbs`/
+     * `scds-breadcrumbs-item` compositional idiom better than
+     * `scds-multi-column-list`'s approach.
+     * Options are read **once**, in `componentWillLoad`, not kept in sync via
+     * `slotchange`/`MutationObserver` -- every real consumer in this family
+     * passes a static option list authored directly in JSX (the option set
+     * for "reason for separation" never changes at runtime). If a future
+     * consumer needs a dynamically-changing option set after mount, that's
+     * the point to add slot-change handling; not needed today.
+     */
+    interface ScdsPicker {
+        /**
+          * @default 'radio'
+         */
+        "display"?: 'radio' | 'select';
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        /**
+          * @default this.controlId
+         */
+        "name"?: string;
+        "onScdsChange"?: (event: ScdsPickerCustomEvent<string>) => void;
+        /**
+          * @default 'Select an option'
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        "value"?: string;
+    }
+    /**
+     * A single option for `scds-picker` -- composition mirrors
+     * `scds-breadcrumbs`/`scds-breadcrumbs-item` (light-DOM child elements
+     * carrying plain, serializable data), not a JSON-string/imperative-property
+     * prop on the parent the way `scds-multi-column-list`'s `columns` has to be
+     * (that component's columns embed non-serializable render functions --
+     * these options don't). Meaningless outside a `scds-picker` parent, same
+     * spirit as `scds-breadcrumbs-item`.
+     * `scds-picker` is `shadow: true` with no `<slot>` in its own template, so
+     * these children are never actually rendered/projected by the browser --
+     * `scds-picker` reads `value`/textContent directly off its own light-DOM
+     * children instead, once, in `componentWillLoad` (see its own comment on
+     * why a one-time read is enough here). Deliberately has **no `render()`
+     * method at all** -- not even one returning `null` -- so Stencil never
+     * touches this host's children: a `render()` that overwrote them (even
+     * with nothing) would race `scds-picker`'s own read of this element's
+     * `textContent`, and could clear the label text before the parent ever
+     * sees it. `display: none` is set directly via the DOM API instead of a
+     * `styleUrl`, for the same reason -- no shadow root, no scoped stylesheet.
+     */
+    interface ScdsPickerOption {
+        "value": string;
+    }
+    /**
+     * Step-progress indicator for a multi-step flow (first consumer: the EI
+     * application wizard in mfe-pot-employment-insurance-mfe). Deliberately a
+     * plain proportional bar + text, not a full stepper-with-dots component --
+     * the name is "progress-bar", and no consumer today needs a per-step dot
+     * list.
+     */
+    interface ScdsProgressBar {
+        "current": number;
+        "stepLabel"?: string;
+        "total": number;
+    }
+    /**
      * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
      * fixed, always-visible column; below that it becomes an off-canvas drawer
      * controlled by `open`, which the app owns (AppFrame.tsx's own
@@ -1048,6 +1426,47 @@ declare namespace LocalJSX {
         "tag"?: 'p' | 'span';
     }
     /**
+     * Labeled single-line text control -- the first of the EI-application-form
+     * primitives (see scds-picker/scds-currency-input/scds-progress-bar,
+     * added alongside it). `value` stays a caller-controlled prop (same
+     * "presentational, state lives in the consumer" shape as scds-badge's
+     * `tone`) rather than internal state, so a consuming wizard can validate
+     * and re-render `error` on every keystroke without fighting this
+     * component for ownership of the value.
+     */
+    interface ScdsTextInput {
+        "autocomplete"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "error"?: string;
+        "hint"?: string;
+        "label": string;
+        "maxlength"?: number;
+        /**
+          * Emitted on blur/native change -- for validation that should only run once a field is "committed".
+         */
+        "onScdsChange"?: (event: ScdsTextInputCustomEvent<string>) => void;
+        /**
+          * Emitted on every keystroke -- for a controlled-value wizard field re-rendering `value` on each change.
+         */
+        "onScdsInput"?: (event: ScdsTextInputCustomEvent<string>) => void;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 'text'
+         */
+        "type"?: 'text' | 'tel' | 'email' | 'date';
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    /**
      * Avatar/name trigger + dropdown panel. Replaces the ad hoc
      * `<button slot="account">` sign-out control -- the default slot holds
      * plain app-authored menu items (sign-out button, language-switch button),
@@ -1095,6 +1514,17 @@ declare namespace LocalJSX {
         "complete": boolean;
         "completeLabel": string;
     }
+    interface ScdsCurrencyInputAttributes {
+        "label": string;
+        "value": number;
+        "hint": string;
+        "error": string;
+        "required": boolean;
+        "min": number;
+        "max": number;
+        "currencySymbol": string;
+        "disabled": boolean;
+    }
     interface ScdsHeaderAttributes {
         "appTitle": string;
         "skipToHref": string;
@@ -1133,6 +1563,24 @@ declare namespace LocalJSX {
         "titleTag": 'h2' | 'h3' | 'h4';
         "tone": ScdsBadgeTone;
     }
+    interface ScdsPickerAttributes {
+        "label": string;
+        "value": string;
+        "display": 'radio' | 'select';
+        "hint": string;
+        "error": string;
+        "required": boolean;
+        "name": string;
+        "placeholder": string;
+    }
+    interface ScdsPickerOptionAttributes {
+        "value": string;
+    }
+    interface ScdsProgressBarAttributes {
+        "current": number;
+        "total": number;
+        "stepLabel": string;
+    }
     interface ScdsSidebarAttributes {
         "open": boolean;
         "label": string;
@@ -1143,6 +1591,18 @@ declare namespace LocalJSX {
     interface ScdsTextAttributes {
         "tag": 'p' | 'span';
         "size": 'small' | 'base';
+    }
+    interface ScdsTextInputAttributes {
+        "label": string;
+        "value": string;
+        "type": 'text' | 'tel' | 'email' | 'date';
+        "hint": string;
+        "error": string;
+        "required": boolean;
+        "autocomplete": string;
+        "placeholder": string;
+        "maxlength": number;
+        "disabled": boolean;
     }
     interface ScdsUserMenuAttributes {
         "name": string;
@@ -1156,6 +1616,7 @@ declare namespace LocalJSX {
         "scds-card": Omit<ScdsCard, keyof ScdsCardAttributes> & { [K in keyof ScdsCard & keyof ScdsCardAttributes]?: ScdsCard[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `attr:${K}`]?: ScdsCardAttributes[K] } & { [K in keyof ScdsCard & keyof ScdsCardAttributes as `prop:${K}`]?: ScdsCard[K] } & OneOf<"cardTitle", ScdsCard["cardTitle"], ScdsCardAttributes["cardTitle"]>;
         "scds-checklist": Omit<ScdsChecklist, keyof ScdsChecklistAttributes> & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes]?: ScdsChecklist[K] } & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes as `attr:${K}`]?: ScdsChecklistAttributes[K] } & { [K in keyof ScdsChecklist & keyof ScdsChecklistAttributes as `prop:${K}`]?: ScdsChecklist[K] };
         "scds-checklist-item": Omit<ScdsChecklistItem, keyof ScdsChecklistItemAttributes> & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes]?: ScdsChecklistItem[K] } & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes as `attr:${K}`]?: ScdsChecklistItemAttributes[K] } & { [K in keyof ScdsChecklistItem & keyof ScdsChecklistItemAttributes as `prop:${K}`]?: ScdsChecklistItem[K] } & OneOf<"itemTitle", ScdsChecklistItem["itemTitle"], ScdsChecklistItemAttributes["itemTitle"]>;
+        "scds-currency-input": Omit<ScdsCurrencyInput, keyof ScdsCurrencyInputAttributes> & { [K in keyof ScdsCurrencyInput & keyof ScdsCurrencyInputAttributes]?: ScdsCurrencyInput[K] } & { [K in keyof ScdsCurrencyInput & keyof ScdsCurrencyInputAttributes as `attr:${K}`]?: ScdsCurrencyInputAttributes[K] } & { [K in keyof ScdsCurrencyInput & keyof ScdsCurrencyInputAttributes as `prop:${K}`]?: ScdsCurrencyInput[K] } & OneOf<"label", ScdsCurrencyInput["label"], ScdsCurrencyInputAttributes["label"]>;
         "scds-footer": ScdsFooter;
         "scds-header": Omit<ScdsHeader, keyof ScdsHeaderAttributes> & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes]?: ScdsHeader[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `attr:${K}`]?: ScdsHeaderAttributes[K] } & { [K in keyof ScdsHeader & keyof ScdsHeaderAttributes as `prop:${K}`]?: ScdsHeader[K] } & OneOf<"appTitle", ScdsHeader["appTitle"], ScdsHeaderAttributes["appTitle"]>;
         "scds-heading": Omit<ScdsHeading, keyof ScdsHeadingAttributes> & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes]?: ScdsHeading[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `attr:${K}`]?: ScdsHeadingAttributes[K] } & { [K in keyof ScdsHeading & keyof ScdsHeadingAttributes as `prop:${K}`]?: ScdsHeading[K] };
@@ -1166,9 +1627,13 @@ declare namespace LocalJSX {
         "scds-nav-group": Omit<ScdsNavGroup, keyof ScdsNavGroupAttributes> & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes]?: ScdsNavGroup[K] } & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes as `attr:${K}`]?: ScdsNavGroupAttributes[K] } & { [K in keyof ScdsNavGroup & keyof ScdsNavGroupAttributes as `prop:${K}`]?: ScdsNavGroup[K] } & OneOf<"label", ScdsNavGroup["label"], ScdsNavGroupAttributes["label"]>;
         "scds-nav-link": Omit<ScdsNavLink, keyof ScdsNavLinkAttributes> & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes]?: ScdsNavLink[K] } & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes as `attr:${K}`]?: ScdsNavLinkAttributes[K] } & { [K in keyof ScdsNavLink & keyof ScdsNavLinkAttributes as `prop:${K}`]?: ScdsNavLink[K] };
         "scds-notice": Omit<ScdsNotice, keyof ScdsNoticeAttributes> & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes]?: ScdsNotice[K] } & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes as `attr:${K}`]?: ScdsNoticeAttributes[K] } & { [K in keyof ScdsNotice & keyof ScdsNoticeAttributes as `prop:${K}`]?: ScdsNotice[K] } & OneOf<"noticeTitle", ScdsNotice["noticeTitle"], ScdsNoticeAttributes["noticeTitle"]>;
+        "scds-picker": Omit<ScdsPicker, keyof ScdsPickerAttributes> & { [K in keyof ScdsPicker & keyof ScdsPickerAttributes]?: ScdsPicker[K] } & { [K in keyof ScdsPicker & keyof ScdsPickerAttributes as `attr:${K}`]?: ScdsPickerAttributes[K] } & { [K in keyof ScdsPicker & keyof ScdsPickerAttributes as `prop:${K}`]?: ScdsPicker[K] } & OneOf<"label", ScdsPicker["label"], ScdsPickerAttributes["label"]>;
+        "scds-picker-option": Omit<ScdsPickerOption, keyof ScdsPickerOptionAttributes> & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes]?: ScdsPickerOption[K] } & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes as `attr:${K}`]?: ScdsPickerOptionAttributes[K] } & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes as `prop:${K}`]?: ScdsPickerOption[K] } & OneOf<"value", ScdsPickerOption["value"], ScdsPickerOptionAttributes["value"]>;
+        "scds-progress-bar": Omit<ScdsProgressBar, keyof ScdsProgressBarAttributes> & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes]?: ScdsProgressBar[K] } & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes as `attr:${K}`]?: ScdsProgressBarAttributes[K] } & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes as `prop:${K}`]?: ScdsProgressBar[K] } & OneOf<"current", ScdsProgressBar["current"], ScdsProgressBarAttributes["current"]> & OneOf<"total", ScdsProgressBar["total"], ScdsProgressBarAttributes["total"]>;
         "scds-sidebar": Omit<ScdsSidebar, keyof ScdsSidebarAttributes> & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes]?: ScdsSidebar[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `attr:${K}`]?: ScdsSidebarAttributes[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `prop:${K}`]?: ScdsSidebar[K] };
         "scds-table": Omit<ScdsTable, keyof ScdsTableAttributes> & { [K in keyof ScdsTable & keyof ScdsTableAttributes]?: ScdsTable[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `attr:${K}`]?: ScdsTableAttributes[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `prop:${K}`]?: ScdsTable[K] };
         "scds-text": Omit<ScdsText, keyof ScdsTextAttributes> & { [K in keyof ScdsText & keyof ScdsTextAttributes]?: ScdsText[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `attr:${K}`]?: ScdsTextAttributes[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `prop:${K}`]?: ScdsText[K] };
+        "scds-text-input": Omit<ScdsTextInput, keyof ScdsTextInputAttributes> & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes]?: ScdsTextInput[K] } & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes as `attr:${K}`]?: ScdsTextInputAttributes[K] } & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes as `prop:${K}`]?: ScdsTextInput[K] } & OneOf<"label", ScdsTextInput["label"], ScdsTextInputAttributes["label"]>;
         "scds-user-menu": Omit<ScdsUserMenu, keyof ScdsUserMenuAttributes> & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes]?: ScdsUserMenu[K] } & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes as `attr:${K}`]?: ScdsUserMenuAttributes[K] } & { [K in keyof ScdsUserMenu & keyof ScdsUserMenuAttributes as `prop:${K}`]?: ScdsUserMenu[K] } & OneOf<"name", ScdsUserMenu["name"], ScdsUserMenuAttributes["name"]>;
     }
 }
@@ -1233,6 +1698,15 @@ declare module "@stencil/core" {
              * federated app's real data -- this component doesn't need to know which.
              */
             "scds-checklist-item": LocalJSX.IntrinsicElements["scds-checklist-item"] & JSXBase.HTMLAttributes<HTMLScdsChecklistItemElement>;
+            /**
+             * A `$`-prefixed amount field -- e.g. the EI application wizard's "Rate of
+             * pay" question. Deliberately `<input inputmode="decimal">`, not
+             * `type="number"`: a native number input's browser-dependent spinner/locale
+             * formatting fights the fixed-2-decimal formatting this component owns
+             * (format-on-blur, raw text while actively typing so a trailing "." or
+             * partial "12.5" isn't clobbered mid-keystroke).
+             */
+            "scds-currency-input": LocalJSX.IntrinsicElements["scds-currency-input"] & JSXBase.HTMLAttributes<HTMLScdsCurrencyInputElement>;
             /**
              * Dark-navy 3-column footer + bottom row + wordmark. Replaces gcds-footer.
              * Layout-driven by slotted content rather than a prop-configured variant
@@ -1321,6 +1795,52 @@ declare module "@stencil/core" {
              */
             "scds-notice": LocalJSX.IntrinsicElements["scds-notice"] & JSXBase.HTMLAttributes<HTMLScdsNoticeElement>;
             /**
+             * Single-choice control for the EI application wizard's enumerated
+             * questions (Yes/No eligibility screens, reason for separation, pay
+             * period, education level, preferred language, ...). Options are
+             * `scds-picker-option` light-DOM children, not a JSON-string or
+             * imperative-property prop -- see scds-picker-option's own comment for
+             * why this fits the family's existing `scds-breadcrumbs`/
+             * `scds-breadcrumbs-item` compositional idiom better than
+             * `scds-multi-column-list`'s approach.
+             * Options are read **once**, in `componentWillLoad`, not kept in sync via
+             * `slotchange`/`MutationObserver` -- every real consumer in this family
+             * passes a static option list authored directly in JSX (the option set
+             * for "reason for separation" never changes at runtime). If a future
+             * consumer needs a dynamically-changing option set after mount, that's
+             * the point to add slot-change handling; not needed today.
+             */
+            "scds-picker": LocalJSX.IntrinsicElements["scds-picker"] & JSXBase.HTMLAttributes<HTMLScdsPickerElement>;
+            /**
+             * A single option for `scds-picker` -- composition mirrors
+             * `scds-breadcrumbs`/`scds-breadcrumbs-item` (light-DOM child elements
+             * carrying plain, serializable data), not a JSON-string/imperative-property
+             * prop on the parent the way `scds-multi-column-list`'s `columns` has to be
+             * (that component's columns embed non-serializable render functions --
+             * these options don't). Meaningless outside a `scds-picker` parent, same
+             * spirit as `scds-breadcrumbs-item`.
+             * `scds-picker` is `shadow: true` with no `<slot>` in its own template, so
+             * these children are never actually rendered/projected by the browser --
+             * `scds-picker` reads `value`/textContent directly off its own light-DOM
+             * children instead, once, in `componentWillLoad` (see its own comment on
+             * why a one-time read is enough here). Deliberately has **no `render()`
+             * method at all** -- not even one returning `null` -- so Stencil never
+             * touches this host's children: a `render()` that overwrote them (even
+             * with nothing) would race `scds-picker`'s own read of this element's
+             * `textContent`, and could clear the label text before the parent ever
+             * sees it. `display: none` is set directly via the DOM API instead of a
+             * `styleUrl`, for the same reason -- no shadow root, no scoped stylesheet.
+             */
+            "scds-picker-option": LocalJSX.IntrinsicElements["scds-picker-option"] & JSXBase.HTMLAttributes<HTMLScdsPickerOptionElement>;
+            /**
+             * Step-progress indicator for a multi-step flow (first consumer: the EI
+             * application wizard in mfe-pot-employment-insurance-mfe). Deliberately a
+             * plain proportional bar + text, not a full stepper-with-dots component --
+             * the name is "progress-bar", and no consumer today needs a per-step dot
+             * list.
+             */
+            "scds-progress-bar": LocalJSX.IntrinsicElements["scds-progress-bar"] & JSXBase.HTMLAttributes<HTMLScdsProgressBarElement>;
+            /**
              * Collapsible nav container. At >=48em (--scds-breakpoint-sidebar) it's a
              * fixed, always-visible column; below that it becomes an off-canvas drawer
              * controlled by `open`, which the app owns (AppFrame.tsx's own
@@ -1347,6 +1867,16 @@ declare module "@stencil/core" {
              * Replaces gcds-text.
              */
             "scds-text": LocalJSX.IntrinsicElements["scds-text"] & JSXBase.HTMLAttributes<HTMLScdsTextElement>;
+            /**
+             * Labeled single-line text control -- the first of the EI-application-form
+             * primitives (see scds-picker/scds-currency-input/scds-progress-bar,
+             * added alongside it). `value` stays a caller-controlled prop (same
+             * "presentational, state lives in the consumer" shape as scds-badge's
+             * `tone`) rather than internal state, so a consuming wizard can validate
+             * and re-render `error` on every keystroke without fighting this
+             * component for ownership of the value.
+             */
+            "scds-text-input": LocalJSX.IntrinsicElements["scds-text-input"] & JSXBase.HTMLAttributes<HTMLScdsTextInputElement>;
             /**
              * Avatar/name trigger + dropdown panel. Replaces the ad hoc
              * `<button slot="account">` sign-out control -- the default slot holds

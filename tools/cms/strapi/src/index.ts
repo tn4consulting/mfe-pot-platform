@@ -301,6 +301,313 @@ const PAGE_CONTENT = [
     en: { title: 'EI applications are temporarily unavailable.', body: '' },
     fr: { title: "Les demandes d'AE sont temporairement indisponibles.", body: '' },
   },
+
+  // -- employment-insurance: application wizard --
+  {
+    key: 'employment-insurance.application.breadcrumbHome',
+    en: { title: 'Home', body: '' },
+    fr: { title: 'Accueil', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.breadcrumbEi',
+    en: { title: 'Employment Insurance', body: '' },
+    fr: { title: 'Assurance-emploi', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.breadcrumbCurrent',
+    en: { title: 'Apply for EI', body: '' },
+    fr: { title: 'Faire une demande d\'AE', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.backButton',
+    en: { title: 'Back', body: '' },
+    fr: { title: 'Précédent', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.nextButton',
+    en: { title: 'Next', body: '' },
+    fr: { title: 'Suivant', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.submitButton',
+    en: { title: 'Submit application', body: '' },
+    fr: { title: 'Soumettre la demande', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.requiredError',
+    en: { title: 'This field is required.', body: '' },
+    fr: { title: 'Ce champ est obligatoire.', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.yesOption',
+    en: { title: 'Yes', body: '' },
+    fr: { title: 'Oui', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.noOption',
+    en: { title: 'No', body: '' },
+    fr: { title: 'Non', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.otherOption',
+    en: { title: 'Other', body: '' },
+    fr: { title: 'Autre', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step1Title',
+    en: { title: 'Personal information', body: '' },
+    fr: { title: 'Renseignements personnels', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step2Title',
+    en: { title: 'Employment separation', body: '' },
+    fr: { title: 'Cessation d\'emploi', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step3Title',
+    en: { title: 'Other employment', body: '' },
+    fr: { title: 'Autre emploi', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step4Title',
+    en: { title: 'Eligibility', body: '' },
+    fr: { title: 'Admissibilité', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step5Title',
+    en: { title: 'Availability and education', body: '' },
+    fr: { title: 'Disponibilité et études', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step6Title',
+    en: { title: 'Direct deposit', body: '' },
+    fr: { title: 'Dépôt direct', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.step7Title',
+    en: { title: 'Review and submit', body: '' },
+    fr: { title: 'Révision et soumission', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.firstNameLabel',
+    en: { title: 'First name', body: '' },
+    fr: { title: 'Prénom', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.lastNameLabel',
+    en: { title: 'Last name', body: '' },
+    fr: { title: 'Nom de famille', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.dateOfBirthLabel',
+    en: { title: 'Date of birth', body: '' },
+    fr: { title: 'Date de naissance', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.addressLabel',
+    en: { title: 'Mailing address', body: '' },
+    fr: { title: 'Adresse postale', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.cityLabel',
+    en: { title: 'City', body: '' },
+    fr: { title: 'Ville', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.provinceLabel',
+    en: { title: 'Province or territory', body: '' },
+    fr: { title: 'Province ou territoire', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.postalCodeLabel',
+    en: { title: 'Postal code', body: '' },
+    fr: { title: 'Code postal', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.phoneLabel',
+    en: { title: 'Telephone number', body: '' },
+    fr: { title: 'Numéro de téléphone', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.preferredLanguageLabel',
+    en: { title: 'Preferred official language', body: '' },
+    fr: { title: 'Langue officielle préférée', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.languageEnglishOption',
+    en: { title: 'English', body: '' },
+    fr: { title: 'Anglais', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.languageFrenchOption',
+    en: { title: 'French', body: '' },
+    fr: { title: 'Français', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.employerNameLabel',
+    en: { title: 'Employer name', body: '' },
+    fr: { title: 'Nom de l\'employeur', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.lastDayWorkedLabel',
+    en: { title: 'Last day worked', body: '' },
+    fr: { title: 'Dernier jour travaillé', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.jobTitleLabel',
+    en: { title: 'Job title', body: '' },
+    fr: { title: 'Titre du poste', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.reasonLabel',
+    en: { title: 'Reason for separation', body: '' },
+    fr: { title: 'Motif de la cessation d\'emploi', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.reasonShortageOption',
+    en: { title: 'Shortage of work', body: '' },
+    fr: { title: 'Manque de travail', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.reasonDismissalOption',
+    en: { title: 'Dismissal', body: '' },
+    fr: { title: 'Congédiement', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.reasonQuitOption',
+    en: { title: 'Quit', body: '' },
+    fr: { title: 'Départ volontaire', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payRateLabel',
+    en: { title: 'Rate of pay', body: '' },
+    fr: { title: 'Taux de rémunération', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payPeriodLabel',
+    en: { title: 'Pay period', body: '' },
+    fr: { title: 'Période de paie', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payPeriodHourlyOption',
+    en: { title: 'Per hour', body: '' },
+    fr: { title: 'À l\'heure', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payPeriodWeeklyOption',
+    en: { title: 'Per week', body: '' },
+    fr: { title: 'À la semaine', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payPeriodBiweeklyOption',
+    en: { title: 'Every two weeks', body: '' },
+    fr: { title: 'Aux deux semaines', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.payPeriodMonthlyOption',
+    en: { title: 'Per month', body: '' },
+    fr: { title: 'Au mois', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.hadOtherEmployersLabel',
+    en: { title: 'Did you work for any other employer in the past 52 weeks?', body: '' },
+    fr: { title: 'Avez-vous travaillé pour un autre employeur au cours des 52 dernières semaines?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.otherEmployerNameLabel',
+    en: { title: 'Other employer name', body: '' },
+    fr: { title: 'Nom de l\'autre employeur', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.workersCompensationLabel',
+    en: { title: 'Are you receiving or will you receive workers\' compensation payments?', body: '' },
+    fr: { title: 'Recevez-vous ou recevrez-vous des indemnités pour accident du travail?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.pensionLabel',
+    en: { title: 'Are you receiving a pension?', body: '' },
+    fr: { title: 'Recevez-vous une pension?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.selfEmployedLabel',
+    en: { title: 'Are you self-employed or do you own a business?', body: '' },
+    fr: { title: 'Êtes-vous travailleur autonome ou propriétaire d\'une entreprise?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.trainingProgramLabel',
+    en: { title: 'Are you enrolled in a course or training program?', body: '' },
+    fr: { title: 'Êtes-vous inscrit à un cours ou à un programme de formation?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.availableImmediatelyLabel',
+    en: { title: 'Are you available to start work immediately?', body: '' },
+    fr: { title: 'Êtes-vous disponible pour commencer à travailler immédiatement?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.availableFromDateLabel',
+    en: { title: 'Date you will be available for work', body: '' },
+    fr: { title: 'Date à laquelle vous serez disponible pour travailler', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.educationLevelLabel',
+    en: { title: 'Highest level of education completed', body: '' },
+    fr: { title: 'Niveau de scolarité le plus élevé atteint', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.educationHighSchoolOption',
+    en: { title: 'High school', body: '' },
+    fr: { title: 'École secondaire', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.educationCollegeTradeOption',
+    en: { title: 'College or trade certificate', body: '' },
+    fr: { title: 'Certificat collégial ou professionnel', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.educationUndergraduateOption',
+    en: { title: 'Undergraduate degree', body: '' },
+    fr: { title: 'Diplôme de premier cycle', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.educationGraduateOption',
+    en: { title: 'Graduate degree', body: '' },
+    fr: { title: 'Diplôme d\'études supérieures', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.enrollDirectDepositLabel',
+    en: { title: 'Would you like to enroll in direct deposit now?', body: '' },
+    fr: { title: 'Voulez-vous vous inscrire au dépôt direct maintenant?', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.institutionNumberLabel',
+    en: { title: 'Financial institution number', body: '' },
+    fr: { title: 'Numéro de l\'institution financière', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.transitNumberLabel',
+    en: { title: 'Branch (transit) number', body: '' },
+    fr: { title: 'Numéro de succursale (transit)', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.accountNumberLabel',
+    en: { title: 'Account number', body: '' },
+    fr: { title: 'Numéro de compte', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.reviewHeading',
+    en: { title: 'Review your application', body: '' },
+    fr: { title: 'Révisez votre demande', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.declarationLabel',
+    en: { title: 'I have read and agree to the Rights and Responsibilities of claiming Employment Insurance benefits.', body: '' },
+    fr: { title: 'J\'ai lu et j\'accepte les droits et responsabilités liés à une demande de prestations d\'assurance-emploi.', body: '' },
+  },
+  {
+    key: 'employment-insurance.application.declarationRequiredError',
+    en: { title: 'You must accept the rights and responsibilities before submitting.', body: '' },
+    fr: { title: 'Vous devez accepter les droits et responsabilités avant de soumettre la demande.', body: '' },
+  },
   // -- employment-insurance: reporting --
   {
     key: 'employment-insurance.reporting.heading',

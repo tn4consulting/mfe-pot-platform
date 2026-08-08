@@ -42,6 +42,17 @@ let initialized = false;
  * Idempotent -- some apps call their one wiring point (runtime-config.ts's
  * loadRuntimeConfig) more than once per session (e.g. dashboard-mfe, which
  * exposes both ./Component and ./PaymentHistoryWidget).
+ *
+ * Never throws. The collector being unreachable is an expected, harmless
+ * runtime condition -- the SDK's own exporters already handle that
+ * gracefully and asynchronously (a failed export is dropped/retried in the
+ * background, never surfaced as a thrown error or a blocked request; this
+ * app's own real fetch/render calls are never delayed by it). What this
+ * try/catch actually guards against is different: an unexpected failure
+ * *setting up* the SDK itself (e.g. a future OTel version's constructor
+ * throwing, a browser API being unexpectedly unavailable) must never take
+ * down the calling app -- telemetry is strictly best-effort and must never
+ * be a new failure mode for a citizen-facing page.
  */
 export function initBrowserObservability(options: BrowserObservabilityOptions): void {
   if (initialized || !options.otlpEndpoint) {
@@ -49,30 +60,36 @@ export function initBrowserObservability(options: BrowserObservabilityOptions): 
   }
   initialized = true;
 
-  const otlpEndpoint = options.otlpEndpoint;
+  try {
+    const otlpEndpoint = options.otlpEndpoint;
 
-  const tracerProvider = new WebTracerProvider({
-    resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: options.serviceName }),
-    spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` }))],
-  });
+    const tracerProvider = new WebTracerProvider({
+      resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: options.serviceName }),
+      spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` }))],
+    });
 
-  const meterProvider = new MeterProvider({
-    resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: options.serviceName }),
-    readers: [
-      new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
-      }),
-    ],
-  });
+    const meterProvider = new MeterProvider({
+      resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: options.serviceName }),
+      readers: [
+        new PeriodicExportingMetricReader({
+          exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
+        }),
+      ],
+    });
 
-  registerInstrumentations({
-    tracerProvider,
-    meterProvider,
-    instrumentations: [
-      new DocumentLoadInstrumentation(),
-      new FetchInstrumentation({
-        propagateTraceHeaderCorsUrls: options.propagateTraceHeaderCorsUrls ?? [],
-      }),
-    ],
-  });
+    registerInstrumentations({
+      tracerProvider,
+      meterProvider,
+      instrumentations: [
+        new DocumentLoadInstrumentation(),
+        new FetchInstrumentation({
+          propagateTraceHeaderCorsUrls: options.propagateTraceHeaderCorsUrls ?? [],
+        }),
+      ],
+    });
+  } catch (err) {
+    // Deliberately console, not a dependency on this app's own logging
+    // setup, which observability bootstrap must not assume exists.
+    console.warn('[shared-observability] failed to initialize, continuing without telemetry:', err);
+  }
 }

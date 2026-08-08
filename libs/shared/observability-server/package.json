@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-observability-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenTelemetry Node SDK bootstrap (traces + metrics, OTLP/HTTP) shared across the mfe-pot BFFs -- initializes auto-instrumentation before the rest of the app's modules load.",
   "repository": {
     "type": "git",

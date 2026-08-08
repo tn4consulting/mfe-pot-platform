@@ -41,4 +41,21 @@ describe('initNodeObservability', () => {
 
     expect(sdkConstructorMock).toHaveBeenCalledTimes(1);
   });
+
+  it('does not throw if the SDK fails to initialize -- telemetry is best-effort, never a new failure mode', () => {
+    const { NodeSDK } = require('@opentelemetry/sdk-node');
+    NodeSDK.mockImplementationOnce(() => {
+      throw new Error('boom');
+    });
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const { initNodeObservability } = require('./node-observability');
+
+    expect(() =>
+      initNodeObservability({ serviceName: 'job-bank-bff', otlpEndpoint: 'http://otel-collector:4318' }),
+    ).not.toThrow();
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed to initialize'), expect.any(Error));
+
+    warnSpy.mockRestore();
+  });
 });

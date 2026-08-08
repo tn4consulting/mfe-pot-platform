@@ -71,4 +71,21 @@ describe('initBrowserObservability', () => {
 
     expect(tracerProviderConstructorMock).toHaveBeenCalledTimes(1);
   });
+
+  it('does not throw if setup fails -- telemetry is best-effort, never a new failure mode for the app', () => {
+    const { WebTracerProvider } = require('@opentelemetry/sdk-trace-web');
+    WebTracerProvider.mockImplementationOnce(() => {
+      throw new Error('boom');
+    });
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const { initBrowserObservability } = require('./browser-observability');
+
+    expect(() =>
+      initBrowserObservability({ serviceName: 'job-bank-mfe', otlpEndpoint: 'http://otel.mfe-pot.local' }),
+    ).not.toThrow();
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed to initialize'), expect.any(Error));
+
+    warnSpy.mockRestore();
+  });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-observability",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenTelemetry Web SDK bootstrap (traces + metrics, OTLP/HTTP) shared across the mfe-pot frontends -- deliberately NOT a federation-shared singleton (see mfe-pot-platform/CLAUDE.md's observability section), so each app builds its own independent, normally-registered tracer/meter provider instance.",
   "repository": {
     "type": "git",

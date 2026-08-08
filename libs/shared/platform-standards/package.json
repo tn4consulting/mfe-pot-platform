@@ -1,0 +1,17 @@
+{
+  "name": "@tn4consulting/shared-platform-standards",
+  "version": "0.1.0",
+  "description": "Multi-team coordination tooling for the mfe-pot family: a check-platform-versions CLI enforcing platform-versions.json against this repo's resolved dependency versions (no sibling clone of mfe-pot-platform required), a sync-platform-standards CLI that copies a curated PLATFORM_STANDARDS.md into this repo's docs/ (so Claude Code's CLAUDE.md @import has something real to point at even in a standalone clone), and shared eslint/tsconfig/jest config fragments. Deliberately plain files with no build step -- same shape as @tn4consulting/shared-federation-config -- see README.md.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
+  "bin": {
+    "check-platform-versions": "./bin/check-platform-versions.mjs",
+    "sync-platform-standards": "./bin/sync-platform-standards.mjs"
+  },
+  "files": ["bin", "standards", "configs", "README.md"],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

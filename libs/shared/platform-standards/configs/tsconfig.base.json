@@ -1,0 +1,24 @@
+{
+  "$comment": "Reference only -- NOT safe to consume via a real tsconfig 'extends' in this family. Confirmed live piloting on mfe-pot-dashboard-mfe: @softarc/native-federation's build step walks the TS project via @softarc/sheriff-core, which treats an extended base config's own directory as a root boundary and throws '<file> is outside of root <configDir>' for every source file once the base config lives in node_modules (tried both a bare package-specifier extends and a relative ./node_modules/... path -- same failure, different error). Every app repo in this family builds through Native Federation, so this blocks every consumer, not just this one. Kept here as the canonical list of options to manually diff a repo's own tsconfig.base.json against (the actual fix behind each option, e.g. 'types': ['node'], is still worth centralizing as documentation even though it can't be centralized as code) -- see this package's README and mfe-pot/docs/plans/20260808-1200-multi-team-scale-governance.md item 3 for the finding. Worth re-testing if @softarc/sheriff-core ever changes this behavior.",
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "types": ["node"]
+  }
+}

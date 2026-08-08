@@ -7,6 +7,11 @@
       "description": "react, react-dom, and @tn4consulting/shared-ui-scds-core must move together across every mfe-pot app repo — they're federation-shared singletons (see mfe-pot-platform/CLAUDE.md's federation-sharing policy). A partial bump here reproduces the exact silent-runtime-mismatch problem the shared-singleton contract exists to prevent, since Native Federation's version check has no compile-time enforcement across separate repos. @gcds-core/components was removed from this group when GCDS was removed from the family entirely.",
       "matchPackageNames": ["react", "react-dom", "@tn4consulting/shared-ui-scds-core"],
       "rangeStrategy": "pin"
+    },
+    {
+      "description": "Labels a PR bumping a federation-shared singleton or shared-platform-standards itself as platform-critical. check-platform-versions's --check-critical-prs backstop fails CI on every other PR in a repo once one of these has been open longer than the 14-day adoption window — see mfe-pot/docs/plans/20260808-1200-multi-team-scale-governance.md items 3 and 4. A reviewable Renovate PR is only a real coordination mechanism if someone actually merges it; this stops one from silently sitting unmerged instead.",
+      "matchPackageNames": ["react", "react-dom", "@tn4consulting/shared-ui-scds-core", "@tn4consulting/shared-platform-standards"],
+      "addLabels": ["platform-critical"]
     }
   ]
 }

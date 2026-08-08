@@ -52,6 +52,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Dev tooling (check-platform-versions/sync-platform-standards CLIs,
+      # shared eslint/tsconfig/jest config), not app code -- has no
+      # @tn4consulting/* dependencies of its own, so ordered first, same
+      # reasoning already used for ui-scds-core below. See
+      # mfe-pot/docs/plans/20260808-1200-multi-team-scale-governance.md.
+      - name: Publish shared-platform-standards
+        run: node tools/scripts/publish-shared-lib.mjs platform-standards --publish
+
       - name: Publish shared-auth
         run: node tools/scripts/publish-shared-lib.mjs auth --publish
 
@@ -86,23 +94,6 @@ jobs:
         run: node tools/scripts/publish-shared-lib.mjs observability --publish
 
       # Framework-agnostic Stencil custom elements (ScdsCard,
-      # ScdsMultiColumnList) -- no @tn4consulting dependencies of its own,
-      # published before ui-scds since ui-scds's Angular wrapper is (or
-      # will be) generated from this package's build output.
+      # ScdsMultiColumnList) -- no @tn4consulting dependencies of its own.
       - name: Publish shared-ui-scds-core
         run: node tools/scripts/publish-shared-lib.mjs ui-scds-core --publish
-
-      # ui-scds has no dependency on shared-auth/shared-i18n (unlike ui-gcds
-      # below), so it doesn't need to run after them -- deliberately ordered
-      # before ui-gcds so a ui-gcds build failure (a real, separate, as-yet-
-      # unresolved TS5062 path-mapping error building ui-gcds against
-      # @tn4consulting/shared-auth/core -- see TODO.md) doesn't also block
-      # ui-scds from publishing, since a failed step stops the whole job.
-      - name: Publish shared-ui-scds
-        run: node tools/scripts/publish-shared-lib.mjs ui-scds --publish
-
-      # ui-gcds depends on shared-auth and shared-i18n (see its package.json)
-      # -- publish it last so a fresh version of either is already available
-      # if this run also bumped them.
-      - name: Publish shared-ui-gcds
-        run: node tools/scripts/publish-shared-lib.mjs ui-gcds --publish

@@ -1,0 +1,51 @@
+name: Version check
+
+# This repo publishes platform-versions.json as the source of truth every
+# app repo must stay aligned on -- so it needs to be right about its own
+# state too. Runs check-platform-versions (part of the
+# shared-platform-standards package built alongside this workflow) against
+# this repo's own working copy of platform-versions.json, not the
+# last-published version on `main`, so a PR that bumps a dependency without
+# updating platform-versions.json fails here before merge, not after.
+#
+# See mfe-pot/docs/plans/20260808-1200-multi-team-scale-governance.md for
+# why this exists: mfe-pot-platform had no CI workflow at all before this
+# one -- only publish-shared-packages.yml -- despite CLAUDE.md's "Source
+# control & CI/CD" section claiming a single nx affected workflow ran here.
+# That broader gap (no general lint/test/build workflow) is still open --
+# tracked in TODO.md, not solved by this workflow.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10.33.2'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
+
+      - name: Check versions
+        run: pnpm run check:versions

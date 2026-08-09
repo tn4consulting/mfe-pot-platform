@@ -29,6 +29,16 @@ export interface RemoteRouteHostProps {
    * concern.
    */
   props?: Record<string, unknown>;
+  /**
+   * Accessible/visible text for the loading spinner shown while this
+   * remote's ./Component module is still downloading (React.lazy +
+   * Suspense below). This package has no i18n mechanism of its own -- a
+   * caller that wants a localized loading message passes one down (see
+   * each app's own routes.tsx); omitting it renders scds-spinner's own
+   * built-in English default, an acceptable interim UX for a load that's
+   * typically sub-second.
+   */
+  loadingLabel?: string;
 }
 
 interface RemoteErrorBoundaryProps {
@@ -94,7 +104,7 @@ class RemoteErrorBoundary extends Component<RemoteErrorBoundaryProps, RemoteErro
  * isn't a federation-shared singleton (`react-router-dom`'s `useParams()`,
  * for instance -- see `RemoteRouteHostProps.props`'s own doc comment).
  */
-export function RemoteRouteHost({ remoteName, props }: RemoteRouteHostProps) {
+export function RemoteRouteHost({ remoteName, props, loadingLabel }: RemoteRouteHostProps) {
   const loadRemoteModule = useRemoteModuleLoader();
 
   const RemoteComponent = useMemo(
@@ -108,7 +118,7 @@ export function RemoteRouteHost({ remoteName, props }: RemoteRouteHostProps) {
 
   return (
     <RemoteErrorBoundary key={remoteName} remoteName={remoteName}>
-      <Suspense fallback={null}>
+      <Suspense fallback={loadingLabel ? <scds-spinner label={loadingLabel} /> : <scds-spinner />}>
         <RemoteComponent {...props} />
       </Suspense>
     </RemoteErrorBoundary>

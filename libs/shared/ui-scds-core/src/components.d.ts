@@ -123,9 +123,9 @@ export namespace Components {
      * Deliberately owns no completion state of its own -- `complete` is fully
      * caller-controlled, the same "presentational, state lives in the
      * consumer" shape as `scds-badge`'s `tone`. First consumer:
-     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
-     * some items are self-reported and others derive completion from another
-     * federated app's real data -- this component doesn't need to know which.
+     * mfe-pot-life-events-mfe's guided-journey checklists, where some items
+     * are self-reported and others derive completion from another federated
+     * app's real data -- this component doesn't need to know which.
      */
     interface ScdsChecklistItem {
         /**
@@ -424,6 +424,26 @@ export namespace Components {
         "open": boolean;
     }
     /**
+     * Indeterminate loading indicator -- first consumers: shared-federation-
+     * runtime's RemoteRouteHost (Suspense fallback while a routed remote's
+     * ./Component module downloads) and life-events-mfe's WidgetSlot (while a
+     * cross-remote widget loads). `role="status"` (not `role="progressbar"` --
+     * unlike scds-progress-bar, there's no known current/total here) gives an
+     * implicit aria-live="polite" region, the same mechanism scds-badge already
+     * relies on -- the visible `label` text doubles as the accessible name, no
+     * separate visually-hidden span needed.
+     */
+    interface ScdsSpinner {
+        /**
+          * @default 'Loading'
+         */
+        "label": string;
+        /**
+          * @default 'regular'
+         */
+        "size": 'small' | 'regular';
+    }
+    /**
      * Styling shell around a real, app-authored semantic <table> passed in via
      * the default slot -- keeps the existing accessible markup (<caption>,
      * <th scope="col">) fully under the consuming app's control, this
@@ -611,9 +631,9 @@ declare global {
      * Deliberately owns no completion state of its own -- `complete` is fully
      * caller-controlled, the same "presentational, state lives in the
      * consumer" shape as `scds-badge`'s `tone`. First consumer:
-     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
-     * some items are self-reported and others derive completion from another
-     * federated app's real data -- this component doesn't need to know which.
+     * mfe-pot-life-events-mfe's guided-journey checklists, where some items
+     * are self-reported and others derive completion from another federated
+     * app's real data -- this component doesn't need to know which.
      */
     interface HTMLScdsChecklistItemElement extends Components.ScdsChecklistItem, HTMLStencilElement {
     }
@@ -882,6 +902,22 @@ declare global {
         new (): HTMLScdsSidebarElement;
     };
     /**
+     * Indeterminate loading indicator -- first consumers: shared-federation-
+     * runtime's RemoteRouteHost (Suspense fallback while a routed remote's
+     * ./Component module downloads) and life-events-mfe's WidgetSlot (while a
+     * cross-remote widget loads). `role="status"` (not `role="progressbar"` --
+     * unlike scds-progress-bar, there's no known current/total here) gives an
+     * implicit aria-live="polite" region, the same mechanism scds-badge already
+     * relies on -- the visible `label` text doubles as the accessible name, no
+     * separate visually-hidden span needed.
+     */
+    interface HTMLScdsSpinnerElement extends Components.ScdsSpinner, HTMLStencilElement {
+    }
+    var HTMLScdsSpinnerElement: {
+        prototype: HTMLScdsSpinnerElement;
+        new (): HTMLScdsSpinnerElement;
+    };
+    /**
      * Styling shell around a real, app-authored semantic <table> passed in via
      * the default slot -- keeps the existing accessible markup (<caption>,
      * <th scope="col">) fully under the consuming app's control, this
@@ -970,6 +1006,7 @@ declare global {
         "scds-picker-option": HTMLScdsPickerOptionElement;
         "scds-progress-bar": HTMLScdsProgressBarElement;
         "scds-sidebar": HTMLScdsSidebarElement;
+        "scds-spinner": HTMLScdsSpinnerElement;
         "scds-table": HTMLScdsTableElement;
         "scds-text": HTMLScdsTextElement;
         "scds-text-input": HTMLScdsTextInputElement;
@@ -1091,9 +1128,9 @@ declare namespace LocalJSX {
      * Deliberately owns no completion state of its own -- `complete` is fully
      * caller-controlled, the same "presentational, state lives in the
      * consumer" shape as `scds-badge`'s `tone`. First consumer:
-     * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
-     * some items are self-reported and others derive completion from another
-     * federated app's real data -- this component doesn't need to know which.
+     * mfe-pot-life-events-mfe's guided-journey checklists, where some items
+     * are self-reported and others derive completion from another federated
+     * app's real data -- this component doesn't need to know which.
      */
     interface ScdsChecklistItem {
         /**
@@ -1395,6 +1432,26 @@ declare namespace LocalJSX {
         "open"?: boolean;
     }
     /**
+     * Indeterminate loading indicator -- first consumers: shared-federation-
+     * runtime's RemoteRouteHost (Suspense fallback while a routed remote's
+     * ./Component module downloads) and life-events-mfe's WidgetSlot (while a
+     * cross-remote widget loads). `role="status"` (not `role="progressbar"` --
+     * unlike scds-progress-bar, there's no known current/total here) gives an
+     * implicit aria-live="polite" region, the same mechanism scds-badge already
+     * relies on -- the visible `label` text doubles as the accessible name, no
+     * separate visually-hidden span needed.
+     */
+    interface ScdsSpinner {
+        /**
+          * @default 'Loading'
+         */
+        "label"?: string;
+        /**
+          * @default 'regular'
+         */
+        "size"?: 'small' | 'regular';
+    }
+    /**
      * Styling shell around a real, app-authored semantic <table> passed in via
      * the default slot -- keeps the existing accessible markup (<caption>,
      * <th scope="col">) fully under the consuming app's control, this
@@ -1585,6 +1642,10 @@ declare namespace LocalJSX {
         "open": boolean;
         "label": string;
     }
+    interface ScdsSpinnerAttributes {
+        "label": string;
+        "size": 'small' | 'regular';
+    }
     interface ScdsTableAttributes {
         "dense": boolean;
     }
@@ -1631,6 +1692,7 @@ declare namespace LocalJSX {
         "scds-picker-option": Omit<ScdsPickerOption, keyof ScdsPickerOptionAttributes> & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes]?: ScdsPickerOption[K] } & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes as `attr:${K}`]?: ScdsPickerOptionAttributes[K] } & { [K in keyof ScdsPickerOption & keyof ScdsPickerOptionAttributes as `prop:${K}`]?: ScdsPickerOption[K] } & OneOf<"value", ScdsPickerOption["value"], ScdsPickerOptionAttributes["value"]>;
         "scds-progress-bar": Omit<ScdsProgressBar, keyof ScdsProgressBarAttributes> & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes]?: ScdsProgressBar[K] } & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes as `attr:${K}`]?: ScdsProgressBarAttributes[K] } & { [K in keyof ScdsProgressBar & keyof ScdsProgressBarAttributes as `prop:${K}`]?: ScdsProgressBar[K] } & OneOf<"current", ScdsProgressBar["current"], ScdsProgressBarAttributes["current"]> & OneOf<"total", ScdsProgressBar["total"], ScdsProgressBarAttributes["total"]>;
         "scds-sidebar": Omit<ScdsSidebar, keyof ScdsSidebarAttributes> & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes]?: ScdsSidebar[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `attr:${K}`]?: ScdsSidebarAttributes[K] } & { [K in keyof ScdsSidebar & keyof ScdsSidebarAttributes as `prop:${K}`]?: ScdsSidebar[K] };
+        "scds-spinner": Omit<ScdsSpinner, keyof ScdsSpinnerAttributes> & { [K in keyof ScdsSpinner & keyof ScdsSpinnerAttributes]?: ScdsSpinner[K] } & { [K in keyof ScdsSpinner & keyof ScdsSpinnerAttributes as `attr:${K}`]?: ScdsSpinnerAttributes[K] } & { [K in keyof ScdsSpinner & keyof ScdsSpinnerAttributes as `prop:${K}`]?: ScdsSpinner[K] };
         "scds-table": Omit<ScdsTable, keyof ScdsTableAttributes> & { [K in keyof ScdsTable & keyof ScdsTableAttributes]?: ScdsTable[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `attr:${K}`]?: ScdsTableAttributes[K] } & { [K in keyof ScdsTable & keyof ScdsTableAttributes as `prop:${K}`]?: ScdsTable[K] };
         "scds-text": Omit<ScdsText, keyof ScdsTextAttributes> & { [K in keyof ScdsText & keyof ScdsTextAttributes]?: ScdsText[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `attr:${K}`]?: ScdsTextAttributes[K] } & { [K in keyof ScdsText & keyof ScdsTextAttributes as `prop:${K}`]?: ScdsText[K] };
         "scds-text-input": Omit<ScdsTextInput, keyof ScdsTextInputAttributes> & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes]?: ScdsTextInput[K] } & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes as `attr:${K}`]?: ScdsTextInputAttributes[K] } & { [K in keyof ScdsTextInput & keyof ScdsTextInputAttributes as `prop:${K}`]?: ScdsTextInput[K] } & OneOf<"label", ScdsTextInput["label"], ScdsTextInputAttributes["label"]>;
@@ -1693,9 +1755,9 @@ declare module "@stencil/core" {
              * Deliberately owns no completion state of its own -- `complete` is fully
              * caller-controlled, the same "presentational, state lives in the
              * consumer" shape as `scds-badge`'s `tone`. First consumer:
-             * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
-             * some items are self-reported and others derive completion from another
-             * federated app's real data -- this component doesn't need to know which.
+             * mfe-pot-life-events-mfe's guided-journey checklists, where some items
+             * are self-reported and others derive completion from another federated
+             * app's real data -- this component doesn't need to know which.
              */
             "scds-checklist-item": LocalJSX.IntrinsicElements["scds-checklist-item"] & JSXBase.HTMLAttributes<HTMLScdsChecklistItemElement>;
             /**
@@ -1850,6 +1912,17 @@ declare module "@stencil/core" {
              * scds-nav-divider between them is up to the consumer to place.
              */
             "scds-sidebar": LocalJSX.IntrinsicElements["scds-sidebar"] & JSXBase.HTMLAttributes<HTMLScdsSidebarElement>;
+            /**
+             * Indeterminate loading indicator -- first consumers: shared-federation-
+             * runtime's RemoteRouteHost (Suspense fallback while a routed remote's
+             * ./Component module downloads) and life-events-mfe's WidgetSlot (while a
+             * cross-remote widget loads). `role="status"` (not `role="progressbar"` --
+             * unlike scds-progress-bar, there's no known current/total here) gives an
+             * implicit aria-live="polite" region, the same mechanism scds-badge already
+             * relies on -- the visible `label` text doubles as the accessible name, no
+             * separate visually-hidden span needed.
+             */
+            "scds-spinner": LocalJSX.IntrinsicElements["scds-spinner"] & JSXBase.HTMLAttributes<HTMLScdsSpinnerElement>;
             /**
              * Styling shell around a real, app-authored semantic <table> passed in via
              * the default slot -- keeps the existing accessible markup (<caption>,

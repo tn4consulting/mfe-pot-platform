@@ -54,6 +54,37 @@ describe('RemoteRouteHost', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('shows a loading spinner while the remote is still loading, then swaps to the remote content', async () => {
+    let resolveLoad!: (value: { App: typeof FakeRemoteApp }) => void;
+    loadRemoteModuleMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveLoad = resolve;
+        }),
+    );
+
+    const { container } = renderHost('dashboard');
+
+    expect(container.querySelector('scds-spinner')).toBeInTheDocument();
+
+    resolveLoad({ App: FakeRemoteApp });
+
+    expect(await screen.findByText('remote content')).toBeInTheDocument();
+    expect(container.querySelector('scds-spinner')).not.toBeInTheDocument();
+  });
+
+  it('passes a given loadingLabel down to the spinner', async () => {
+    loadRemoteModuleMock.mockImplementation(() => new Promise(() => undefined));
+
+    const { container } = render(
+      <RemoteModuleLoaderContext.Provider value={loadRemoteModuleMock}>
+        <RemoteRouteHost remoteName="dashboard" loadingLabel="Loading your dashboard" />
+      </RemoteModuleLoaderContext.Provider>,
+    );
+
+    expect(container.querySelector('scds-spinner')?.getAttribute('label')).toBe('Loading your dashboard');
+  });
+
   it('shows an error state when the remote fails to load', async () => {
     loadRemoteModuleMock.mockRejectedValue(new Error('remote unreachable'));
     jest.spyOn(console, 'error').mockImplementation(() => undefined);

@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-federation-runtime",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "RemoteRouteHost (now with optional prop-forwarding for host route state), RemoteModuleLoaderContext, and the generic WidgetRegistryContext/useWidgetLoader keyed-widget-loader mechanism -- the shared React Context patterns for safely loading federated modules. 2.0.0 replaces the 1.x one-Context-per-widget-type pattern (PaymentHistoryWidgetLoaderContext, JobApplicationsWidgetLoaderContext, EiReportingStatusWidgetLoaderContext) with a single registry keyed by widget id, added to support the mfe-pot family's multi-life-event architecture (see mfe-pot/docs/plans/). The last 0.x (Angular DI-token-shaped) major stays published only as a historical artifact.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

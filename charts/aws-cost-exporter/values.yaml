@@ -1,0 +1,21 @@
+backend:
+  name: aws-cost-exporter
+  replicaCount: 1
+  image:
+    repository: mfe-pot-aws-cost-exporter
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 3006
+  servicePort: 3006
+  env:
+    HOST: "0.0.0.0"
+    PORT: "3006"
+
+# No annotations by default -- only meaningful on EKS, where
+# values-eks.yaml sets eks.amazonaws.com/role-arn so the pod picks up
+# AWS credentials via IRSA (see templates/serviceaccount.yaml and
+# infra/terraform/cluster/irsa.tf's aws_cost_exporter_irsa module). On
+# kind there is no real OIDC provider to satisfy the trust policy anyway,
+# which is moot since this chart is never installed there.
+serviceAccount:
+  annotations: {}

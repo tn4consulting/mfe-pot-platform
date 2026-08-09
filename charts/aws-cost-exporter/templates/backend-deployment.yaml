@@ -1,0 +1,50 @@
+# Not a one-line include of mfe-backend-lib's shared deployment template,
+# unlike every other backend chart's templates/backend-deployment.yaml --
+# this is the first component in this repo needing a non-default
+# ServiceAccount (for IRSA), and the shared library template has no
+# serviceAccountName field. Rather than adding one there (mock-idp and any
+# future BFF consumer depend on that template unchanged), this is a
+# chart-local copy with just that one field added. Keep in sync with
+# charts/mfe-backend-lib/templates/_deployment.tpl if that template's shape
+# ever changes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.backend.name }}
+    app.kubernetes.io/component: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.backend.name }}
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.backend.name }}
+        app.kubernetes.io/component: backend
+    spec:
+      serviceAccountName: {{ .Values.backend.name }}
+      containers:
+        - name: {{ .Values.backend.name }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.backend.containerPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.backend.name }}-env
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.backend.containerPort }}
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.backend.containerPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10

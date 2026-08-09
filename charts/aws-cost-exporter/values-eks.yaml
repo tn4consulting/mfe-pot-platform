@@ -1,0 +1,17 @@
+# Overrides layered on top of values.yaml for the real AWS EKS deployment.
+# See charts/mock-idp/values-eks.yaml for the fuller explanatory comments
+# this ECR-repository-override pattern was worked out against first.
+#
+# The IRSA role ARN is deterministic from account ID + role name (set by
+# infra/terraform/cluster/irsa.tf's aws_cost_exporter_irsa module, role_name
+# = "${cluster_name}-aws-cost-exporter") -- safe to hardcode here exactly
+# like the ECR account ID below, since this chart isn't Terraform-installed
+# and has no other way to receive that module's output.
+backend:
+  image:
+    repository: 147318891438.dkr.ecr.ca-central-1.amazonaws.com/mfe-pot-aws-cost-exporter
+    pullPolicy: IfNotPresent
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::147318891438:role/mfe-pot-aws-cost-exporter"

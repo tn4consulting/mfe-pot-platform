@@ -29,7 +29,7 @@ variable "cluster_name" {
 }
 
 variable "ecr_repository_names" {
-  description = "One ECR repository per image, matching today's local Docker image names exactly. 6 frontends + 3 BFFs + mock-idp + strapi."
+  description = "One ECR repository per image, matching today's local Docker image names exactly. 6 frontends + 3 BFFs + mock-idp + strapi + aws-cost-exporter."
   type        = list(string)
   default = [
     "mfe-pot-msca-shell",
@@ -43,6 +43,7 @@ variable "ecr_repository_names" {
     "mfe-pot-employment-insurance-bff",
     "mfe-pot-mock-idp",
     "mfe-pot-strapi",
+    "mfe-pot-aws-cost-exporter",
   ]
 }
 

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: aws-cost-exporter
+description: >-
+  Deploys aws-cost-exporter -- polls the real AWS Cost Explorer API and
+  re-exposes daily/month-to-date spend as Prometheus gauges, scraped by the
+  same Prometheus instance as every other observability component. EKS
+  only (see values-eks.yaml; there is no local equivalent of real AWS
+  billing data, so this chart has no values-kind.yaml and is never
+  installed on kind). Lives alongside mfe-backend-lib in this same repo,
+  same dependency shape as charts/mock-idp.
+type: application
+version: 0.1.0
+dependencies:
+  - name: mfe-backend-lib
+    version: 0.1.0
+    repository: "file://../mfe-backend-lib"

@@ -19,8 +19,10 @@ on:
     branches: [main]
     paths:
       - 'apps/mock-idp/**'
+      - 'apps/aws-cost-exporter/**'
       - 'tools/cms/strapi/**'
       - 'charts/mock-idp/**'
+      - 'charts/aws-cost-exporter/**'
       - 'charts/strapi/**'
       - 'charts/mfe-backend-lib/**'
       - '.github/workflows/deploy-eks.yml'
@@ -105,6 +107,75 @@ jobs:
             sleep 5
           done
           curl -skf https://mock-idp.aws.tn4consulting.com/.well-known/jwks.json | grep -q '"keys"'
+
+  deploy-aws-cost-exporter:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (GitHub OIDC, no long-lived keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Check whether the demo cluster currently exists
+        id: check
+        continue-on-error: true
+        run: |
+          if aws eks describe-cluster --name "${{ vars.EKS_CLUSTER_NAME }}" >/dev/null 2>&1; then
+            echo "cluster_up=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cluster_up=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to ECR
+        if: steps.check.outputs.cluster_up == 'true'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push aws-cost-exporter image
+        if: steps.check.outputs.cluster_up == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/aws-cost-exporter/Dockerfile
+          push: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/mfe-pot-aws-cost-exporter:${{ github.sha }}
+          secrets: |
+            npm_token=${{ secrets.NPM_READ_TOKEN }}
+
+      - name: Update kubeconfig
+        if: steps.check.outputs.cluster_up == 'true'
+        run: aws eks update-kubeconfig --name "${{ vars.EKS_CLUSTER_NAME }}" --region "${{ vars.AWS_REGION }}"
+
+      - uses: azure/setup-helm@v4
+        if: steps.check.outputs.cluster_up == 'true'
+
+      # Same file://../mfe-backend-lib same-repo relative dependency as
+      # charts/mock-idp -- no sibling checkout needed.
+      - name: helm dependency update
+        if: steps.check.outputs.cluster_up == 'true'
+        run: helm dependency update charts/aws-cost-exporter
+
+      - name: helm upgrade --install against EKS
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          helm upgrade --install aws-cost-exporter charts/aws-cost-exporter \
+            -f charts/aws-cost-exporter/values.yaml \
+            -f charts/aws-cost-exporter/values-eks.yaml \
+            --set backend.image.tag=${{ github.sha }} \
+            --wait --timeout 180s
+
+      - name: Verify the deployed pod reports healthy (cluster-internal only -- no Ingress)
+        if: steps.check.outputs.cluster_up == 'true'
+        run: |
+          kubectl rollout status deployment/aws-cost-exporter --timeout=60s
+          kubectl run aws-cost-exporter-healthcheck --rm -i --restart=Never --image=curlimages/curl:8.11.0 -- \
+            curl -sf http://aws-cost-exporter.default.svc.cluster.local:3006/health
 
   deploy-strapi:
     runs-on: ubuntu-latest

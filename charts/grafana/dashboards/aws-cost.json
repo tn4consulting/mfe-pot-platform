@@ -1,0 +1,81 @@
+{
+  "title": "AWS cost",
+  "uid": "aws-cost",
+  "tags": ["mfe-pot", "observability", "cost"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-7d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Today's cost by service",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "unit": "currencyUSD", "min": 0 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "aws_cost_daily_usd",
+          "legendFormat": "{{service}}",
+          "instant": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Month-to-date cost by service",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "unit": "currencyUSD", "min": 0 },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "aws_cost_mtd_usd",
+          "legendFormat": "{{service}}",
+          "instant": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Month-to-date cost over time, by service",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 18, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "unit": "currencyUSD", "custom": { "drawStyle": "line", "fillOpacity": 10 } },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "aws_cost_mtd_usd",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "About this dashboard",
+      "type": "text",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 },
+      "options": {
+        "mode": "markdown",
+        "content": "Sourced from `aws-cost-exporter` (a bespoke service polling the real AWS Cost Explorer API via IRSA, cached and refreshed on a long interval -- see its own `refresh.ts`). **AWS-cost data only available when deployed to EKS** -- this chart isn't installed on `kind` (no local equivalent of real AWS billing data), so panels here show no data on a `kind` cluster's Grafana. That's expected, not an error."
+      }
+    }
+  ]
+}

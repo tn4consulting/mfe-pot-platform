@@ -17,6 +17,18 @@ import { useRemoteModuleLoader } from '../remote-module-loader.context';
 export interface RemoteRouteHostProps {
   /** The federation remote's registered name (e.g. "dashboard"). */
   remoteName: string;
+  /**
+   * Plain props forwarded to the remote's exported `App` component -- e.g.
+   * a route param the host's own router resolved (`useParams()`). A remote
+   * must not read the host's route params via its own bundled router
+   * hooks: `react-router-dom` isn't a federation-shared singleton, so the
+   * remote's copy has a different Context identity than the host's, and
+   * `useParams()` inside the remote would silently resolve to nothing (the
+   * same un-shared-singleton failure mode documented for other Contexts in
+   * mfe-pot-platform's CLAUDE.md). A plain prop has no such identity
+   * concern.
+   */
+  props?: Record<string, unknown>;
 }
 
 interface RemoteErrorBoundaryProps {
@@ -63,21 +75,26 @@ class RemoteErrorBoundary extends Component<RemoteErrorBoundaryProps, RemoteErro
  * on destroy; a React host has no such boundary to cross, so that whole
  * layer is gone, not ported).
  *
- * There is no `./RemoteProviders` equivalent, and no prop-threading for
- * cross-cutting host state either. A remote is fully self-configuring --
- * it fetches its own runtime config and builds its own API client
- * internally, the same way job-bank's `App.tsx` always has. Where a remote
- * genuinely needs something from its host (a cross-remote widget loader,
- * e.g. `usePaymentHistoryWidgetLoader`), it reads it via this package's own
- * Context hooks directly: because the remote mounts inside the *same*
- * React tree as the host (not a second root), and `shared-federation-runtime`
- * is a federation-shared singleton (so every app resolves the identical
- * Context object instance), a `<XyzWidgetLoaderContext.Provider>` the host
- * renders anywhere above this component is visible to the remote's own
- * `useContext` call once it loads -- no explicit passing through
- * `RemoteRouteHost` required.
+ * There is no `./RemoteProviders` equivalent. A remote is fully
+ * self-configuring -- it fetches its own runtime config and builds its own
+ * API client internally, the same way job-bank's `App.tsx` always has.
+ * Where a remote genuinely needs something from its host that's identity
+ * -sensitive (a cross-remote widget loader, e.g. `useWidgetLoader`), it
+ * reads it via this package's own Context hooks directly: because the
+ * remote mounts inside the *same* React tree as the host (not a second
+ * root), and `shared-federation-runtime` is a federation-shared singleton
+ * (so every app resolves the identical Context object instance), a
+ * `<WidgetRegistryContext.Provider>` the host renders anywhere above this
+ * component is visible to the remote's own `useContext` call once it loads
+ * -- no explicit passing through `RemoteRouteHost` required.
+ *
+ * The optional `props` field is for the opposite case: plain, non-identity
+ * host state (e.g. a route param the host's own router resolved) that the
+ * remote can't safely read via its own bundled copy of a library that
+ * isn't a federation-shared singleton (`react-router-dom`'s `useParams()`,
+ * for instance -- see `RemoteRouteHostProps.props`'s own doc comment).
  */
-export function RemoteRouteHost({ remoteName }: RemoteRouteHostProps) {
+export function RemoteRouteHost({ remoteName, props }: RemoteRouteHostProps) {
   const loadRemoteModule = useRemoteModuleLoader();
 
   const RemoteComponent = useMemo(
@@ -92,7 +109,7 @@ export function RemoteRouteHost({ remoteName }: RemoteRouteHostProps) {
   return (
     <RemoteErrorBoundary key={remoteName} remoteName={remoteName}>
       <Suspense fallback={null}>
-        <RemoteComponent />
+        <RemoteComponent {...props} />
       </Suspense>
     </RemoteErrorBoundary>
   );

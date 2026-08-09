@@ -6,5 +6,5 @@
 export declare const CLAIM_DASHBOARD = "dashboard:access";
 export declare const CLAIM_JOB_BANK = "job-bank:access";
 export declare const CLAIM_EI = "ei:access";
-export declare const CLAIM_EMPLOYMENT_LIFE_EVENTS = "employment-life-events:access";
+export declare const CLAIM_LIFE_EVENTS = "life-events:access";
 //# sourceMappingURL=claims.d.ts.map

@@ -7,8 +7,8 @@ import { createHash } from 'node:crypto';
 const CLAIM_DASHBOARD = 'dashboard:access';
 const CLAIM_JOB_BANK = 'job-bank:access';
 const CLAIM_EI = 'ei:access';
-const CLAIM_EMPLOYMENT_LIFE_EVENTS = 'employment-life-events:access';
-const ALL_CLAIMS = [CLAIM_DASHBOARD, CLAIM_JOB_BANK, CLAIM_EI, CLAIM_EMPLOYMENT_LIFE_EVENTS];
+const CLAIM_LIFE_EVENTS = 'life-events:access';
+const ALL_CLAIMS = [CLAIM_DASHBOARD, CLAIM_JOB_BANK, CLAIM_EI, CLAIM_LIFE_EVENTS];
 
 export interface TenantRecord {
   sub: string;

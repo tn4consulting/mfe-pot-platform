@@ -38,9 +38,30 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('employment-life-events has no violations', async ({ page }) => {
+  test('life-events hub page has no violations', async ({ page }) => {
     await signIn(page);
-    await page.goto('/job-loss');
+    await page.goto('/life-events');
+    const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('life-events/job-loss has no violations', async ({ page }) => {
+    await signIn(page);
+    await page.goto('/life-events/job-loss');
+    const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('life-events/birth has no violations', async ({ page }) => {
+    await signIn(page);
+    await page.goto('/life-events/birth');
+    const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('life-events/disability has no violations', async ({ page }) => {
+    await signIn(page);
+    await page.goto('/life-events/disability');
     const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
     expect(results.violations).toEqual([]);
   });

@@ -1,5 +1,5 @@
 import { AuthSession } from './auth-session.model';
-import { CLAIM_DASHBOARD, CLAIM_EI, CLAIM_EMPLOYMENT_LIFE_EVENTS, CLAIM_JOB_BANK } from './claims';
+import { CLAIM_DASHBOARD, CLAIM_EI, CLAIM_LIFE_EVENTS, CLAIM_JOB_BANK } from './claims';
 
 const SESSION_DURATION_MS = 30 * 60 * 1000;
 
@@ -20,7 +20,7 @@ export function createMockSession(name = 'Jordan Tremblay'): AuthSession {
   return {
     sub: 'mock-citizen-001',
     name,
-    claims: [CLAIM_DASHBOARD, CLAIM_JOB_BANK, CLAIM_EI, CLAIM_EMPLOYMENT_LIFE_EVENTS],
+    claims: [CLAIM_DASHBOARD, CLAIM_JOB_BANK, CLAIM_EI, CLAIM_LIFE_EVENTS],
     issuedAt: now,
     expiresAt: now + SESSION_DURATION_MS,
     accessToken: 'mock-access-token-not-a-real-jwt',

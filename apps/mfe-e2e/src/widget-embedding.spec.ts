@@ -2,16 +2,16 @@ import { expect, test } from '@playwright/test';
 import { signIn } from './support/sign-in';
 
 /**
- * The harder, more valuable federation capability: `employment-life-events`
+ * The harder, more valuable federation capability: `life-events-mfe`
  * dynamically imports and renders `dashboard`'s payment-history component
- * live, with dashboard's own providers applied (see CLAUDE.md's
- * "Federation" section on cross-remote widget composition being
- * host-mediated). This is real cross-remote component embedding, not two
- * copies of the same static content.
+ * live, resolved by widget id through the shell's generic widget registry
+ * (see CLAUDE.md's "Federation" section on cross-remote widget composition
+ * being host-mediated). This is real cross-remote component embedding, not
+ * two copies of the same static content.
  */
-test('employment-life-events embeds dashboard\'s live payment-history widget', async ({ page }) => {
+test('life-events-mfe embeds dashboard\'s live payment-history widget', async ({ page }) => {
   await signIn(page);
-  await page.goto('/job-loss');
+  await page.goto('/life-events/job-loss');
 
   await expect(page.getByText('Payment history')).toBeVisible();
   await expect(page.getByText(/Employment Insurance — \$638\.00/).first()).toBeVisible();

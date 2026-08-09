@@ -16,7 +16,7 @@ strapi:
     REMOTE_DASHBOARD_MFE_URL: "https://dashboard-mfe.aws.tn4consulting.com/remoteEntry.json"
     REMOTE_JOB_BANK_MFE_URL: "https://job-bank-mfe.aws.tn4consulting.com/remoteEntry.json"
     REMOTE_EMPLOYMENT_INSURANCE_MFE_URL: "https://employment-insurance-mfe.aws.tn4consulting.com/remoteEntry.json"
-    REMOTE_EMPLOYMENT_LIFE_EVENTS_MFE_URL: "https://employment-life-events-mfe.aws.tn4consulting.com/remoteEntry.json"
+    REMOTE_LIFE_EVENTS_MFE_URL: "https://life-events-mfe.aws.tn4consulting.com/remoteEntry.json"
 
 ingress:
   host: cms.aws.tn4consulting.com

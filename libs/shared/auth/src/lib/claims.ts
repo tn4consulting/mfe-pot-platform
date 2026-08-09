@@ -6,4 +6,4 @@
 export const CLAIM_DASHBOARD = 'dashboard:access';
 export const CLAIM_JOB_BANK = 'job-bank:access';
 export const CLAIM_EI = 'ei:access';
-export const CLAIM_EMPLOYMENT_LIFE_EVENTS = 'employment-life-events:access';
+export const CLAIM_LIFE_EVENTS = 'life-events:access';

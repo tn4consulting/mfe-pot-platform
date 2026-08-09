@@ -1,7 +1,7 @@
 {
   "name": "@tn4consulting/shared-auth",
-  "version": "0.4.0",
-  "description": "Mock session model, storage+broadcast sync, and claims shared across mfe-pot apps.",
+  "version": "0.5.0",
+  "description": "Mock session model, storage+broadcast sync, and claims shared across mfe-pot apps. 0.5.0 renames CLAIM_EMPLOYMENT_LIFE_EVENTS to CLAIM_LIFE_EVENTS ('life-events:access'), alongside mfe-pot-employment-life-events-mfe's rename/generalization to mfe-pot-life-events-mfe.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"

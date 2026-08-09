@@ -17,7 +17,7 @@ variable "github_org" {
 }
 
 variable "github_repo_pattern" {
-  description = "Wildcard matching every repo the shared CI role should be assumable from. Confirmed via `git remote -v` that all 7 repos (mfe-pot-platform, mfe-pot-msca-shell, mfe-pot-job-bank-shell, mfe-pot-dashboard, mfe-pot-job-bank, mfe-pot-employment-insurance, mfe-pot-employment-life-events) share this prefix."
+  description = "Wildcard matching every repo the shared CI role should be assumable from. Confirmed via `git remote -v` that all 7 repos (mfe-pot-platform, mfe-pot-msca-shell, mfe-pot-job-bank-shell, mfe-pot-dashboard, mfe-pot-job-bank, mfe-pot-employment-insurance, mfe-pot-life-events) share this prefix."
   type        = string
   default     = "mfe-pot-*"
 }
@@ -37,7 +37,7 @@ variable "ecr_repository_names" {
     "mfe-pot-dashboard-mfe",
     "mfe-pot-job-bank-mfe",
     "mfe-pot-employment-insurance-mfe",
-    "mfe-pot-employment-life-events-mfe",
+    "mfe-pot-life-events-mfe",
     "mfe-pot-dashboard-bff",
     "mfe-pot-job-bank-bff",
     "mfe-pot-employment-insurance-bff",

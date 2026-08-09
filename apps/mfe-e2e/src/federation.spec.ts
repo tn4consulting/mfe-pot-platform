@@ -31,9 +31,23 @@ test.describe('federation: routed remotes', () => {
     await expect(page.locator('h1')).toContainText('Employment Insurance');
   });
 
-  test('shell loads employment-life-events as a federated remote', async ({ page }) => {
-    await page.goto('/job-loss');
+  test('shell loads life-events-mfe as a federated remote', async ({ page }) => {
+    await page.goto('/life-events/job-loss');
     await expect(page.getByText("you lost your job")).toBeVisible();
+  });
+
+  test('life-events-mfe renders a different life event by route param, from the same remote', async ({ page }) => {
+    await page.goto('/life-events/birth');
+    await expect(page.getByText('you had a baby')).toBeVisible();
+  });
+
+  test('life-events hub page presents both life-event and conventional benefit entry points', async ({ page }) => {
+    await page.goto('/life-events');
+    await expect(page.getByRole('link', { name: /you lost your job/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /dashboard/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /you lost your job/i }).click();
+    await expect(page).toHaveURL('/life-events/job-loss');
   });
 
   test('deep-linking to a remote route without a session redirects to login', async ({

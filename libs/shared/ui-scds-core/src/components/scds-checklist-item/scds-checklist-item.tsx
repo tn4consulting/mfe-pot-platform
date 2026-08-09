@@ -8,9 +8,9 @@ import { Component, Prop, h } from '@stencil/core';
  * Deliberately owns no completion state of its own -- `complete` is fully
  * caller-controlled, the same "presentational, state lives in the
  * consumer" shape as `scds-badge`'s `tone`. First consumer:
- * mfe-pot-employment-life-events-mfe's guided-journey checklist, where
- * some items are self-reported and others derive completion from another
- * federated app's real data -- this component doesn't need to know which.
+ * mfe-pot-life-events-mfe's guided-journey checklists, where some items
+ * are self-reported and others derive completion from another federated
+ * app's real data -- this component doesn't need to know which.
  */
 @Component({
   tag: 'scds-checklist-item',

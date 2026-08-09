@@ -31,7 +31,7 @@ export default defineConfig({
     },
   ],
   // All 5 frontends (shell, dashboard, job-bank, employment-insurance,
-  // employment-life-events) and all 3 BFFs (job-bank-bff,
+  // life-events) and all 3 BFFs (job-bank-bff,
   // employment-insurance-bff, dashboard-bff) have moved to their own repos
   // -- Phase 1 of the polyrepo split (see
   // docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md) is

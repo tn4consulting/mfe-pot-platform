@@ -21,9 +21,9 @@ const REMOTES = [
     version: '0.0.1',
   },
   {
-    name: 'employment-life-events-mfe',
-    url: process.env.REMOTE_EMPLOYMENT_LIFE_EVENTS_MFE_URL ?? 'http://localhost:4202/remoteEntry.json',
-    routePrefix: '/employment-life-events',
+    name: 'life-events-mfe',
+    url: process.env.REMOTE_LIFE_EVENTS_MFE_URL ?? 'http://localhost:4202/remoteEntry.json',
+    routePrefix: '/life-events',
     version: '0.0.1',
   },
   {
@@ -53,7 +53,7 @@ const PAGE_CONTENT = [
     },
   },
   {
-    key: 'employment-life-events.intro',
+    key: 'life-events.job-loss.intro',
     en: {
       title: "You lost your job — here's what to do next",
       body: 'Guidance on CVs, job search, and Employment Insurance.',
@@ -61,6 +61,61 @@ const PAGE_CONTENT = [
     fr: {
       title: 'Vous avez perdu votre emploi — voici les prochaines étapes',
       body: "Conseils sur le CV, la recherche d'emploi et l'assurance-emploi.",
+    },
+  },
+  {
+    key: 'life-events.job-loss.hub-tile',
+    en: {
+      title: 'You lost your job',
+      body: 'Guidance on your Record of Employment, job search, and Employment Insurance.',
+    },
+    fr: {
+      title: 'Vous avez perdu votre emploi',
+      body: "Conseils sur votre relevé d'emploi, la recherche d'emploi et l'assurance-emploi.",
+    },
+  },
+  {
+    key: 'life-events.birth.hub-tile',
+    en: {
+      title: 'You had a baby',
+      body: 'Register the birth, apply for maternity/parental benefits, and find family supports.',
+    },
+    fr: {
+      title: 'Vous avez eu un enfant',
+      body: 'Déclarez la naissance, présentez une demande de prestations de maternité/parentales et trouvez des soutiens familiaux.',
+    },
+  },
+  {
+    key: 'life-events.disability.hub-tile',
+    en: {
+      title: 'You have a disability',
+      body: 'Apply for disability benefits and find accessibility supports and services.',
+    },
+    fr: {
+      title: 'Vous vivez avec un handicap',
+      body: "Présentez une demande de prestations d'invalidité et trouvez des services et soutiens en accessibilité.",
+    },
+  },
+  {
+    key: 'life-events.birth.intro',
+    en: {
+      title: "You had a baby — here's what to do next",
+      body: 'Guidance on registering the birth, maternity/parental benefits, and family supports.',
+    },
+    fr: {
+      title: 'Vous avez eu un enfant — voici les prochaines étapes',
+      body: 'Conseils sur la déclaration de naissance, les prestations de maternité/parentales et les soutiens familiaux.',
+    },
+  },
+  {
+    key: 'life-events.disability.intro',
+    en: {
+      title: "You have a disability — here's what to do next",
+      body: 'Guidance on applying for disability benefits and finding accessibility supports.',
+    },
+    fr: {
+      title: 'Vous vivez avec un handicap — voici les prochaines étapes',
+      body: "Conseils sur la demande de prestations d'invalidité et les soutiens en accessibilité.",
     },
   },
   {

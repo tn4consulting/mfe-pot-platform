@@ -28,6 +28,12 @@ strapi:
     REMOTE_JOB_BANK_MFE_URL: "http://job-bank-mfe.mfe-pot.local/remoteEntry.json"
     REMOTE_EMPLOYMENT_INSURANCE_MFE_URL: "http://employment-insurance-mfe.mfe-pot.local/remoteEntry.json"
     REMOTE_LIFE_EVENTS_MFE_URL: "http://life-events-mfe.mfe-pot.local/remoteEntry.json"
+    # Content sources for src/content-seed.ts -- job-bank-shell and
+    # msca-shell are host apps, not federated remotes, so they have no
+    # REMOTE_*_URL of their own to derive a content base URL from. Note
+    # job-bank-shell's own Ingress host is "job-bank", not "job-bank-shell".
+    CONTENT_JOB_BANK_SHELL_URL: "http://job-bank.mfe-pot.local"
+    CONTENT_MSCA_SHELL_URL: "http://msca.mfe-pot.local"
   # Rendered as a Secret instead of the ConfigMap above. Dummy local-dev-only
   # values (no real user data behind this CMS, ever) -- do not reuse them
   # for anything real.

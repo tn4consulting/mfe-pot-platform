@@ -4,6 +4,15 @@
 # no Dockerfile of its own to push to ECR; it pulls the same public Docker
 # Hub image on both kind and EKS.
 
+otelCollector:
+  corsAllowedOrigins:
+    - "https://msca.aws.tn4consulting.com"
+    - "https://job-bank.aws.tn4consulting.com"
+    - "https://dashboard-mfe.aws.tn4consulting.com"
+    - "https://job-bank-mfe.aws.tn4consulting.com"
+    - "https://employment-insurance-mfe.aws.tn4consulting.com"
+    - "https://life-events-mfe.aws.tn4consulting.com"
+
 ingress:
   host: otel.aws.tn4consulting.com
   tls:

@@ -16,6 +16,18 @@ otelCollector:
   otlpGrpcPort: 4317
   prometheusPort: 8889
   healthPort: 13133
+  # Browser-facing CORS allowlist for the otlp/http receiver above -- every
+  # Ingress host that runs shared-observability's initBrowserObservability
+  # (both host shells, all 4 remotes). values-eks.yaml overrides this
+  # wholesale with the aws.tn4consulting.com equivalents, same split
+  # ingress.host below already uses.
+  corsAllowedOrigins:
+    - "http://msca.mfe-pot.local"
+    - "http://job-bank.mfe-pot.local"
+    - "http://dashboard-mfe.mfe-pot.local"
+    - "http://job-bank-mfe.mfe-pot.local"
+    - "http://employment-insurance-mfe.mfe-pot.local"
+    - "http://life-events-mfe.mfe-pot.local"
 
 ingress:
   host: otel.mfe-pot.local

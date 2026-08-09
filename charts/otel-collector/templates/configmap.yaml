@@ -16,6 +16,18 @@ data:
             endpoint: 0.0.0.0:{{ .Values.otelCollector.otlpGrpcPort }}
           http:
             endpoint: 0.0.0.0:{{ .Values.otelCollector.otlpHttpPort }}
+            # Only this protocol needs CORS -- BFF-to-collector traffic is
+            # server-to-server (in-cluster Service DNS, no browser Origin
+            # header involved). Every frontend Ingress host that runs
+            # shared-observability's initBrowserObservability (both shells,
+            # all 4 remotes) POSTs here cross-origin, so without this block
+            # the browser's OPTIONS preflight gets no
+            # Access-Control-Allow-Origin and the real POST never fires.
+            cors:
+              allowed_origins:
+                {{- range .Values.otelCollector.corsAllowedOrigins }}
+                - {{ . | quote }}
+                {{- end }}
 
     processors:
       memory_limiter:

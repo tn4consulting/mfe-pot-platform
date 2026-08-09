@@ -9,7 +9,8 @@
     "deploy:local": "bash tools/deploy-local.sh",
     "eks:up": "bash tools/eks-up.sh",
     "eks:down": "bash tools/eks-down.sh",
-    "check:versions": "node libs/shared/platform-standards/bin/check-platform-versions.mjs --source platform-versions.json"
+    "check:versions": "node libs/shared/platform-standards/bin/check-platform-versions.mjs --source platform-versions.json",
+    "check:boundaries": "node libs/shared/platform-standards/bin/check-bff-boundaries.mjs"
   },
   "private": true,
   "devDependencies": {

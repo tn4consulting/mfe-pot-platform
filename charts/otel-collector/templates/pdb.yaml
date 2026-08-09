@@ -1,0 +1,15 @@
+{{- if .Values.otelCollector.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.otelCollector.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+    app.kubernetes.io/component: observability
+spec:
+  minAvailable: {{ .Values.otelCollector.podDisruptionBudget.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+      app.kubernetes.io/component: observability
+{{- end }}

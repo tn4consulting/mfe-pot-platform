@@ -1,0 +1,22 @@
+apiVersion: v2
+name: unleash
+description: >-
+  Deploys Unleash (self-hosted OSS feature-flag/experimentation server) plus
+  the Postgres instance it requires -- backs @tn4consulting/shared-feature-
+  flags, the mechanism for design principle 6 ("A/B testing as a first-class
+  design principle -- changes must be testable at small scale for impact
+  before full rollout", see mfe-pot/TODO.md's "Design principles" section).
+  Deliberately not based on mfe-backend-lib/mfe-frontend-lib, and
+  deliberately hand-rolled rather than depending on Unleash's own official
+  Helm chart (which pulls in Bitnami's Postgres chart from an external Helm
+  repo) -- every other shared chart in this family (session-cache,
+  otel-collector, tempo, prometheus, grafana) is a bare upstream image with
+  no external chart dependency of its own, and this stays consistent with
+  that rather than introducing the family's first external Helm-repo
+  dependency for a PoT-scale need. No PersistentVolume on either the
+  Unleash or Postgres deployment -- flags/state reset on pod restart, same
+  resettable-demo posture as charts/session-cache's Redis and Strapi's
+  SQLite file. Installed once, independently of any per-app chart, the same
+  way charts/session-cache/otel-collector/grafana are.
+type: application
+version: 0.1.0

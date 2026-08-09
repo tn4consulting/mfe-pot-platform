@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.postgres.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.postgres.name }}
+    app.kubernetes.io/component: unleash-postgres
+spec:
+  # Deliberately hardcoded, not templated off a values field like every
+  # other Deployment in this family -- a second, uncoordinated Postgres
+  # replica with no replication configured would just be a second,
+  # diverging copy of Unleash's own flag state, not a real HA setup. Same
+  # "don't scale the actual datastore" reasoning as charts/session-cache's
+  # Redis. See mfe-pot/TODO.md's "Design principles" section, principles 3/4.
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.postgres.name }}
+      app.kubernetes.io/component: unleash-postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.postgres.name }}
+        app.kubernetes.io/component: unleash-postgres
+    spec:
+      containers:
+        - name: {{ .Values.postgres.name }}
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.postgres.containerPort }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.db | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.postgres.password | quote }}
+          # No persistence (no PersistentVolume) -- this is a resettable PoT
+          # demo database backing Unleash's own flag state, same posture as
+          # charts/session-cache's Redis and Strapi's SQLite file. Would
+          # need one before any real (non-PoT) deployment.
+          readinessProbe:
+            exec:
+              command: ['pg_isready', '-U', {{ .Values.postgres.user | quote }}]
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ['pg_isready', '-U', {{ .Values.postgres.user | quote }}]
+            initialDelaySeconds: 5
+            periodSeconds: 10

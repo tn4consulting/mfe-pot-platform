@@ -1,0 +1,15 @@
+{{- if .Values.grafana.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.grafana.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.grafana.name }}
+    app.kubernetes.io/component: observability
+spec:
+  minAvailable: {{ .Values.grafana.podDisruptionBudget.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.grafana.name }}
+      app.kubernetes.io/component: observability
+{{- end }}

@@ -6,7 +6,20 @@ metadata:
     app.kubernetes.io/name: {{ .Values.redis.name }}
     app.kubernetes.io/component: session-cache
 spec:
+  # Deliberately NOT scaled -- single Redis, no clustering/replication
+  # configured, so a second replica would just be a second, diverging
+  # in-memory store, not real HA (the actual fix, Redis primary+replica or
+  # Sentinel, is tracked separately -- see
+  # docs/plans/20260808-1800-backend-outage-resilience.md). The strategy
+  # block is a no-op formalization at replicas: 1 (matches Kubernetes' own
+  # default rounding), not new behavior. See mfe-pot/TODO.md's "Design
+  # principles" section, principles 3/4.
   replicas: {{ .Values.redis.replicaCount | default 1 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.redis.name }}

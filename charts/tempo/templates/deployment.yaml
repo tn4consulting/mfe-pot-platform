@@ -6,7 +6,21 @@ metadata:
     app.kubernetes.io/name: {{ .Values.tempo.name }}
     app.kubernetes.io/component: observability
 spec:
+  # Deliberately NOT scaled to replicas: 2 like otel-collector/grafana --
+  # local emptyDir trace storage (see volumes below) with no ingester
+  # ring/distributor-hash coordination means two uncoordinated replicas
+  # would each hold only the traces they happened to receive, so queries
+  # would return incomplete results. The strategy/no-gap-rolling-update
+  # block below is still worth having explicit (matches the actual current
+  # Kubernetes default at replicas: 1 -- maxSurge/maxUnavailable both round
+  # to this same shape -- so it's a no-op formalization, not new behavior).
+  # See mfe-pot/TODO.md's "Design principles" section, principles 3/4.
   replicas: {{ .Values.tempo.replicaCount | default 1 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.tempo.name }}

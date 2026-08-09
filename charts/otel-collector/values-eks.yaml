@@ -5,6 +5,13 @@
 # Hub image on both kind and EKS.
 
 otelCollector:
+  # 2 replicas + a real PDB on EKS -- kind stays at 1 (values.yaml) to
+  # limit resource pressure on a single-node dev cluster. See
+  # mfe-pot/TODO.md's "Design principles" section, principles 3/4.
+  replicaCount: 2
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
   corsAllowedOrigins:
     - "https://msca.aws.tn4consulting.com"
     - "https://job-bank.aws.tn4consulting.com"

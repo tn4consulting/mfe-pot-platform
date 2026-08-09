@@ -1,0 +1,63 @@
+unleash:
+  name: unleash
+  # Safe to scale -- see unleash-deployment.yaml's own comment and
+  # mfe-pot/TODO.md's "Design principles" section, principles 3/4. Local
+  # kind default stays at 1 (limits resource pressure on a single-node dev
+  # cluster) -- values-eks.yaml bumps this to 2.
+  replicaCount: 1
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+  image:
+    repository: unleashorg/unleash-server
+    tag: "6"
+    pullPolicy: IfNotPresent
+  containerPort: 4242
+  servicePort: 4242
+  # Demo-only bootstrap tokens -- same posture as charts/strapi's committed
+  # dummy APP_KEYS and charts/grafana's dummy admin password: no real data
+  # behind this instance, ever, so committing these plainly is an
+  # acceptable PoT-only tradeoff. Three distinct Unleash token *types*. each
+  # only valid against its own API surface -- an admin token against
+  # /api/frontend (or vice versa) is rejected outright, and neither CLIENT
+  # nor FRONTEND tokens may be scoped to environment "*" (only ADMIN can) --
+  # confirmed live the hard way (BadDataError: "Client token cannot be
+  # scoped to all environments") when this first tried "*:*." for all three:
+  #   - adminApiToken:    the Unleash admin UI/API itself (flag management).
+  #   - clientApiToken:   @tn4consulting/shared-feature-flags-server's
+  #                       unleash-client SDK, against /api/client.
+  #   - frontendApiToken: @tn4consulting/shared-feature-flags' browser
+  #                       unleash-proxy-client SDK, against /api/frontend --
+  #                       a *different* token type than clientApiToken even
+  #                       though both are "for reading flags", not
+  #                       interchangeable.
+  adminApiToken: "*:*.unleash-demo-admin-token"
+  clientApiToken: "*:development.unleash-demo-client-token"
+  frontendApiToken: "*:development.unleash-demo-frontend-token"
+
+postgres:
+  name: unleash-postgres
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: IfNotPresent
+  containerPort: 5432
+  servicePort: 5432
+  db: unleash
+  user: unleash
+  # Demo-only, same posture as above -- no PersistentVolume either (see
+  # deployment.yaml's comment), so this password protects nothing durable.
+  password: devUnleashPostgresPassword==
+
+# The hostname is "unleash", not e.g. "flags" -- this is genuinely Unleash,
+# unlike "cms" standing in for Strapi, so there's no implementation detail
+# to hide behind a different name (same reasoning as charts/grafana).
+ingress:
+  host: unleash.mfe-pot.local
+  className: nginx
+  # TLS off by default (kind/local has no real cert authority) --
+  # values-eks.yaml turns this on for a real AWS deployment. See
+  # templates/ingress.yaml for how these two fields are consumed.
+  tls:
+    enabled: false
+    clusterIssuer: letsencrypt-staging

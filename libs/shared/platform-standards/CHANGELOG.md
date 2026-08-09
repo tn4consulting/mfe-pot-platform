@@ -5,6 +5,18 @@ documented here, per the breaking-change/deprecation protocol in
 `docs/plans/20260808-1200-multi-team-scale-governance.md` (item 4, in the
 `mfe-pot` meta repo).
 
+## 0.2.0 — 2026-08-09
+
+- `check-bff-boundaries` CLI: enforces the "UI apps/libraries may call only
+  their own BFF" / "BFFs must not call each other" design principles (see
+  `mfe-pot/TODO.md`'s "Design principles" section) via two grep-based
+  checks over this repo's own `apps/**/*.{ts,tsx}` -- no in-cluster Service
+  DNS literal in application source, no reference to another domain's
+  dev-default BFF port. Not a full AST/data-flow analysis, same
+  plain-script-over-parser precedent as `check-platform-versions`.
+- `docs/PLATFORM_STANDARDS.md`'s "BFF boundary rules" section updated from
+  "not yet fully enforced in code" to reflect this.
+
 ## 0.1.0 — 2026-08-08
 
 Initial release.

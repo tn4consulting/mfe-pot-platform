@@ -7,6 +7,19 @@ metadata:
     app.kubernetes.io/component: observability
 spec:
   replicas: {{ .Values.grafana.replicaCount | default 1 }}
+  # No PersistentVolume -- all state (datasources, dashboards, admin
+  # credentials) is provisioned via ConfigMap/env, so every replica
+  # self-provisions identically on boot. Safe to scale and roll without a
+  # gap, same reasoning as charts/otel-collector. See mfe-pot/TODO.md's
+  # "Design principles" section, principles 3/4. Caveat: anything a human
+  # ever creates through Grafana's own UI (dashboards/alerts/users beyond
+  # the provisioned admin) would land in only one replica's local SQLite --
+  # not a concern today since nothing in this chart does that.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.grafana.name }}
@@ -17,6 +30,16 @@ spec:
         app.kubernetes.io/name: {{ .Values.grafana.name }}
         app.kubernetes.io/component: observability
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ .Values.grafana.name }}
+                    app.kubernetes.io/component: observability
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: {{ .Values.grafana.name }}
           image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"

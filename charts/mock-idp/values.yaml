@@ -1,5 +1,20 @@
 backend:
   name: mock-idp
+  # Deliberately NOT scaled to replicas: 2 alongside the rest of the
+  # family's BFFs (see mfe-pot/TODO.md's "Design principles" section,
+  # principles 3/4) -- audited and found genuinely unsafe to scale without
+  # further work: apps/mock-idp holds two kinds of uncoordinated
+  # per-process in-memory state with no shared backing store, unlike every
+  # BFF's own SessionCache (Redis-backed). (1) One-time authorization codes
+  # (codes.ts's pendingAuthorizations Map) issued by /authorize and
+  # consumed by /token -- a citizen whose two requests land on different
+  # pods would see a spurious "invalid code" on an otherwise-legitimate
+  # login. (2) The RS256 signing keypair itself (keys.ts) is generated
+  # fresh per process and never persisted -- two pods would sign/verify
+  # JWTs with two different keys, so *any* citizen's token could
+  # intermittently fail verification depending on which pod's JWKS a BFF's
+  # own verification call happened to resolve. Fixing this (shared code/key
+  # storage) is a real but separate piece of work, not done here.
   replicaCount: 1
   image:
     repository: mfe-pot-mock-idp
@@ -10,8 +25,7 @@ backend:
   # MOCK_IDP_ISSUER uses this release's own in-cluster Service DNS name --
   # it's the `iss` claim baked into every issued JWT, and each of the 3
   # BFFs' own MOCK_IDP_ISSUER (their own charts) must match this exact
-  # value for verification to succeed. Real cluster-internal traffic, same
-  # pattern as dashboard-bff's JOB_BANK_BFF_URL/EMPLOYMENT_INSURANCE_BFF_URL.
+  # value for verification to succeed.
   # ALLOWED_REDIRECT_URI_ORIGINS is the opposite direction: each host app's
   # own public Ingress hostname, since that's what the citizen's own
   # browser sends as redirect_uri during the real top-level /authorize

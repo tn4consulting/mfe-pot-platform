@@ -1,0 +1,15 @@
+{{- if .Values.unleash.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.unleash.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.unleash.name }}
+    app.kubernetes.io/component: unleash
+spec:
+  minAvailable: {{ .Values.unleash.podDisruptionBudget.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.unleash.name }}
+      app.kubernetes.io/component: unleash
+{{- end }}

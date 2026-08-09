@@ -2,10 +2,28 @@ const registerInstrumentationsMock = jest.fn();
 const tracerProviderConstructorMock = jest.fn();
 const meterProviderConstructorMock = jest.fn();
 
+// A minimal fake span with a valid-shaped SpanContext -- real enough for
+// @opentelemetry/core's actual W3CTraceContextPropagator (used unmocked
+// below, since it's pure/deterministic logic) to inject/extract a genuine
+// W3C `traceparent` string against.
+function makeFakeSpan(spanId: string) {
+  return {
+    spanContext: () => ({
+      traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+      spanId,
+      traceFlags: 1,
+      isRemote: false,
+    }),
+  };
+}
+
 jest.mock('@opentelemetry/sdk-trace-web', () => ({
   WebTracerProvider: jest.fn().mockImplementation((...args: unknown[]) => {
     tracerProviderConstructorMock(...args);
-    return { name: 'tracerProvider' };
+    return {
+      name: 'tracerProvider',
+      getTracer: () => ({ startSpan: jest.fn().mockReturnValue(makeFakeSpan('00f067aa0ba902b7')) }),
+    };
   }),
   BatchSpanProcessor: jest.fn(),
 }));
@@ -59,7 +77,7 @@ describe('initBrowserObservability', () => {
     expect(meterProviderConstructorMock).toHaveBeenCalledTimes(1);
     expect(registerInstrumentationsMock).toHaveBeenCalledTimes(1);
     const call = registerInstrumentationsMock.mock.calls[0][0];
-    expect(call.tracerProvider).toEqual({ name: 'tracerProvider' });
+    expect(call.tracerProvider).toMatchObject({ name: 'tracerProvider' });
     expect(call.meterProvider).toEqual({ name: 'meterProvider' });
     expect(call.instrumentations).toHaveLength(2);
   });
@@ -87,5 +105,38 @@ describe('initBrowserObservability', () => {
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed to initialize'), expect.any(Error));
 
     warnSpy.mockRestore();
+  });
+});
+
+describe('startPageSpan / withRemoteParent', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it('startPageSpan returns undefined when observability was never initialized', () => {
+    const { startPageSpan } = require('./browser-observability');
+    expect(startPageSpan('overview-page-load')).toBeUndefined();
+  });
+
+  it('withRemoteParent with an undefined traceparent just runs fn() normally', () => {
+    const { withRemoteParent } = require('./browser-observability');
+    const fn = jest.fn().mockReturnValue('result');
+    expect(withRemoteParent(undefined, fn)).toBe('result');
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it('startPageSpan produces a real W3C traceparent once initialized, and withRemoteParent round-trips it without throwing', () => {
+    const { initBrowserObservability, startPageSpan, withRemoteParent } = require('./browser-observability');
+    initBrowserObservability({ serviceName: 'dashboard-mfe', otlpEndpoint: 'http://otel.mfe-pot.local' });
+
+    const result = startPageSpan('overview-page-load');
+    expect(result).toBeDefined();
+    // 00-<32 hex traceId>-<16 hex spanId>-<2 hex flags>
+    expect(result?.traceparent).toMatch(/^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$/);
+
+    const fn = jest.fn().mockReturnValue('widget-fetch-result');
+    expect(withRemoteParent(result?.traceparent, fn)).toBe('widget-fetch-result');
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 });

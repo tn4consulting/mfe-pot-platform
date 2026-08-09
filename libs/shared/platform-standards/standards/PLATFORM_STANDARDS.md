@@ -68,15 +68,17 @@ dependency bump is safe.
 
 ## BFF boundary rules
 
-(Design principles not yet fully enforced in code — see `mfe-pot/TODO.md`'s
-"Design principles" section for status — but the intended contract, worth
-following now rather than retrofitting later:)
-
 - UI apps and libraries may call **only their own BFF** — never another
   domain's BFF or a backend service directly.
 - BFFs must **not** call each other, but they may call backend services.
 - Shared state (session) is managed cross-application via Redis
   (`@tn4consulting/shared-session-cache`), not ad hoc per-BFF state.
+- Enforced by `check-bff-boundaries` (this same package) — run
+  `pnpm run check:boundaries` before assuming a new cross-domain call is
+  safe. Not a full data-flow analysis (see the script's own header
+  comment); catches the concrete violation shape found and fixed in
+  `dashboard-bff`'s former `getBenefitOverview` fan-out, not every
+  conceivable one.
 
 ## Linting
 

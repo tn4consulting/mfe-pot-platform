@@ -1,0 +1,19 @@
+{
+  "name": "shared-feature-flags-server",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/feature-flags-server/src",
+  "projectType": "library",
+  "tags": ["type:shared", "scope:shared"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/shared/feature-flags-server/jest.config.cts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

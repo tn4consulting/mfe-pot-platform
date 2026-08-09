@@ -1,0 +1,25 @@
+# Overrides layered on top of values.yaml for a real AWS EKS deployment (see
+# mfe-pot/docs/plans/20260808-1500-mfe-pot-aws-eks-terraform.md). No
+# image.repository override needed for either container -- unlike
+# strapi/mock-idp, this chart has no Dockerfile of its own to push to ECR;
+# it pulls the same public Docker Hub images on both kind and EKS.
+
+unleash:
+  # 2 replicas + a real PDB on EKS -- kind stays at 1 (values.yaml) to
+  # limit resource pressure on a single-node dev cluster. Its own Postgres
+  # (unleash-postgres) is untouched either way -- see
+  # postgres-deployment.yaml's own comment. See mfe-pot/TODO.md's "Design
+  # principles" section, principles 3/4.
+  replicaCount: 2
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+ingress:
+  host: unleash.aws.tn4consulting.com
+  tls:
+    enabled: true
+    # letsencrypt-staging while iterating (avoids Let's Encrypt rate limits
+    # across repeated cluster destroy/recreate cycles); switch to
+    # letsencrypt-prod only right before an actual demo.
+    clusterIssuer: letsencrypt-staging

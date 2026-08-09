@@ -6,7 +6,20 @@ metadata:
     app.kubernetes.io/name: {{ .Values.prometheus.name }}
     app.kubernetes.io/component: observability
 spec:
+  # Deliberately NOT scaled -- same reasoning as charts/tempo's identical
+  # comment: local emptyDir TSDB storage with no sharding/federation means
+  # two uncoordinated replicas would each hold only half the scraped
+  # series (and Tempo's own remote_write, per the flag above, would split
+  # across them too). The strategy block is a no-op formalization at
+  # replicas: 1 (matches Kubernetes' own default rounding), not new
+  # behavior. See mfe-pot/TODO.md's "Design principles" section,
+  # principles 3/4.
   replicas: {{ .Values.prometheus.replicaCount | default 1 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.prometheus.name }}

@@ -12,7 +12,7 @@ its own `templates/`, passing the shared root context (`.`):
 # Chart.yaml
 dependencies:
   - name: mfe-frontend-lib
-    version: 0.1.0
+    version: 0.2.0
     repository: "file://../mfe-frontend-lib"
 ```
 
@@ -23,13 +23,16 @@ dependencies:
 {{ include "mfe-frontend-lib.deployment" . }}
 # templates/frontend-service.yaml
 {{ include "mfe-frontend-lib.service" . }}
+# templates/frontend-pdb.yaml -- renders nothing unless
+# frontend.podDisruptionBudget.enabled is true, safe to always include
+{{ include "mfe-frontend-lib.pdb" . }}
 ```
 
 ## Values contract
 
 ```yaml
 frontend:
-  name: dashboard              # also used as the Deployment/Service/ConfigMap name
+  name: dashboard              # also used as the Deployment/Service/ConfigMap/PDB name
   replicaCount: 1
   image:
     repository: myregistry/mfe-pot-dashboard
@@ -40,7 +43,16 @@ frontend:
   runtimeConfig:                # app-specific shape -- see apps/<app>/src/runtime-config.ts
     strapiBaseUrl: "http://strapi.mfe-pot.svc.cluster.local:1337"
     dashboardBffBaseUrl: "https://dashboard.mfe-pot.example.com/api"
+  podDisruptionBudget:
+    enabled: false              # only turn on alongside replicaCount > 1 -- see _pdb.tpl's own comment
+    minAvailable: 1
 ```
+
+The Deployment's rolling-update `strategy` (`maxUnavailable: 0`, `maxSurge: 1`)
+and soft pod anti-affinity are unconditional, not values-gated -- both are
+harmless at `replicaCount: 1` (see `_deployment.tpl`'s own comments) and
+directly implement `mfe-pot/TODO.md`'s "Design principles" section,
+principles 3 and 4.
 
 `runtimeConfig` is serialized whole to JSON and injected as a single
 `MFE_POT_ENV_JSON` env var -- the container entrypoint writes it verbatim

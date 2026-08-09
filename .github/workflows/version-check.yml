@@ -14,6 +14,12 @@ name: Version check
 # control & CI/CD" section claiming a single nx affected workflow ran here.
 # That broader gap (no general lint/test/build workflow) is still open --
 # tracked in TODO.md, not solved by this workflow.
+#
+# Also runs check-bff-boundaries (same package) against this repo's own
+# apps/ -- this repo owns no BFF itself (those live in the per-app repos),
+# but it's still worth checking mock-idp/mfe-e2e/aws-cost-exporter don't
+# grow a stray in-cluster Service DNS literal or foreign-BFF-port reference
+# of their own.
 on:
   push:
     branches: [main]
@@ -49,3 +55,6 @@ jobs:
 
       - name: Check versions
         run: pnpm run check:versions
+
+      - name: Check BFF/UI call boundaries
+        run: pnpm run check:boundaries

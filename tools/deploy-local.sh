@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # Builds the Strapi and mock-idp images, spins up (or reuses) a local kind
 # cluster with ingress-nginx, and helm-upgrades charts/strapi,
-# charts/session-cache, charts/mock-idp, and the observability stack
-# (charts/otel-collector, charts/tempo, charts/prometheus, charts/grafana)
-# onto it -- the platform repo's equivalent of each app repo's own
-# tools/deploy-local.sh. Unlike those, kind-config.yaml already lives in
-# this repo (no sibling checkout needed). session-cache and the 4
-# observability charts have no image to build at all (all bare upstream
-# Docker Hub images) and Strapi has no @tn4consulting/* dependency, so none
-# of those need GitHub Packages auth -- mock-idp's build does (the whole
-# workspace's pnpm-lock.yaml pulls other @tn4consulting/* packages even
-# though mock-idp itself doesn't import any), same as every app repo's own
-# BFF image build.
+# charts/session-cache, charts/unleash, charts/mock-idp, and the
+# observability stack (charts/otel-collector, charts/tempo,
+# charts/prometheus, charts/grafana) onto it -- the platform repo's
+# equivalent of each app repo's own tools/deploy-local.sh. Unlike those,
+# kind-config.yaml already lives in this repo (no sibling checkout needed).
+# session-cache, unleash, and the 4 observability charts have no image to
+# build at all (all bare upstream Docker Hub images) and Strapi has no
+# @tn4consulting/* dependency, so none of those need GitHub Packages auth --
+# mock-idp's build does (the whole workspace's pnpm-lock.yaml pulls other
+# @tn4consulting/* packages even though mock-idp itself doesn't import any),
+# same as every app repo's own BFF image build.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -49,6 +49,19 @@ helm --kube-context "kind-$CLUSTER_NAME" upgrade --install session-cache charts/
   -f charts/session-cache/values.yaml \
   -f charts/session-cache/values-kind.yaml \
   --wait --timeout 120s
+
+# unleash (feature-flag server + its own Postgres) -- backs design
+# principle 6 (see TODO.md's "Design principles" section). No hard
+# ordering dependency on anything below, deployed here simply because it's
+# shared, mostly-stateless infra like session-cache. Longer timeout than
+# the other bare-image charts since Postgres + Unleash's own schema
+# migration on first boot takes longer than a single-container readiness
+# probe.
+echo "==> Deploying unleash..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install unleash charts/unleash \
+  -f charts/unleash/values.yaml \
+  -f charts/unleash/values-kind.yaml \
+  --wait --timeout 180s
 
 # otel-collector/tempo/prometheus/grafana are all bare upstream images, same
 # as session-cache -- no build/kind-load/restart dance needed. Deployed in

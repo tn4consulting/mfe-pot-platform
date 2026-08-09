@@ -7,6 +7,14 @@ metadata:
     app.kubernetes.io/component: observability
 spec:
   replicas: {{ .Values.otelCollector.replicaCount | default 1 }}
+  # Stateless pass-through pipeline (no dedup/correlation state, no
+  # volumes) -- safe to run >1 replica and roll without a gap. See
+  # mfe-pot/TODO.md's "Design principles" section, principles 3/4.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.otelCollector.name }}
@@ -17,6 +25,16 @@ spec:
         app.kubernetes.io/name: {{ .Values.otelCollector.name }}
         app.kubernetes.io/component: observability
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ .Values.otelCollector.name }}
+                    app.kubernetes.io/component: observability
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: {{ .Values.otelCollector.name }}
           image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"

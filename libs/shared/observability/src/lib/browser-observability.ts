@@ -1,3 +1,5 @@
+import { context, defaultTextMapGetter, defaultTextMapSetter, trace, type Span } from '@opentelemetry/api';
+import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
@@ -29,6 +31,17 @@ export interface BrowserObservabilityOptions {
 }
 
 let initialized = false;
+let tracerProvider: WebTracerProvider | undefined;
+
+// Constructed directly, not via @opentelemetry/api's global `propagation`
+// object -- this package deliberately never calls WebTracerProvider's own
+// `.register()` (see initBrowserObservability's doc comment), and that's
+// the only thing that would otherwise install a real propagator behind the
+// global API; without it, `propagation.inject`/`.extract` would silently
+// no-op. Self-contained instance instead, used explicitly by
+// startPageSpan/withRemoteParent below -- doesn't depend on registration
+// order or global state.
+const traceContextPropagator = new W3CTraceContextPropagator();
 
 /**
  * Starts an independent, per-app OTel Web SDK instance: its own
@@ -63,7 +76,7 @@ export function initBrowserObservability(options: BrowserObservabilityOptions): 
   try {
     const otlpEndpoint = options.otlpEndpoint;
 
-    const tracerProvider = new WebTracerProvider({
+    tracerProvider = new WebTracerProvider({
       resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: options.serviceName }),
       spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` }))],
     });
@@ -91,5 +104,61 @@ export function initBrowserObservability(options: BrowserObservabilityOptions): 
     // Deliberately console, not a dependency on this app's own logging
     // setup, which observability bootstrap must not assume exists.
     console.warn('[shared-observability] failed to initialize, continuing without telemetry:', err);
+  }
+}
+
+/**
+ * Opens a root span in THIS app's own tracer and serializes it to a W3C
+ * `traceparent` string, for a host page composing multiple independently-
+ * bundled federated widgets to hand down explicitly (e.g. as a prop) so
+ * each widget's own BFF call joins the same trace -- see
+ * mfe-pot-platform/CLAUDE.md's observability section for why this can't
+ * happen ambiently: OTel is not a federation-shared singleton, so each
+ * widget's bundle has its own disconnected copy of this package/SDK, with
+ * no shared active-context state to pick up automatically. This is the
+ * legitimate, principle-compliant replacement for a BFF-to-BFF call that
+ * used to (accidentally) produce a similar-looking multi-service trace --
+ * see mfe-pot/TODO.md's "Design principles" section, principle 2.
+ *
+ * Returns undefined if observability was never initialized (no local
+ * collector, e.g. plain `nx serve`) -- callers should treat a missing
+ * traceparent as "don't bother propagating," never as an error.
+ */
+export function startPageSpan(name: string): { span: Span; traceparent: string } | undefined {
+  if (!tracerProvider) {
+    return undefined;
+  }
+  try {
+    const span = tracerProvider.getTracer('shared-observability').startSpan(name);
+    const carrier: Record<string, string> = {};
+    traceContextPropagator.inject(trace.setSpan(context.active(), span), carrier, defaultTextMapSetter);
+    return carrier['traceparent'] ? { span, traceparent: carrier['traceparent'] } : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Runs `fn` with a remote `traceparent` string (from startPageSpan, passed
+ * down via a prop) set as the active parent context -- so a span/fetch
+ * created synchronously inside `fn` (this SDK has no Zone.js/async-context
+ * polyfill, so the active context only holds for the synchronous portion
+ * of `fn`'s own execution, not across an `await` inside it -- call the
+ * actual fetch/API-client method directly as `fn`, not after awaiting
+ * something else first) is parented under the host's page-level span
+ * instead of starting a disconnected new trace. A missing/undefined
+ * traceparent (observability not initialized, or the host never called
+ * startPageSpan) just runs `fn` normally -- this must never block or alter
+ * behavior on its own.
+ */
+export function withRemoteParent<T>(traceparent: string | undefined, fn: () => T): T {
+  if (!traceparent) {
+    return fn();
+  }
+  try {
+    const parentContext = traceContextPropagator.extract(context.active(), { traceparent }, defaultTextMapGetter);
+    return context.with(parentContext, fn);
+  } catch {
+    return fn();
   }
 }

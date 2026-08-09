@@ -1,6 +1,13 @@
 otelCollector:
   name: otel-collector
+  # Stateless -- safe to scale. See deployment.yaml's own comment and
+  # mfe-pot/TODO.md's "Design principles" section, principles 3/4. Local
+  # kind default stays at 1 (limits resource pressure on a single-node dev
+  # cluster) -- values-eks.yaml bumps this to 2.
   replicaCount: 1
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
   image:
     repository: otel/opentelemetry-collector-contrib
     tag: "0.158.0"

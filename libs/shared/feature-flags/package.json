@@ -1,0 +1,23 @@
+{
+  "name": "@tn4consulting/shared-feature-flags",
+  "version": "0.1.0",
+  "description": "Browser-side useFeatureFlag React hook (backed by Unleash's built-in Frontend API, polling-based) shared across the mfe-pot frontends -- backs design principle 6, gradual/percentage rollout, see mfe-pot/TODO.md's \"Design principles\" section and mfe-pot-platform/CLAUDE.md.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "unleash-proxy-client": "^3.7.5"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0"
+  }
+}

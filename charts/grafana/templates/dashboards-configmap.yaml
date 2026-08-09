@@ -7,9 +7,11 @@ metadata:
     app.kubernetes.io/component: observability
 data:
   # Read straight from this chart's own dashboards/ directory (not
-  # duplicated inline here) so the JSON has one source of truth. See
-  # mfe-pot-platform/CLAUDE.md's observability section for what this
-  # dashboard shows and why it's built on Tempo's span-metrics rather than
-  # each BFF's own HTTP auto-instrumentation metrics.
-  bff-red-metrics.json: |-
-{{ .Files.Get "dashboards/bff-red-metrics.json" | indent 4 }}
+  # duplicated inline here) so the JSON has one source of truth -- every
+  # *.json file dropped in dashboards/ is picked up automatically, no
+  # per-dashboard template change needed. See mfe-pot-platform/CLAUDE.md's
+  # observability section for what each dashboard shows.
+  {{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+  {{- end }}

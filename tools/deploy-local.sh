@@ -66,11 +66,37 @@ helm --kube-context "kind-$CLUSTER_NAME" upgrade --install tempo charts/tempo \
   -f charts/tempo/values-kind.yaml \
   --wait --timeout 120s
 
+# Real upstream chart, referenced directly rather than vendored under
+# charts/ -- its RBAC (ClusterRole/ClusterRoleBinding granting read-only
+# list/watch on pods/deployments/nodes/etc.) is exactly right and
+# maintained upstream; nothing in this repo should hand-roll that. No
+# values-kind.yaml/values-eks.yaml split needed -- identical on kind and
+# EKS, same posture as tempo/prometheus. fullnameOverride keeps the
+# Service name predictable for charts/prometheus/templates/configmap.yaml's
+# scrape job, which otherwise depends on the Helm release name.
+echo "==> Deploying kube-state-metrics..."
+helm --kube-context "kind-$CLUSTER_NAME" upgrade --install kube-state-metrics kube-state-metrics \
+  --repo https://prometheus-community.github.io/helm-charts \
+  --version 8.2.0 \
+  --set fullnameOverride=kube-state-metrics \
+  --wait --timeout 120s
+
 echo "==> Deploying prometheus..."
 helm --kube-context "kind-$CLUSTER_NAME" upgrade --install prometheus charts/prometheus \
   -f charts/prometheus/values.yaml \
   -f charts/prometheus/values-kind.yaml \
   --wait --timeout 120s
+
+# The Deployment has no ConfigMap-checksum annotation, so a scrape-config-only
+# change (like adding the kube-state-metrics job above) updates the ConfigMap
+# but never triggers a pod restart on its own -- --wait above returns
+# immediately since the pod template itself didn't change. Confirmed live:
+# without this, the running Prometheus process keeps serving its old
+# in-memory config indefinitely. Same class of gap as the image-tag
+# kubectl-rollout-restart fix already applied to strapi/mock-idp below, just
+# for a ConfigMap instead of an image.
+kubectl --context "kind-$CLUSTER_NAME" rollout restart deployment/prometheus
+kubectl --context "kind-$CLUSTER_NAME" rollout status deployment/prometheus --timeout=60s
 
 echo "==> Deploying grafana..."
 helm --kube-context "kind-$CLUSTER_NAME" upgrade --install grafana charts/grafana \

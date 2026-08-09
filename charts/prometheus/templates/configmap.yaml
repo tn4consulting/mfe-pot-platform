@@ -7,9 +7,8 @@ metadata:
     app.kubernetes.io/component: observability
 data:
   # Mounted over the image's own baked-in default at this exact path (see
-  # templates/deployment.yaml). One scrape job, pointed at
-  # charts/otel-collector's own Prometheus exporter -- fixed in-cluster
-  # Service DNS, identical on kind and EKS.
+  # templates/deployment.yaml). Static scrape jobs, all fixed in-cluster
+  # Service DNS -- identical on kind and EKS.
   prometheus.yml: |
     global:
       scrape_interval: 15s
@@ -19,3 +18,20 @@ data:
         static_configs:
           - targets:
               - otel-collector.default.svc.cluster.local:8889
+      # prometheus-community/kube-state-metrics, installed directly from the
+      # upstream chart (not vendored here) with --set fullnameOverride=kube-state-metrics
+      # for this predictable Service name -- see tools/deploy-local.sh /
+      # ../../../tools/deploy-eks.sh.
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets:
+              - kube-state-metrics.default.svc.cluster.local:8080
+      # charts/aws-cost-exporter -- EKS only (real AWS Cost Explorer data
+      # via IRSA, no kind equivalent), but this job is added unconditionally
+      # rather than splitting this ConfigMap by environment: on kind the
+      # target just shows "down" in Prometheus, harmless since nothing here
+      # alerts on it (no Alertmanager in this stack).
+      - job_name: aws-cost-exporter
+        static_configs:
+          - targets:
+              - aws-cost-exporter.default.svc.cluster.local:3006

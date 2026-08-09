@@ -1,0 +1,52 @@
+name: CI
+
+# The general lint/test/build workflow this repo has been missing --
+# CLAUDE.md's "Source control & CI/CD" section has long claimed a single
+# `nx affected` workflow runs here, but until now only
+# publish-shared-packages.yml/deploy-eks.yml/version-check.yml existed. See
+# mfe-pot/docs/plans/20260808-1200-multi-team-scale-governance.md
+# ("Sequencing beyond this doc") and mfe-pot/TODO.md's "Scaling to
+# multi-team ownership" section.
+#
+# Runs `eslint:lint`, not `lint` -- this repo's nx.json names the @nx/eslint
+# plugin's inferred target `eslint:lint`; only a handful of libs also carry
+# a legacy explicit `lint` alias pointing at the same executor. `mock-idp`/
+# `aws-cost-exporter` (@nx/node apps) have no `lint` target at all, so
+# `nx run-many -t lint --all` would silently skip them -- the same gotcha
+# CLAUDE.md documents for every app repo's own BFF.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10.33.2'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
+
+      - name: Lint, test, build
+        run: pnpm exec nx run-many -t eslint:lint,test,build --all

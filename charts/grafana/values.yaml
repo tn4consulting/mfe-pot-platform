@@ -1,9 +1,11 @@
 grafana:
   name: grafana
-  # Safe to scale -- see deployment.yaml's own comment and
-  # mfe-pot/TODO.md's "Design principles" section, principles 3/4. Local
-  # kind default stays at 1 (limits resource pressure on a single-node dev
-  # cluster) -- values-eks.yaml bumps this to 2.
+  # Stateless, safe to scale in principle -- see deployment.yaml's own
+  # comment and mfe-pot/TODO.md's "Design principles" section, principles
+  # 3/4. Stays at 1 on both kind and EKS in practice: the real cluster's 2
+  # t3.medium nodes cap at 17 pods each (AWS VPC CNI ENI/IP limit, not
+  # CPU/memory), and doubling replicas across the family blew past that --
+  # confirmed live (FailedScheduling: "Too many pods").
   replicaCount: 1
   podDisruptionBudget:
     enabled: false

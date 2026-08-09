@@ -4,15 +4,6 @@
 # no Dockerfile of its own to push to ECR; it pulls the same public Docker
 # Hub image on both kind and EKS.
 
-grafana:
-  # 2 replicas + a real PDB on EKS -- kind stays at 1 (values.yaml) to
-  # limit resource pressure on a single-node dev cluster. See
-  # mfe-pot/TODO.md's "Design principles" section, principles 3/4.
-  replicaCount: 2
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
-
 ingress:
   host: grafana.aws.tn4consulting.com
   tls:

@@ -4,17 +4,6 @@
 # strapi/mock-idp, this chart has no Dockerfile of its own to push to ECR;
 # it pulls the same public Docker Hub images on both kind and EKS.
 
-unleash:
-  # 2 replicas + a real PDB on EKS -- kind stays at 1 (values.yaml) to
-  # limit resource pressure on a single-node dev cluster. Its own Postgres
-  # (unleash-postgres) is untouched either way -- see
-  # postgres-deployment.yaml's own comment. See mfe-pot/TODO.md's "Design
-  # principles" section, principles 3/4.
-  replicaCount: 2
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
-
 ingress:
   host: unleash.aws.tn4consulting.com
   tls:

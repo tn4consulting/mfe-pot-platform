@@ -5,6 +5,7 @@ metadata:
   {{- if .Values.ingress.tls.enabled }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.ingress.tls.clusterIssuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className | default "nginx" }}

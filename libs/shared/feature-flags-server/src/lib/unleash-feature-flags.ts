@@ -1,5 +1,16 @@
 import { initialize, type Unleash } from 'unleash-client';
-import { FeatureFlags, FlagContext } from './feature-flags';
+import { FeatureFlags, FlagContext, FlagVariant } from './feature-flags';
+
+/** Omits both fields entirely (rather than passing `{}`) when neither is set, matching unleash-client's own "no context" calling convention. */
+function toUnleashContext(context?: FlagContext): { userId?: string; sessionId?: string } | undefined {
+  if (!context?.userId && !context?.sessionId) {
+    return undefined;
+  }
+  return {
+    ...(context.userId ? { userId: context.userId } : {}),
+    ...(context.sessionId ? { sessionId: context.sessionId } : {}),
+  };
+}
 
 export interface UnleashFeatureFlagsOptions {
   /** Unleash's own base API URL, in-cluster Service DNS, e.g. http://unleash.default.svc.cluster.local:4242. */
@@ -40,9 +51,30 @@ export class UnleashFeatureFlags implements FeatureFlags {
   async isEnabled(flagKey: string, context?: FlagContext): Promise<boolean> {
     await this.ready;
     try {
-      return this.client.isEnabled(flagKey, context?.userId ? { userId: context.userId } : undefined);
+      return this.client.isEnabled(flagKey, toUnleashContext(context));
     } catch {
       return false;
+    }
+  }
+
+  /**
+   * Resolves an Unleash variant assignment, for A/B-testing content rather
+   * than just gating it on/off. Same bounded-wait/safe-default posture as
+   * isEnabled above: unleash-client's own `getVariant` never throws and
+   * returns a `{ name: 'disabled' }`-shaped variant when the flag itself is
+   * off or unreachable -- normalized to null here so callers don't need to
+   * know that particular string is Unleash's own sentinel.
+   */
+  async getVariant(flagKey: string, context?: FlagContext): Promise<FlagVariant | null> {
+    await this.ready;
+    try {
+      const variant = this.client.getVariant(flagKey, toUnleashContext(context));
+      if (!variant.enabled || variant.name === 'disabled') {
+        return null;
+      }
+      return { name: variant.name, payload: variant.payload };
+    } catch {
+      return null;
     }
   }
 

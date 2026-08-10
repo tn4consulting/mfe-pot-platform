@@ -63,6 +63,17 @@ helm --kube-context "kind-$CLUSTER_NAME" upgrade --install unleash charts/unleas
   -f charts/unleash/values-kind.yaml \
   --wait --timeout 180s
 
+# Idempotent, safe to re-run every time -- see the script's own header
+# comment. Talks to Unleash through its Ingress host (an explicit Host
+# header against http://localhost, same trick every curl check in this
+# script already uses), so it doesn't depend on the developer's /etc/hosts
+# already being configured, and it can run immediately after --wait above
+# returns without needing the Ingress readiness loop strapi/mock-idp use
+# below (Unleash's own /health check inside --wait already proved the pod,
+# and Ingress routing for an already-healthy Service comes up fast).
+echo "==> Seeding unleash feature flags..."
+node tools/scripts/seed-unleash-flags.mjs
+
 # otel-collector/tempo/prometheus/grafana are all bare upstream images, same
 # as session-cache -- no build/kind-load/restart dance needed. Deployed in
 # this dependency order (collector needs tempo/prometheus reachable before

@@ -1,6 +1,6 @@
 {
   "name": "@tn4consulting/shared-feature-flags-server",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Server-side feature-flag client (Unleash-backed, with a static in-memory fallback for local dev/tests) shared across the mfe-pot BFFs -- backs design principle 6, gradual/percentage rollout, see mfe-pot/TODO.md's \"Design principles\" section and mfe-pot-platform/CLAUDE.md.",
   "repository": {
     "type": "git",

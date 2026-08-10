@@ -1,6 +1,19 @@
 export interface FlagContext {
   /** The signed-in citizen's sub claim, for a userId-targeted percentage rollout. */
   userId?: string;
+  /**
+   * A random per-browser-tab id (not tied to citizen identity), for a
+   * rollout/variant split that still varies when every request comes from
+   * this PoT's one seeded mock persona -- userId-keyed stickiness would
+   * otherwise always resolve to the same variant on every demo run. See
+   * dashboard-mfe's WhatsNewList.tsx for where this is generated.
+   */
+  sessionId?: string;
+}
+
+export interface FlagVariant {
+  name: string;
+  payload?: { type: string; value: string };
 }
 
 /**
@@ -13,4 +26,6 @@ export interface FlagContext {
  */
 export interface FeatureFlags {
   isEnabled(flagKey: string, context?: FlagContext): Promise<boolean>;
+  /** Resolves an A/B variant assignment; null when the flag is off, unreachable, or has no variant for this context. */
+  getVariant(flagKey: string, context?: FlagContext): Promise<FlagVariant | null>;
 }

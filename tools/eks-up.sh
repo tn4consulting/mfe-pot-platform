@@ -42,6 +42,16 @@ cd "$CLUSTER_DIR"
 
 echo "=== Preflight ==="
 command -v terraform > /dev/null || { echo "error: terraform not found." >&2; exit 1; }
+# This environment has no default AWS credentials configured -- AWS_PROFILE
+# must be exported explicitly. `aws sts get-caller-identity` alone isn't a
+# reliable enough check: it can succeed against a short-lived ambient/cached
+# credential that's gone again by the time Terraform's own aws provider
+# (providers.tf, no explicit profile of its own) tries to authenticate later
+# in the run, well after this preflight passed.
+if [ -z "${AWS_PROFILE:-}" ]; then
+  echo "error: AWS_PROFILE is not set -- run 'export AWS_PROFILE=tn4consulting' (or your own profile) first." >&2
+  exit 1
+fi
 aws sts get-caller-identity > /dev/null 2>&1 || { echo "error: AWS CLI has no working credentials -- fix that first." >&2; exit 1; }
 
 # The cluster layer reads foundation's outputs via terraform_remote_state --
@@ -58,20 +68,43 @@ echo "=== terraform init ==="
 terraform init -input=false
 
 echo
-echo "=== terraform plan ==="
-terraform plan -out=.eks-up.tfplan
+echo "=== terraform plan (cluster only) ==="
+# Two-stage apply, not one: the kubernetes/helm/kubectl providers (providers.tf)
+# all configure themselves from module.eks's own outputs (cluster_endpoint,
+# cluster_certificate_authority_data). On a from-scratch stand-up those
+# outputs have no value in state at all yet -- hashicorp/kubernetes and helm
+# tolerate that (they defer real configuration until first resource use), but
+# alekc/kubectl doesn't: a plain untargeted `terraform plan` errors immediately
+# with "invalid provider configuration ... no configuration has been
+# provided" the moment it needs to validate the kubectl provider block, well
+# before anything is actually created. Targeting module.vpc/module.eks first
+# means that plan never needs to touch the kubectl/helm/kubernetes provider
+# blocks at all, since no resource under them is in scope. Safe to run even
+# when the cluster already exists -- it's just a no-op plan/apply then.
+terraform plan -target=module.vpc -target=module.eks -out=.eks-up-cluster.tfplan
 
 if [ "$YES" -ne 1 ]; then
   echo
   read -r -p "Apply the plan above? This starts real AWS billing (~\$0.23-0.25/hr). [y/N] " reply
   case "$reply" in
     [yY]|[yY][eE][sS]) ;;
-    *) echo "Aborted -- nothing applied."; rm -f .eks-up.tfplan; exit 1 ;;
+    *) echo "Aborted -- nothing applied."; rm -f .eks-up-cluster.tfplan; exit 1 ;;
   esac
 fi
 
 echo
-echo "=== terraform apply ==="
+echo "=== terraform apply (cluster only) ==="
+terraform apply .eks-up-cluster.tfplan
+rm -f .eks-up-cluster.tfplan
+
+echo
+echo "=== terraform plan (everything else) ==="
+# module.eks's outputs are now real known values in state, so the
+# kubectl/helm/kubernetes provider blocks configure cleanly this time.
+terraform plan -out=.eks-up.tfplan
+
+echo
+echo "=== terraform apply (everything else) ==="
 terraform apply .eks-up.tfplan
 rm -f .eks-up.tfplan
 
@@ -87,9 +120,13 @@ echo
 echo "=== Cluster is up. ==="
 cat <<EOF
 
-Next: deploy the apps onto it, either by pushing to any app repo's main
-(their deploy-eks CI job picks up automatically), or from the mfe-pot meta
-repo (one level up from mfe-pot-platform):
+The cluster is otherwise EMPTY right now -- no apps, no Ingress resources,
+so external-dns has nothing to create Route 53 records from yet. Every
+*.aws.tn4consulting.com hostname will 404/NXDOMAIN until you deploy onto it.
+
+Next: deploy the apps, either by pushing to any app repo's main (their
+deploy-eks CI job picks up automatically), or from the mfe-pot meta repo
+(one level up from mfe-pot-platform):
 
   cd .. && ./tools/deploy-eks.sh
 

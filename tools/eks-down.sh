@@ -38,6 +38,16 @@ CLUSTER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../infra/terraform/cluster" &&
 cd "$CLUSTER_DIR"
 
 command -v terraform > /dev/null || { echo "error: terraform not found." >&2; exit 1; }
+# This environment has no default AWS credentials configured -- AWS_PROFILE
+# must be exported explicitly. `aws sts get-caller-identity` alone isn't a
+# reliable enough check: it can succeed against a short-lived ambient/cached
+# credential that's gone again by the time Terraform's own aws provider
+# (providers.tf, no explicit profile of its own) tries to authenticate later
+# in the run, well after this preflight passed.
+if [ -z "${AWS_PROFILE:-}" ]; then
+  echo "error: AWS_PROFILE is not set -- run 'export AWS_PROFILE=tn4consulting' (or your own profile) first." >&2
+  exit 1
+fi
 aws sts get-caller-identity > /dev/null 2>&1 || { echo "error: AWS CLI has no working credentials -- fix that first." >&2; exit 1; }
 
 if [ "$YES" -ne 1 ]; then

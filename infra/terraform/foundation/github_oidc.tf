@@ -82,6 +82,15 @@ data "aws_iam_policy_document" "github_actions_deploy" {
       "ecr:InitiateLayerUpload",
       "ecr:UploadLayerPart",
       "ecr:CompleteLayerUpload",
+      # Every repo's deploy-eks job checks this before build+push, since ECR
+      # tag immutability means re-pushing an already-deployed commit's tag
+      # (e.g. mfe-pot/tools/deploy-eks.sh re-pointing a freshly recreated
+      # cluster at already-built images) fails outright otherwise. Without
+      # this action the check itself silently no-ops to "doesn't exist"
+      # (the `if aws ecr describe-images ... ; then` swallows the
+      # AccessDenied), so every re-run rebuilds and hits the immutable-tag
+      # rejection regardless of what the check step intended.
+      "ecr:DescribeImages",
     ]
     resources = [for repo in aws_ecr_repository.app : repo.arn]
   }

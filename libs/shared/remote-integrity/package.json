@@ -1,0 +1,27 @@
+{
+  "name": "@tn4consulting/shared-remote-integrity",
+  "version": "0.2.0",
+  "description": "Signing (CI-side) and verification (shell-runtime-side) of federation remote manifests -- SHA-384 file hashes wrapped in a JWS, verified against a trust registry that never travels over the same network path as the manifest it verifies. See mfe-pot/docs/plans/20260811-1500-federation-remote-loading-integrity.md.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tn4consulting/mfe-pot-platform.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "sign-remote-manifest": "./bin/sign-remote-manifest.mjs",
+    "sync-trusted-remotes": "./bin/sync-trusted-remotes.mjs"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "trusted-remotes.json",
+    "trusted-remotes.dev.json"
+  ],
+  "dependencies": {
+    "jose": "^6.0.0"
+  }
+}

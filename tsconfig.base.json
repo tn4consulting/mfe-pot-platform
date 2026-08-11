@@ -35,7 +35,8 @@
       "@tn4consulting/shared-auth/core": ["./libs/shared/auth/src/core.ts"],
       "@tn4consulting/shared-runtime-config": ["./libs/shared/runtime-config/src/index.ts"],
       "@tn4consulting/shared-session-cache": ["./libs/shared/session-cache/src/index.ts"],
-      "@tn4consulting/shared-auth-server": ["./libs/shared/auth-server/src/index.ts"]
+      "@tn4consulting/shared-auth-server": ["./libs/shared/auth-server/src/index.ts"],
+      "@tn4consulting/shared-remote-integrity": ["./libs/shared/remote-integrity/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

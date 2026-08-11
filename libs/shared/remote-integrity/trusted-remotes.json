@@ -1,0 +1,20 @@
+{
+  "$comment": "Production trust registry for federation remote-loading integrity. The actual root of trust for Stage A/B verification -- see mfe-pot/docs/plans/20260811-1500-federation-remote-loading-integrity.md. Entries are added only via a reviewed PR to this repo (never self-service, never written by CI). Phase 1 rollout: job-bank-mfe only, proving the mechanism end to end before generalizing to the other 3 remotes + msca-shell.",
+  "version": 1,
+  "remotes": {
+    "job-bank-mfe": {
+      "kid": "job-bank-mfe-2026",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "n": "ox0-UTqJAa1TKf7MpNPlHl6_QBoQrMuJNhZyaTIUmX4ezu_HHgkMbhyDq4GuGbuDrbiIHVmHpQ7OZIz2gcKaG__SRGHxHUb1Me3CfrywsC7udSKnUMmzfUAWmiHfzeBmGq8q9oSrHGmltTFkC_4IZfvgyPGCoAZvTq_wTESzce7eVqNHAO__e51OwPkQt66SsuLYpuukDV6JtPgIHL6DzLMME4Lmk77BZzlw2612reyiLVOECEVXR1RncPMc7z971lXPiMYesUV8DWWWLlIyr9M8qYDxJlzhKZgbqNOejfWCteu2wMBCUgL5WrtbdFRhPIn6HJBe2RPEasoUmazEWw",
+        "e": "AQAB"
+      },
+      "alg": "RS256",
+      "allowedOrigins": [
+        "http://job-bank-mfe.mfe-pot.local",
+        "https://job-bank-mfe.aws.tn4consulting.com"
+      ],
+      "provisioning": "first-party-ci"
+    }
+  }
+}

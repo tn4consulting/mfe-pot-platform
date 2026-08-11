@@ -1,0 +1,5 @@
+{
+  "$comment": "Local-dev-only trust registry (http://localhost:* origins). Never merged into trusted-remotes.json and never synced into a production shell build -- sync-trusted-remotes only copies this file when invoked with --dev. Keeps a locally-generated dev signing keypair from ever being able to end up trusted in a real deployment.",
+  "version": 1,
+  "remotes": {}
+}

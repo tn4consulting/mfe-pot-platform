@@ -1,5 +1,5 @@
 {
-  "$comment": "Production trust registry for federation remote-loading integrity. The actual root of trust for Stage A/B verification -- see mfe-pot/docs/plans/20260811-1500-federation-remote-loading-integrity.md. Entries are added only via a reviewed PR to this repo (never self-service, never written by CI). Phase 1 rollout: job-bank-mfe only, proving the mechanism end to end before generalizing to the other 3 remotes + msca-shell.",
+  "$comment": "Production trust registry for federation remote-loading integrity. The actual root of trust for Stage A/B verification -- see mfe-pot/docs/plans/20260811-1500-federation-remote-loading-integrity.md. Entries are added only via a reviewed PR to this repo (never self-service, never written by CI). Phase 2 rollout: all 4 remotes now signing, msca-shell verifying.",
   "version": 1,
   "remotes": {
     "job-bank-mfe": {
@@ -13,6 +13,48 @@
       "allowedOrigins": [
         "http://job-bank-mfe.mfe-pot.local",
         "https://job-bank-mfe.aws.tn4consulting.com"
+      ],
+      "provisioning": "first-party-ci"
+    },
+    "dashboard-mfe": {
+      "kid": "dashboard-mfe-2026",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "n": "sQjyryd2lpNSXXyyHpDQWAAIm0Lj_s4oS3XOf3yXlG_MUt_lRZoElUrlRwmUS7MlWvlPRRYygSlJbyJge0fapc9xQedy3W81QNZKB_SFKz-wZ0i9vkb_0xM7Ot2LRRDhhJ1VUq4ONmkaI2_bRffOs2H4r7TJV-FyOmJvVb3p6GbvJnov6UC7RXTZiCVuqqtVh5niC_S-Tzn_IjLGicDjrDbS7-KwdrxxXguJZNkENfYnXZ_klzbHkto4L9-y4XjOFaWBQjrPqjAqYBgHw5MJNj9Q5Sn_L15cx36od2T3JN7TDm7mZaqamIzMzIX3WO8MoWDyKth4Vw7vW2BxzctM-w",
+        "e": "AQAB"
+      },
+      "alg": "RS256",
+      "allowedOrigins": [
+        "http://dashboard-mfe.mfe-pot.local",
+        "https://dashboard-mfe.aws.tn4consulting.com"
+      ],
+      "provisioning": "first-party-ci"
+    },
+    "employment-insurance-mfe": {
+      "kid": "employment-insurance-mfe-2026",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "n": "noNRyFSJ8kl83me5bEFJusPukdFJ_o5JIrfxZGjiIVdHvQ2d-dnTQmJCndwG1BpSDchH4sNM0QqWyenYtWvpy5E1bZgFxgmNHcBKVXu5J7AmmbSCqBuBJltPAXlU7sjXExJjj7kS7aUTGvc2Lo93piUSfZxY_E1PfpyJcvbgHNVZgouCNvFJ7AWH9yE2jrBr9BvOa6y5YzDSuYm_bbKOkxJaYb0DH7HktDiKy8Hhd-dgsHVqkIupLftHRER2mMHvykX-lJMkmCcGXDBEKUZ1LdP1F5yhNQ6pZuJM7akPhSxaxFUuy1lhbZoSU2ypfg-UtD39oy78_2jvr8UBfMLpNQ",
+        "e": "AQAB"
+      },
+      "alg": "RS256",
+      "allowedOrigins": [
+        "http://employment-insurance-mfe.mfe-pot.local",
+        "https://employment-insurance-mfe.aws.tn4consulting.com"
+      ],
+      "provisioning": "first-party-ci"
+    },
+    "life-events-mfe": {
+      "kid": "life-events-mfe-2026",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "n": "xWXjFwZXAOcpGU_ctY-yMfFDb1NymSEZTe4AMtc8bbw_Py79VlQz2CDjtYpYFCLQUghDg99WzueBwCNnXRsjdbSCsSEpOF-x_6k-3PF6-Bhf9Dvzv3kKOL3gHVeIfVAa7MhQlnEW0gC4ZmKw2xVjNS658UIV2NB6uiusWY_9gQbFxi5eogdwfYt1QRolCf4m4TpYnUQmHuPO5yb2DxiVK8EPT6xoG0oPiToTcV9VV5KyH_2I8HN77kEwXxThw0Kay3nRtImI410eZgqHofs575DwThfWeZNNO4U9mn7n7ooGPaqZQUEk-OTfe13mA60v3REOBl_LHS34JHNyViaw3w",
+        "e": "AQAB"
+      },
+      "alg": "RS256",
+      "allowedOrigins": [
+        "http://life-events-mfe.mfe-pot.local",
+        "https://life-events-mfe.aws.tn4consulting.com"
       ],
       "provisioning": "first-party-ci"
     }
